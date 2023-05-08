@@ -1,5 +1,5 @@
 import AppRouter from "./Router";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { auth } from "fBase";
 import { User, onAuthStateChanged, updateCurrentUser } from "firebase/auth";
 

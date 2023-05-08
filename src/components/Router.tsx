@@ -1,41 +1,39 @@
 import { Routes, Route } from "react-router-dom";
 import Auth from "routes/Auth";
 import Home from "routes/Home";
-import Navigation from "components/Navigation";
 import Profile from "routes/Profile";
 import { User } from "firebase/auth";
+import LeftBar from "./LeftBar";
+import RightBar from "./RightBar";
+import BookMarks from "routes/Bookmarks";
 
-interface router {
+interface Router {
   isLoggedIn: boolean;
   userObj: User | null;
   refreshUser: () => Promise<void>;
   setMode: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const AppRouter = ({ isLoggedIn, userObj, refreshUser, setMode }: router) => {
+const AppRouter = ({ isLoggedIn, userObj, refreshUser, setMode }: Router) => {
   return (
     <div>
-      {isLoggedIn && <Navigation userObj={userObj} setMode={setMode} />}
-      <div
-        style={{
-          maxWidth: 890,
-          width: "100%",
-          margin: "0 auto",
-          marginTop: 80,
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
+      <div className="main-container">
+        {isLoggedIn && <LeftBar userObj={userObj} />}
         <Routes>
           {isLoggedIn ? (
             <>
               <Route path="/" element={<Home userObj={userObj} />} />
+              <Route path="explore" element={<div></div>} />
+              <Route path="notifications" element={<div></div>} />
+              <Route path="bookmarks" element={<BookMarks userObj={userObj} />} />
               <Route path="/profile" element={<Profile userObj={userObj} refreshUser={refreshUser} />} />
             </>
           ) : (
             <Route path="/" element={<Auth />} />
           )}
+          <Route path="*" element={<Auth />} />
         </Routes>
+        <RightBar />
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import reportWebVitals from "./reportWebVitals";
 import "App.css";
 import { Provider } from "react-redux";
 import { store } from "store/store";
+import "./Fonts/font.css";
 
 console.log(app);
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { dbService, dbCollection } from "fBase";
 import { query, onSnapshot, orderBy } from "firebase/firestore";
-import Tweet from "components/Tweet";
+import Tweet, { TweetType } from "components/Tweet";
 import TweetFactory from "components/TweetFactory";
 import { User } from "firebase/auth";
-import type { TweetType } from "components/Tweet";
+import TopBar from "components/TopBar";
 
 const Home = ({ userObj }: { userObj: User | null }) => {
   const [tweets, setTweets] = useState<TweetType[]>([]);
@@ -27,6 +27,7 @@ const Home = ({ userObj }: { userObj: User | null }) => {
 
   return (
     <div className="container">
+      <TopBar title={"홈"} userId={''} />
       <TweetFactory userObj={userObj} />
       <div style={{ marginTop: 30 }}>
         {tweets.map((tweet) => (

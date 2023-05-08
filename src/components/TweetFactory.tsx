@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { User } from "firebase/auth";
 
-
 /* Create Tweet Component*/
 const TweetFactory = ({ userObj }: { userObj: User | null }) => {
   const [tweet, setTweet] = useState("");
@@ -65,7 +64,9 @@ const TweetFactory = ({ userObj }: { userObj: User | null }) => {
       reader.readAsDataURL(theFile); //data_url
       reader.onloadend = (finishedEvent) => {
         console.log(finishedEvent);
-        setAttachment(finishedEvent.target?.result as string);
+        if (finishedEvent.target && typeof finishedEvent.target.result == "string") {
+          setAttachment(finishedEvent.target.result);
+        }
       };
     }
   };

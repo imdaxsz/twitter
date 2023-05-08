@@ -5,10 +5,16 @@ import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { User } from "firebase/auth";
 
-const Navigation = ({ userObj, setMode }: { userObj: User | null; setMode: React.Dispatch<React.SetStateAction<string>> }) => {
+interface NavigationProps {
+  userObj: User | null;
+  setMode: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const Navigation = ({ userObj, setMode }: NavigationProps) => {
   const onClick = () => {
-    setMode('light');
+    setMode("light");
   };
+
   return (
     <nav>
       <ul style={{ display: "flex", justifyContent: "center", paddingTop: 50 }}>
@@ -18,7 +24,7 @@ const Navigation = ({ userObj, setMode }: { userObj: User | null; setMode: React
           </Link>
         </li>
         <li>
-          <Link to="/profile" title={userObj?.displayName as string} className="profileLink">
+          <Link to="/profile" title={userObj && typeof userObj.displayName == "string" ? userObj.displayName : ""} className="profileLink">
             <FontAwesomeIcon icon={faUser} color={"#04AAFF"} size="2x" />
             {/* <span style={{ marginLeft: 50 }}>
               {userObj.displayName

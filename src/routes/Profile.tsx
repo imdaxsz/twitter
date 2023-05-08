@@ -4,7 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { getDocs, query, where, orderBy } from "firebase/firestore";
 import { User, updateProfile } from "firebase/auth";
 
-const Profile = ({ userObj, refreshUser }: { userObj: User | null, refreshUser: () => Promise<void> }) => {
+interface ProfileProps {
+  userObj: User | null;
+  refreshUser: () => Promise<void>;
+}
+
+const Profile = ({ userObj, refreshUser }: ProfileProps) => {
   const navigate = useNavigate();
   const [newDisplayName, setNewDisplayName] = useState(userObj?.displayName);
 
@@ -36,7 +41,7 @@ const Profile = ({ userObj, refreshUser }: { userObj: User | null, refreshUser: 
   useEffect(() => {
     getMyTweets();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]);
+  }, []);
 
   return (
     <div className="container">

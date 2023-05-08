@@ -13,7 +13,12 @@ export interface TweetType {
   attachmentUrl: string;
 }
 
-const Tweet = ({ tweetObj, isOwner }:{tweetObj:TweetType, isOwner: boolean}) => {
+interface TweetProps {
+  tweetObj: TweetType;
+  isOwner: boolean;
+}
+
+const Tweet = ({ tweetObj, isOwner }: TweetProps) => {
   const tweetTextRef = doc(dbService, "tweets", `${tweetObj.id}`);
   const urlRef = ref(storageService, tweetObj.attachmentUrl);
 

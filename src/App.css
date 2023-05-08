@@ -13,10 +13,10 @@ input {
 }
 
 .background {
-  background-color: #15202b;
+  /* background-color: #15202b; */
+  background: white;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-  font-size: 14px;
-  color: white;
+  color: black;
 }
 
 .light {
@@ -43,6 +43,19 @@ form {
   width: 100%;
 }
 
+.logo-box {
+  width: 100%;
+  height: 56px;
+  padding: 2px;
+}
+
+.logo {
+  color: rgb(29, 155, 240);
+  width: 28.38px;
+  height: 50px;
+  padding-left: 12px;
+}
+
 .tweet-input::-moz-placeholder {
   color: white;
   opacity: 0.9;
@@ -53,11 +66,148 @@ form {
   opacity: 0.9;
 }
 
-.container {
+.leftbar-container {
   width: 100%;
-  max-width: 320px;
+  max-width: 275px;
+  padding: 0px 8px;
+}
+
+.main-container {
+  /* max-width: 890px; */
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.rightbar-container {
+  width: 100%;
+  max-width: 350px;
+  padding: 5px 0px;
+  margin-left: 30px;
+}
+
+.rightbar-container h3 {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.navbar {
+  font-size: 19px;
+  width: 240px;
+  font-family: 'NotoSansKR';
+}
+
+.navbar li {
+  margin: 0px auto;
+  cursor: pointer;
+  padding: 12px;
+}
+
+.navbar li:focus {
+  font-weight: bold;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+}
+
+.nav-item span {
+  margin: 0px 20px;
+}
+
+.topbar-container {
+  font-weight: bold;
+  height: 50px;
+  padding: 5px 16px;
+  font-size: 20px;
+  font-family: 'NotoSansKR';
+  border-bottom: solid 1px #eee;
+  justify-content: center;
   display: flex;
   flex-direction: column;
+
+}
+
+
+.topbar-container p {
+  font-size: 11px;
+  font-weight: normal;
+  color: #7b8892;
+  margin-top: 5px;
+}
+
+.search__container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  position: relative;
+  margin-bottom: 20px;
+  width: 100%;
+  background-color: #eff3f4;
+  border-radius: 30px;
+  border: 1px solid white;
+  overflow: hidden;
+}
+
+.searchbar__icon {
+  position: absolute;
+  left: 0;
+  height: 40px;
+  width: 40px;
+  padding-left: 12px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  border-radius: 20px;
+  color: #536471;
+}
+
+.searchbar__input {
+  width: 270px;
+  height: 44px;
+  color: black;
+  position: relative;
+  left: 52px;
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+  font-size: 15px;
+  /* font-family: 'NotoSansKR';
+  font-weight: 300; */
+}
+
+.search__container:focus-within {
+  background: white;
+  border: 1px solid rgb(29, 155, 240);
+  transition: all 0.02;
+}
+
+.clear {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  right: 15px;
+  color: rgb(29, 155, 240);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 600px;
+
+  display: flex;
+  flex-direction: column;
+  border: solid 1px;
+  border-color: #eee;
+  font-size: 14px;
 }
 
 .formInput {
@@ -72,13 +222,18 @@ form {
 
 .formBtn {
   cursor: pointer;
-  width: 100%;
+  width: 190px;
+  height: 45px;
+  font-size: 15px;
+  font-weight: bold;
   padding: 7px 20px;
   text-align: center;
   color: white;
-  border-radius: 20px;
-  background-color: #04aaff;
+  border-radius: 30px;
+  border: none;
+  background-color: rgb(29, 155, 240);
   cursor: pointer;
+  margin-top: 5px;
 }
 
 .cancelBtn {
@@ -113,6 +268,7 @@ form {
   flex-direction: column;
   align-items: center;
   width: 100%;
+  padding-top: 5px;
 }
 
 .factoryInput__container {
@@ -129,8 +285,8 @@ form {
   flex-grow: 1;
   height: 40px;
   padding: 0px 20px;
-  color: white;
-  border: 1px solid #04aaff;
+  color: black;
+  border: 1px solid rgb(29, 155, 240);
   border-radius: 20px;
   font-weight: 500;
   font-size: 12px;
@@ -139,7 +295,7 @@ form {
 .factoryInput__arrow {
   position: absolute;
   right: 0;
-  background-color: #04aaff;
+  background-color: rgb(29, 155, 240);
   height: 40px;
   width: 40px;
   padding: 10px 0px;
@@ -149,7 +305,7 @@ form {
 }
 
 .factoryInput__label {
-  color: #04aaff;
+  color: rgb(29, 155, 240);
   cursor: pointer;
 }
 
@@ -171,7 +327,7 @@ form {
 }
 
 .factoryForm__clear {
-  color: #04aaff;
+  color: rgb(29, 155, 240);
   cursor: pointer;
   text-align: center;
 }
@@ -192,7 +348,7 @@ form {
   margin-bottom: 20px;
   background-color: white;
   width: 100%;
-  max-width: 320px;
+  /* max-width: 320px; */
   padding: 20px;
   border-radius: 10px;
   position: relative;
@@ -202,7 +358,7 @@ form {
 }
 
 .tweet h4 {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .tweet img {
@@ -212,6 +368,7 @@ form {
   border-radius: 50%;
   width: 100%;
   height: 100%;
+  /* max-width: ; */
   margin-top: 10px;
 }
 
@@ -287,7 +444,7 @@ form {
 }
 
 .authSwitch {
-  color: #04aaff;
+  color: rgb(29, 155, 240);
   cursor: pointer;
   margin-top: 10px;
   margin-bottom: 50px;
