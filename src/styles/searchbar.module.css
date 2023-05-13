@@ -1,0 +1,56 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  position: relative;
+  width: 100%;
+  background-color: #eff3f4;
+  border-radius: 30px;
+  border: 1px solid white;
+  overflow: hidden;
+}
+
+.icon {
+  position: absolute;
+  left: 0;
+  height: 40px;
+  width: 40px;
+  padding-left: 12px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  border-radius: 20px;
+  color: #536471;
+}
+
+.input {
+  width: 80%;
+  height: 44px;
+  color: black;
+  position: relative;
+  left: 52px;
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+}
+
+.container:focus-within {
+  background: white;
+  border: 1px solid rgb(29, 155, 240);
+  transition: all 0.02;
+}
+
+.clear {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  right: 15px;
+  color: rgb(29, 155, 240);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
