@@ -1,9 +1,12 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTwitter, faGoogle, faGithub } from "@fortawesome/free-brands-svg-icons";
+// import { faGoogle, faGithub } from "@fortawesome/free-brands-svg-icons";
 import { signInWithPopup, GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
 import { auth } from "fBase";
 import AuthForm from "components/AuthForm";
+import styles from "styles/auth.module.css";
+import { FaTwitter, FaGithub } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
 
 const Auth = () => {
   // const auth = getAuth();
@@ -21,15 +24,21 @@ const Auth = () => {
   };
 
   return (
-    <div className="authContainer">
-      <FontAwesomeIcon icon={faTwitter} color={"#04AAFF"} size="3x" style={{ marginBottom: 30 }} />
+    <div className={styles.container}>
+      <FaTwitter className="logo" />
       <AuthForm />
-      <div className="authBtns">
-        <button onClick={onSocialClick} name="google" className="authBtn">
-          Continue with Google <FontAwesomeIcon icon={faGoogle} />
+      <div className={styles.btns}>
+        <button onClick={onSocialClick} name="google" className={styles.btn}>
+          <div className={styles.icon}>
+            <FcGoogle className={styles.ic} />
+          </div>
+          Google 계정으로 로그인
         </button>
-        <button onClick={onSocialClick} name="github" className="authBtn">
-          Continue with GitHub <FontAwesomeIcon icon={faGithub} />
+        <button onClick={onSocialClick} name="github" className={styles.btn}>
+          <div className={styles.icon}>
+            <FaGithub className={styles.ic} />
+          </div>
+          GitHub 계정으로 로그인
         </button>
       </div>
     </div>
