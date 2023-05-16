@@ -2,11 +2,12 @@ import AppRouter from "./Router";
 import { useEffect, useState } from "react";
 import { auth } from "fBase";
 import { User, onAuthStateChanged, updateCurrentUser } from "firebase/auth";
+import Initialization from "./Initialization";
 
 function App() {
   const [init, setInit] = useState(false);
   const [userObj, setUserObj] = useState<User | null>(null);
-  const [mode, setMode] = useState('');
+  const [mode, setMode] = useState("");
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -27,9 +28,8 @@ function App() {
   };
 
   return (
-    <div className={`background ${mode}`}>
-      {init ? <AppRouter isLoggedIn={Boolean(userObj)} userObj={userObj} refreshUser={refreshUser} setMode={setMode} /> : "Initializing...."}
-      {/* <footer>&copy; {new Date().getFullYear()} mtwitter</footer> */}
+    <div className={`background`}>
+      {init ? <AppRouter isLoggedIn={Boolean(userObj)} userObj={userObj} refreshUser={refreshUser} setMode={setMode} /> : <Initialization />}
     </div>
   );
 }
