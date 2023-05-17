@@ -1,10 +1,13 @@
 import TopBar from "components/TopBar";
-import { User } from "firebase/auth";
+import { useSelector } from "react-redux";
+import { RootState } from "store/store";
 
-function BookMarks({ userObj }: { userObj: User | null }) {
+function BookMarks({ uid }: { uid: string }) {
+  const user = useSelector((state: RootState) => state.user);
   return (
-    <div className="container">
-      <TopBar title={"북마크"} userId={'@pwfases'} />
+    <div className="wrapper">
+      <TopBar title={"북마크"} uid={uid} />
+      <div className="container"></div>
     </div>
   );
 }

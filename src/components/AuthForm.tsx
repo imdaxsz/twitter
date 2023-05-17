@@ -1,7 +1,9 @@
-import { auth } from "fBase";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import styles from "styles/auth.module.css";
+import { auth, dbService } from "fBase";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateCurrentUser } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { updateProfile } from "firebase/auth";
 
 const AuthForm = () => {
   const [email, setEmail] = useState("");
@@ -20,15 +22,46 @@ const AuthForm = () => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // 기본 동작 실행 X
     try {
-      let data;
       if (newAccount) {
         // create account
-        data = await createUserWithEmailAndPassword(auth, email, password);
+        await createUserWithEmailAndPassword(auth, email, password).then(async (result) => {
+          let id = "";
+
+          if (result.user.displayName !== "") {
+            if (typeof result.user.email === "string") id = result.user.email?.split("@")[0];
+            await updateProfile(result.user, { displayName: id });
+            await updateCurrentUser(auth, auth.currentUser);
+          }
+
+          const dt = new Date();
+          const joinDate = dt.getFullYear().toString() + (dt.getMonth() + 1).toString();
+
+          const userData = {
+            id: "@" + id,
+            name: id,
+            joinDate,
+            profileImg: "",
+            headerImg: "",
+            bio: "",
+            likes: [],
+            bookmarks: [],
+            following: 0,
+            follower: 0,
+            // tweets: [],
+            // replies: [],
+          };
+
+          try {
+            const docRef = await setDoc(doc(dbService, "users", result.user.uid), userData);
+            console.log("Document wirtten with ID: ", docRef);
+          } catch (error) {
+            console.error("Error adding document:", error);
+          }
+        });
       } else {
         // log in
-        data = await signInWithEmailAndPassword(auth, email, password);
+        await signInWithEmailAndPassword(auth, email, password);
       }
-      console.log(data);
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);

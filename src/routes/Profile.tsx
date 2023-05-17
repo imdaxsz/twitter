@@ -1,58 +1,123 @@
-import { auth, dbCollection, dbService } from "fBase";
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getDocs, query, where, orderBy } from "firebase/firestore";
-import { User, updateProfile } from "firebase/auth";
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import TopBar from "components/TopBar";
+import { MdCalendarMonth } from "react-icons/md";
+import styles from "styles/profile.module.css";
+import EditProfile from "components/EditProfile";
+import { useSelector } from "react-redux";
+import { RootState } from "store/store";
 
 interface ProfileProps {
-  userObj: User | null;
+  // userObj: User | null;
+  uid: string;
   refreshUser: () => Promise<void>;
 }
 
-const Profile = ({ userObj, refreshUser }: ProfileProps) => {
-  const navigate = useNavigate();
-  const [newDisplayName, setNewDisplayName] = useState(userObj?.displayName);
+const Profile = ({ uid, refreshUser }: ProfileProps) => {
+  const user = useSelector((state: RootState) => state.user);
+  const [modal, setModal] = useState(false);
 
-  const onLogOutClick = () => {
-    auth.signOut();
-    navigate("/");
-  };
+  const onEditClick = () => {
+    setModal(true);
+  }
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewDisplayName(e.currentTarget.value);
-  };
+  // const getUserData = (uid: string) => {
+  //   onSnapshot(doc(dbService, "users", uid), (doc) => {
+  //     if (doc.exists()) {
+  //       setName(doc.data().name);
+  //       setBio(doc.data().bio);
+  //       setFollower(doc.data().follower);
+  //       setFollowing(doc.data().following);
+  //     }
+  //   });
+  // };
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (userObj && userObj.displayName !== newDisplayName) {
-      await updateProfile(userObj, { displayName: newDisplayName });
-    }
-    refreshUser();
-  };
+  // useEffect(() => {
+  //   getUserData(uid);
+  // }, [uid, bio, name]);
 
-  const getMyTweets = async () => {
-    const q = query(dbCollection(dbService, "tweets"), where("creatorId", "==", userObj?.uid), orderBy("createdAt", "desc"));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      console.log(doc.id, "=>", doc.data());
-    });
-  };
-
-  useEffect(() => {
-    getMyTweets();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const location = useLocation();
 
   return (
-    <div className="container">
-      <form onSubmit={onSubmit} className="profileForm">
-        <input type="text" autoFocus placeholder="Display name" onChange={onChange} value={newDisplayName as string} className="formInput" />
-        <input type="submit" value="Update Profile" className="formBtn" style={{ marginTop: 10 }} />
-      </form>
-      <span className="formBtn cancelBtn logOut" onClick={onLogOutClick}>
-        Log out
-      </span>
-    </div>
+    <>
+      {modal && <EditProfile uid={uid} setModal={setModal} />}
+
+      <div className="wrapper">
+        <TopBar title={user.name} uid={uid} />
+        <div className="container">
+          <div className={styles.header}>{user.headerImg === "" ? <div className={styles["default-header"]}></div> : <img src={user.headerImg} alt="header"></img>}</div>
+          <div className={styles.profile}>
+            <div className={styles.top}>
+              <div className={styles["user-img"]}>
+                <img src={user.profileImg !== "" ? user.profileImg : "img/default_profile.png"} alt="userImg"></img>
+              </div>
+              <button className={`small ${styles["edit-btn"]}`} onClick={onEditClick}>
+                프로필 수정
+              </button>
+            </div>
+            <div className={`${styles.info} flex-row`}>
+              <div className={`flex ${styles.name}`}>
+                <h4>{user.name}</h4>
+              </div>
+              <div className={`flex ${styles.id}`}>
+                <p>{user.id}</p>
+              </div>
+            </div>
+            {user.bio && (
+              <div className={`flex ${styles.bio}`}>
+                <p>{user.bio}</p>
+              </div>
+            )}
+            <div className={`flex ${styles.join}`}>
+              <MdCalendarMonth className={`icon ${styles["mr-4"]}`} />
+              <p>
+                가입일: {user.joinDate.slice(0, 4)}년 {user.joinDate[4]}월
+              </p>
+            </div>
+            <div className={`flex ${styles.follow}`}>
+              <div className={`flex ${styles.following}`}>
+                <span>{user.following.length}</span>
+                <p>&nbsp;팔로우 중</p>
+              </div>
+              <span>{user.follower.length}</span>
+              <p>&nbsp;팔로워</p>
+            </div>
+          </div>
+          <nav className={styles.nav}>
+            <ul>
+              <li className={styles["w-1"]}>
+                <Link to="/profile">
+                  <div className={`${styles.tab} ${location.pathname === "/profile" ? styles.active : ""}`}>
+                    <p>트윗</p>
+                  </div>
+                </Link>
+              </li>
+              <li className={styles["w-1"]}>
+                <Link to="/profile/with_replies">
+                  <div className={`${styles.tab} ${location.pathname === "/profile/with_replies" ? styles.active : ""}`}>
+                    <p>답글</p>
+                  </div>
+                </Link>
+              </li>
+              <li className={styles["w-2"]}>
+                <Link to="/profile/media">
+                  <div className={`${styles.tab} ${location.pathname === "/profile/media" ? styles.active : ""}`}>
+                    <p>미디어</p>
+                  </div>
+                </Link>
+              </li>
+              <li className={styles["w-3"]}>
+                <Link to="/profile/likes">
+                  <div className={`${styles.tab} ${location.pathname === "/profile/likes" ? styles.active : ""}`}>
+                    <p>마음에 들어요</p>
+                  </div>
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </>
   );
 };
 

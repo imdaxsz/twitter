@@ -1,16 +1,25 @@
 import { useEffect, useState } from "react";
-import { dbService, dbCollection } from "fBase";
+import { dbService, dbCollection, auth } from "fBase";
 import { query, onSnapshot, orderBy } from "firebase/firestore";
 import Tweet, { TweetType } from "components/Tweet";
 import TweetFactory from "components/TweetFactory";
-import { User } from "firebase/auth";
 import TopBar from "components/TopBar";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "store/store";
+import { changeProfileImg } from "store/userSlice";
 
-const Home = ({ userObj }: { userObj: User | null }) => {
+const Home = ({uid}:{uid:string}) => {
   const [tweets, setTweets] = useState<TweetType[]>([]);
+  const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
+
+  const test = auth.currentUser;
 
   useEffect(() => {
-    //getTweets();
+    if (test && test.providerData[0].providerId === "google.com") {
+      if (test.providerData[0].photoURL) dispatch(changeProfileImg(test.providerData[0].photoURL));
+    }
+
     const q = query(dbCollection(dbService, "tweets"), orderBy("createdAt", "desc"));
     onSnapshot(q, (snapshot) => {
       const tweetArr: TweetType[] = snapshot.docs.map((doc) => ({
@@ -18,40 +27,31 @@ const Home = ({ userObj }: { userObj: User | null }) => {
         attachmentUrl: doc.data().attachmentUrl,
         text: doc.data().text,
         creatorId: doc.data().creatorId,
+        creatorUid: doc.data().creatorUid,
+        creatorName: doc.data().creatorName,
         createdAt: doc.data().createdAt,
-        // ...doc.data(),
+        likes: doc.data().likes,
+        retweets: doc.data().retweets,
+        replies: doc.data().replies,
       }));
+
       setTweets(tweetArr);
     });
   }, []);
 
   return (
-    <div className="container">
-      <TopBar title={"홈"} userId={''} />
-      <TweetFactory userObj={userObj} />
-      <div style={{ marginTop: 30 }}>
-        {tweets.map((tweet) => (
-          <Tweet key={tweet.id} tweetObj={tweet} isOwner={tweet.creatorId === userObj?.uid} />
-        ))}
+    <div className="wrapper">
+      <TopBar title={"홈"} uid={uid} />
+      <div className="container">
+        <TweetFactory uid={uid} />
+        <div>
+          {tweets.map((tweet) => (
+            <Tweet key={tweet.id} tweetObj={tweet} isOwner={tweet.creatorUid === uid} />
+          ))}
+        </div>
       </div>
     </div>
   );
 };
 
 export default Home;
-
-// 새로 생성/변경된 데이터는 새로고침해야 반영되는 방식.
-/*
-const getTweets = async () => {
-  const q = query(dbCollection(dbService, "tweets"));
-  const querySnapshot = await getDocs(q);
-  querySnapshot.forEach((document) => {
-    const tweetObj = {
-      ...document.data(),
-      id: document.id,
-
-    }
-    setTweets(prev => [tweetObj, ...prev]);
-  });
-};
-*/

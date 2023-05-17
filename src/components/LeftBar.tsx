@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { User } from "firebase/auth";
 import { RiMoreFill, RiNotification2Line } from "react-icons/ri";
 import { FaHashtag, FaTwitter } from "react-icons/fa";
 import { AiFillHome } from "react-icons/ai";
@@ -8,11 +7,15 @@ import { HiOutlineBookmark } from "react-icons/hi";
 import { BiUser } from "react-icons/bi";
 import { auth } from "fBase";
 import styles from "styles/leftbar.module.css";
+import { useSelector } from "react-redux";
+import { RootState } from "store/store";
 
-function LeftBar({ userObj }: { userObj: User | null }) {
+function LeftBar() {
   const location = useLocation();
   const [modal, setModal] = useState(false);
   const navigate = useNavigate();
+
+  const user = useSelector((state: RootState) => state.user);
 
   const onProfileClick = () => {
     setModal(true);
@@ -94,14 +97,14 @@ function LeftBar({ userObj }: { userObj: User | null }) {
       </div>
       <div className={styles.profile} tabIndex={-1} onClick={onProfileClick} onBlur={onProfileBlur}>
         <div className={styles["profile-img"]}>
-          <img src={userObj?.photoURL ? userObj.photoURL : "img/default_profile.png"} alt="userImg"></img>
+          <img src={user.profileImg !=="" ? user.profileImg : "img/default_profile.png"} alt="userImg"></img>
         </div>
         <div className={`${styles["profile-info"]} flex`}>
           <div className={`${styles["profile-item"]} flex`}>
-            <h4>{userObj?.displayName}</h4>
+            <h4>{user.name}</h4>
           </div>
           <div className={`${styles["profile-item"]} flex`}>
-            <p>@{userObj?.email?.split("@")[0]}</p>
+            <p>{user.id}</p>
           </div>
         </div>
         <div className="twticon-box more right">

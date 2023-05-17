@@ -1,15 +1,13 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faGoogle, faGithub } from "@fortawesome/free-brands-svg-icons";
 import { signInWithPopup, GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
-import { auth } from "fBase";
+import { auth, dbService } from "fBase";
+import { doc, setDoc } from "firebase/firestore";
 import AuthForm from "components/AuthForm";
 import styles from "styles/auth.module.css";
 import { FaTwitter, FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 
 const Auth = () => {
-  // const auth = getAuth();
   const onSocialClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     const {
       currentTarget: { name },
@@ -20,7 +18,45 @@ const Auth = () => {
     } else if (name === "github") {
       provider = new GithubAuthProvider();
     }
-    provider && await signInWithPopup(auth, provider);
+    provider &&
+      (await signInWithPopup(auth, provider).then(async (result) => {
+        let id = "";
+        if (typeof result.user.email === "string")
+          id = result.user.email?.split("@")[0];
+        
+        let name = "";
+        if (typeof result.user.displayName === "string")
+          name = result.user.displayName;
+        
+        let profileImg = "";
+        if (result.user.photoURL)
+          profileImg = result.user.photoURL;
+        
+        const dt = new Date();
+        const joinDate = dt.getFullYear().toString() + (dt.getMonth() + 1).toString();
+
+        const userData = {
+          id: "@"+id,
+          name,
+          joinDate,
+          profileImg,
+          headerImg:"",
+          bio: "",
+          likes: [],
+          bookmarks: [],
+          following: [],
+          follower: [],
+          // tweets: [],
+          // replies: [],
+        };
+
+        try {
+          const docRef = await setDoc(doc(dbService, "users", result.user.uid), userData);
+          console.log("Document wirtten with ID: ", docRef);
+        } catch (error) {
+          console.error("Error adding document:", error);
+        }
+      }));
   };
 
   return (
