@@ -1,31 +1,43 @@
 import { v4 as uuidv4 } from "uuid";
 import { dbAddDoc, dbCollection, dbService, storageService } from "fBase";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { IoImageOutline } from "react-icons/io5";
-import { VscSmiley } from "react-icons/vsc";
+import { IoImageOutline, IoCloseCircleSharp } from "react-icons/io5";
+import { TfiClose } from "react-icons/tfi";
+import { VscSmiley, VscChromeClose } from "react-icons/vsc";
 // import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useSelector } from "react-redux";
-import { RootState } from 'store/store';
+import { RootState } from "store/store";
+import useImageCompress from "hooks/imageCompress";
 
 /* Create Tweet Component*/
-const TweetFactory = ({uid}:{uid:string}) => {
+const TweetFactory = ({ uid }: { uid: string }) => {
   const [tweet, setTweet] = useState("");
-  const [attachment, setAttachment] = useState("");  
+  const [attachment, setAttachment] = useState("");
   const user = useSelector((state: RootState) => state.user);
+  const { isLoading: isCompressLoading, compressImage } = useImageCompress();
+
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    if (textareaRef && textareaRef.current) {
+      textareaRef.current.style.height = "0px";
+      const scrollHeight = textareaRef.current.scrollHeight;
+      textareaRef.current.style.height = scrollHeight + "px";
+    }
+  }, [tweet]);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    if (tweet === "") return;
     e.preventDefault();
     let attachmentUrl = "";
 
     if (attachment !== "") {
       // 파일 경로 참조 만들기
       const attachmentRef = ref(storageService, `${uid}/${uuidv4()}`);
+
       // storage 참조 경로로 파일 업로드 하기
       const response = await uploadString(attachmentRef, attachment, "data_url");
+
       // storage 참조 경로에 있는 파일의 URL을 다운로드해서 attchmentUrl에 넣어서 업데이트
       attachmentUrl = await getDownloadURL(response.ref);
       // reponse.ref == attachmentref
@@ -36,11 +48,10 @@ const TweetFactory = ({uid}:{uid:string}) => {
       createdAt: Date.now(),
       creatorId: user.id,
       creatorUid: uid,
-      creatorName: user.name,
       attachmentUrl,
       likes: 0,
       retweets: 0,
-      replies:[]
+      replies: [],
     };
 
     try {
@@ -65,20 +76,24 @@ const TweetFactory = ({uid}:{uid:string}) => {
     }
   };
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setTweet(e.currentTarget.value);
   };
 
   const fileInput = useRef<HTMLInputElement>(null);
 
-  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const {
       currentTarget: { files },
     } = e;
     if (files instanceof FileList) {
       const theFile = files[0];
+      const compressedImage = await compressImage(theFile);
+      if (!compressedImage) return;
+      // const imageUrl = URL.createObjectURL(compressedImage);
+      // setAttachment(imageUrl);
       const reader = new FileReader();
-      reader.readAsDataURL(theFile); //data_url
+      reader.readAsDataURL(compressedImage); //data_url
       reader.onloadend = (finishedEvent) => {
         console.log(finishedEvent);
         if (finishedEvent.target && typeof finishedEvent.target.result == "string") {
@@ -97,17 +112,32 @@ const TweetFactory = ({uid}:{uid:string}) => {
 
   return (
     <form onSubmit={onSubmit}>
+      {/* <Loading loading={true } /> */}
       <div className="factoryInput__container">
         <div className="user-img">
-          <img src={user.profileImg !=="" ? user.profileImg : "img/default_profile.png"} alt="userimg"></img>
+          <img referrerPolicy="no-referrer" src={user.profileImg !== "" ? user.profileImg : "img/default_profile.png"} alt="userimg"></img>
         </div>
-        <div>
+        <div className="factory__content">
           <div className="input-box">
-            <input className="factoryInput__input" value={tweet} onChange={onChange} type="text" placeholder="무슨 일이 일어나고 있나요?" maxLength={120} />
+            <textarea className="factoryInput__input" ref={textareaRef} value={tweet} onChange={onChange} placeholder="무슨 일이 일어나고 있나요?" maxLength={150} />
           </div>
+          {attachment && (
+            <div className="factoryForm__attachment">
+              <img
+                src={attachment}
+                style={{
+                  backgroundImage: attachment,
+                }}
+                alt={attachment}
+              />
+              <div className="factoryForm__clear" onClick={onClearAttachment}>
+                <VscChromeClose className="clear-icon" />
+              </div>
+            </div>
+          )}
           <div className="input-box2">
-            <input type="submit" value="트윗하기" disabled={tweet===""} className="btn small tweet-btn" />
-            <div className="icon-box">
+            <input type="submit" value="트윗하기" disabled={tweet === "" && attachment === ""} className="btn small tweet-btn" />
+            <div title="미디어" className="icon-box">
               <label htmlFor="attach-file">
                 <IoImageOutline className="tweet-form-icon" />
               </label>
@@ -117,21 +147,7 @@ const TweetFactory = ({uid}:{uid:string}) => {
           </div>
         </div>
       </div>
-      {attachment && (
-        <div className="factoryForm__attachment">
-          <img
-            src={attachment}
-            style={{
-              backgroundImage: attachment,
-            }}
-            alt={attachment}
-          />
-          <div className="factoryForm__clear" onClick={onClearAttachment}>
-            <span>Remove</span>
-            <FontAwesomeIcon icon={faTimes} />
-          </div>
-        </div>
-      )}
+      {/* {isCompressLoading && "이미지 압축 중.."} */}
     </form>
   );
 };
