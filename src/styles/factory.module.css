@@ -1,0 +1,137 @@
+textarea {
+  all: unset;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  overflow: hidden;
+}
+
+textarea::placeholder {
+  color: #536471;
+}
+
+.container {
+  width: 100%;
+  min-height: 120px;
+  padding: 4px 16px 8px;
+  border-bottom: solid 1px;
+  border-color: #eee;
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
+  width: 100%;
+}
+
+.user {
+  width: 48px;
+  height: 100%;
+  padding-top: 4px;
+  margin-right: 12px;
+}
+
+.user img {
+  width: 100%;
+  object-fit: cover;
+  border-radius: 100%;
+}
+
+.content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  max-width: 505px;
+}
+
+.textarea-container {
+  width: 506px;
+  min-height: 52px;
+  height: 100%;
+  margin-bottom: 8px;
+}
+
+.textarea {
+  width: 100%;
+  height: 100%;
+  padding: 12px 0px;
+  color: black;
+  font-weight: 400;
+  font-size: 20px;
+}
+
+.attachment {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 6px 0px;
+  width: 100%;
+  height: 100%;
+  max-height: 350px;
+  position: relative;
+}
+
+.attachment img {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+}
+
+.clear {
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  cursor: pointer;
+}
+
+.clear-icon {
+  width: 30px;
+  height: 30px;
+  padding: 7px;
+  color: white;
+  background: rgba(15, 20, 25, 0.75);
+  border-radius: 25px;
+}
+
+.bottom {
+  width: 506px;
+  height: 100%;
+  height: 48px;
+  display: flex;
+  position: relative;
+  border-top: solid 1px #000;
+  border-color: rgb(239, 243, 244);
+}
+
+.icon-box {
+  margin-top: 12px;
+  width: 72px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+}
+
+.icon-box input {
+  width: 0;
+}
+
+.icon {
+  margin: 0px 8px;
+  width: 20px;
+  height: 20px;
+  color: #058ce7;
+  cursor: pointer;
+}
+
+input[type="submit"] {
+  margin-top: 12px;
+  position: absolute;
+  right: 0px;
+}
+
+.btn-tweet {
+  margin-top: 12px;
+  position: absolute;
+  right: 0px;
+}

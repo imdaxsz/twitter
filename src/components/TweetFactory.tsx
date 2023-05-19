@@ -7,6 +7,7 @@ import { VscSmiley, VscChromeClose } from "react-icons/vsc";
 import { useSelector } from "react-redux";
 import { RootState } from "store/store";
 import useImageCompress from "hooks/imageCompress";
+import styles from "styles/factory.module.css";
 
 interface FactoryProps {
   uid: string;
@@ -94,8 +95,6 @@ const TweetFactory = ({ uid, setTweetModal }: FactoryProps) => {
       const theFile = files[0];
       const compressedImage = await compressImage(theFile);
       if (!compressedImage) return;
-      // const imageUrl = URL.createObjectURL(compressedImage);
-      // setAttachment(imageUrl);
       const reader = new FileReader();
       reader.readAsDataURL(compressedImage); //data_url
       reader.onloadend = (finishedEvent) => {
@@ -117,16 +116,16 @@ const TweetFactory = ({ uid, setTweetModal }: FactoryProps) => {
   return (
     <form onSubmit={onSubmit}>
       {/* <Loading loading={true } /> */}
-      <div className="factoryInput__container">
-        <div className="user-img">
+      <div className={styles.container}>
+        <div className={styles.user}>
           <img referrerPolicy="no-referrer" src={user.profileImg !== "" ? user.profileImg : "img/default_profile.png"} alt="userimg"></img>
         </div>
-        <div className="factory__content">
-          <div className="input-box">
-            <textarea className="factoryInput__input" ref={textareaRef} value={tweet} onChange={onChange} placeholder="무슨 일이 일어나고 있나요?" maxLength={150} />
+        <div className={styles.content}>
+          <div className={styles["textarea-container"]}>
+            <textarea className={styles.textarea} ref={textareaRef} value={tweet} onChange={onChange} placeholder="무슨 일이 일어나고 있나요?" maxLength={150} />
           </div>
           {attachment && (
-            <div className="factoryForm__attachment">
+            <div className={styles.attachment}>
               <img
                 src={attachment}
                 style={{
@@ -134,19 +133,19 @@ const TweetFactory = ({ uid, setTweetModal }: FactoryProps) => {
                 }}
                 alt={attachment}
               />
-              <div className="factoryForm__clear" onClick={onClearAttachment}>
-                <VscChromeClose className="clear-icon" />
+              <div className={styles.clear} onClick={onClearAttachment}>
+                <VscChromeClose className={styles["clear-icon"]} />
               </div>
             </div>
           )}
-          <div className="input-box2">
-            <input type="submit" value="트윗하기" disabled={tweet === "" && attachment === ""} className="btn small tweet-btn" />
-            <div title="미디어" className="icon-box">
+          <div className={styles.bottom}>
+            <input type="submit" value="트윗하기" disabled={tweet === "" && attachment === ""} className={`btn small ${styles["btn-tweet"]}`} />
+            <div title="미디어" className={styles["icon-box"]}>
               <label htmlFor="attach-file">
-                <IoImageOutline className="tweet-form-icon" />
+                <IoImageOutline className={styles.icon} />
               </label>
-              <input id="attach-file" type="file" accept="image/*" ref={fileInput} onChange={onFileChange} className="img-input" />
-              <VscSmiley className="tweet-form-icon" />
+              <input id="attach-file" type="file" accept="image/*" ref={fileInput} onChange={onFileChange}  />
+              <VscSmiley className={styles.icon} />
             </div>
           </div>
         </div>
