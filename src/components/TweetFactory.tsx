@@ -2,16 +2,19 @@ import { v4 as uuidv4 } from "uuid";
 import { dbAddDoc, dbCollection, dbService, storageService } from "fBase";
 import React, { useEffect, useRef, useState } from "react";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
-import { IoImageOutline, IoCloseCircleSharp } from "react-icons/io5";
-import { TfiClose } from "react-icons/tfi";
+import { IoImageOutline } from "react-icons/io5";
 import { VscSmiley, VscChromeClose } from "react-icons/vsc";
-// import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useSelector } from "react-redux";
 import { RootState } from "store/store";
 import useImageCompress from "hooks/imageCompress";
 
+interface FactoryProps {
+  uid: string;
+  setTweetModal?: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
 /* Create Tweet Component*/
-const TweetFactory = ({ uid }: { uid: string }) => {
+const TweetFactory = ({ uid, setTweetModal }: FactoryProps) => {
   const [tweet, setTweet] = useState("");
   const [attachment, setAttachment] = useState("");
   const user = useSelector((state: RootState) => state.user);
@@ -29,6 +32,9 @@ const TweetFactory = ({ uid }: { uid: string }) => {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (setTweetModal)
+      setTweetModal(false);
+
     let attachmentUrl = "";
 
     if (attachment !== "") {
@@ -56,14 +62,6 @@ const TweetFactory = ({ uid }: { uid: string }) => {
 
     try {
       const docRef = await dbAddDoc(dbCollection(dbService, "tweets"), tweetObj);
-      // const userRef = doc(dbService, "users", uid);
-      // const docSnap = await getDoc(userRef);
-      // let count = 0;
-      // if (docSnap.exists()) {
-      //   count = docSnap.data().tweets;
-      //   await updateDoc(userRef, { tweets: count + 1 });
-      // }
-      // key: value 형태로 data 추가. 값이 동일한 경우 하나만 기입
       console.log("Document wirtten with ID: ", docRef);
     } catch (error) {
       console.error("Error adding document:", error);
@@ -78,6 +76,12 @@ const TweetFactory = ({ uid }: { uid: string }) => {
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setTweet(e.currentTarget.value);
+    console.log(textareaRef.current);
+    if (textareaRef && textareaRef.current) {
+      textareaRef.current.style.height = "0px";
+      const scrollHeight = textareaRef.current.scrollHeight;
+      textareaRef.current.style.height = scrollHeight + "px";
+    }
   };
 
   const fileInput = useRef<HTMLInputElement>(null);

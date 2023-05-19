@@ -1,4 +1,4 @@
-import { deleteDoc, doc, onSnapshot } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { dbService, storageService } from "fBase";
 import { deleteObject, ref } from "firebase/storage";
 import React, { useState, useEffect } from "react";
@@ -9,6 +9,8 @@ import { FiBookmark } from "react-icons/fi";
 import { AiOutlineRetweet, AiFillEdit } from "react-icons/ai";
 import { CgTrash } from "react-icons/cg";
 import styles from "styles/tweet.module.css";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "store/store";
 
 export interface TweetType {
   id: string;
@@ -24,13 +26,16 @@ export interface TweetType {
 
 interface TweetProps {
   tweetObj: TweetType;
-  isOwner: boolean;
+  uid: string;
   // userImg: string;
 }
 
-function Tweet({ tweetObj, isOwner }: TweetProps) {
+function Tweet({ tweetObj, uid }: TweetProps) {
   const tweetTextRef = doc(dbService, "tweets", `${tweetObj.id}`);
   const urlRef = ref(storageService, tweetObj.attachmentUrl);
+  const user = useSelector((state: RootState) => state.user);
+  const userRef = doc(dbService, "users", uid);
+  const dispatch = useDispatch();
 
   // const [editing, setEditing] = useState(false);
   // const [newTweet, setNewTweet] = useState(tweetObj.text);
@@ -68,6 +73,20 @@ function Tweet({ tweetObj, isOwner }: TweetProps) {
 
   const onMoreBlur = () => {
     setTimeout(() => setMore(false), 100);
+  };
+
+  const onBookmarkClick = async () => {
+    const docSnap = await getDoc(doc(dbService, "users", uid));
+    if (docSnap.exists()) {
+      let bookmarks:string[] = docSnap.data().bookmarks;
+      const tweet = bookmarks.find((a) => a === tweetObj.id);
+      if (!tweet) {
+        await updateDoc(userRef, { bookmarks: [tweetObj.id, ...bookmarks] });
+      } else {
+        bookmarks = bookmarks.filter((id) => id !== tweet);
+        await updateDoc(userRef, { bookmarks: [...bookmarks] });
+      }
+    }
   };
 
   // const toggleEditing = () => setEditing((prev) => !prev);
@@ -112,7 +131,7 @@ function Tweet({ tweetObj, isOwner }: TweetProps) {
               <p>{tweetObj.creatorId}</p>
             </div>
           </div>
-          {isOwner && (
+          {tweetObj.creatorUid === uid && (
             <button title="더 보기" className="twticon-box more blue" onFocus={onMoreClick} onBlur={onMoreBlur}>
               <RiMoreFill className="icon" />
             </button>
@@ -120,7 +139,7 @@ function Tweet({ tweetObj, isOwner }: TweetProps) {
         </div>
         {tweetObj.text !== "" && (
           <div className={styles.text}>
-            <h4>{tweetObj.text}</h4>
+            <span>{tweetObj.text}</span>
           </div>
         )}
         {tweetObj.attachmentUrl !== "" && (
@@ -139,25 +158,11 @@ function Tweet({ tweetObj, isOwner }: TweetProps) {
           <div title="마음에 들어요" className={`twticon-box pink ${styles.twt} ${styles["l-3"]}`}>
             <RiHeart3Line className="icon" />
           </div>
-          <div title="북마크" className={`twticon-box blue ${styles.twt} ${styles["l-4"]}`}>
+          <div title="북마크" onClick={onBookmarkClick} className={`twticon-box blue ${styles.twt} ${styles["l-4"]}`}>
             <FiBookmark className="icon" />
           </div>
         </div>
       </div>
-      {/* <>
-        <h4>{tweetObj.text}</h4>
-        {tweetObj.attachmentUrl && <img src={tweetObj.attachmentUrl} alt={tweetObj.attachmentUrl} />}
-        {isOwner && (
-          <div className="tweet__actions">
-            <span onClick={onDeleteClick}>
-              <FontAwesomeIcon icon={faTrash} />
-            </span> */}
-      {/* <span onClick={toggleEditing}>
-              <FontAwesomeIcon icon={faPencilAlt} />
-            </span> */}
-      {/* </div>
-        )}
-      </> */}
       {/* {editing ? (
         <>
           <form onSubmit={onSubmit} className="container tweetEdit">
