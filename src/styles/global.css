@@ -4,12 +4,16 @@
   box-sizing: border-box;
 }
 
-input{
+input {
   all: unset;
   box-sizing: border-box;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+}
+
+input[type="file"] {
+  width: 0px;
 }
 
 .background {
@@ -29,12 +33,17 @@ a {
   color: inherit;
 }
 
+
 form {
   width: 100%;
 }
 
 p {
   color: #586d7d;
+}
+
+img {
+  background: white;
 }
 
 .flex {
@@ -58,7 +67,7 @@ p {
   transition: all 0.2s;
 }
 
-.btn:hover {
+.btn:hover:not(.black) {
   background-color: #1a8edb;
 }
 
@@ -83,7 +92,7 @@ input[disabled] {
 }
 
 .small {
-  height: 34px;
+  height: 36px;
   padding: 0 16px;
   font-size: 15px;
 }
@@ -127,7 +136,7 @@ input[disabled] {
   position: absolute;
   top: 53px;
   width: 100%;
-  min-height: 100vh;
+  /* min-height: 100vh; */
   max-width: 600px;
   display: flex;
   flex-direction: column;
@@ -167,6 +176,10 @@ input[disabled] {
 
 .mb-2 {
   margin-bottom: 2px;
+}
+
+.p-4 {
+  padding: 0 4px;
 }
 
 /* 트윗 아이콘 */
@@ -282,7 +295,7 @@ input[disabled] {
   min-height: 560px;
   max-height: 90vh;
   border-radius: 16px;
-  z-index: 1000;
+  z-index: 90;
   background: white;
   position: relative;
 }
@@ -347,13 +360,53 @@ input[disabled] {
   margin-left: 12px;
 }
 
+.edit-img-box {
+  width: 100%;
+  height: 42.4px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* z-index: 1200; */
+}
+
+.edit-img {
+  width: 42.4px;
+  height: 42.4px;
+  z-index: 200;
+  pointer-events: auto;
+}
+
+.edit-icon {
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  padding: 11px;
+  color: white;
+  opacity: 0.75;
+  background-color: rgba(15, 20, 25, 0.75);
+  border-radius: 25px;
+  transition: all 0.2s;
+}
+
+.edit-icon:hover {
+  opacity: 0.6;
+}
+
+.del {
+  margin-left: 20px;
+}
+
 .modal-profile-img {
   width: 120px;
   height: 120px;
   position: relative;
 }
 
-.modal-profile-img img {
+.profile-img {
   width: 100%;
   object-fit: cover;
   border-radius: 100%;
@@ -463,4 +516,12 @@ input[disabled] {
 .textarea-container textarea {
   width: 100%;
   height: 100%;
+}
+
+.crop-container {
+  border: none;
+  top: 50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+  height: 580px;
 }
