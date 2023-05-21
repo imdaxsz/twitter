@@ -3,6 +3,12 @@
   height: 200px;
 }
 
+.header img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .default-header {
   width: 100%;
   height: 100%;
@@ -38,14 +44,17 @@
   border: solid 4px white;
 }
 
-.edit-btn {
+.top button {
   position: absolute;
   top: 0px;
   right: 0px;
-  background: white;
   border-radius: 30px;
+}
+
+.edit-btn {
+  background: white;
   border: solid 1px rgb(207, 217, 222);
-  color: black;
+  /* color: black; */
   cursor: pointer;
   font-weight: bold;
   text-align: center;
@@ -156,3 +165,4 @@
 .mr-4 {
   margin-right: 4px;
 }
+
