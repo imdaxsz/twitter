@@ -37,7 +37,7 @@ function LeftBar({ uid }: { uid: string }) {
 
   const onTweetClick = () => {
     setTweetModal(true);
-  }
+  };
 
   return (
     <>
@@ -91,8 +91,8 @@ function LeftBar({ uid }: { uid: string }) {
                 </Link>
               </li>
               <li>
-                <Link to="/profile">
-                  <div className={`${styles["nav-item"]} ${location.pathname === "/profile" ? styles.active : ""}`}>
+                <Link to={`/profile/${user.id.slice(1)}`}>
+                  <div className={`${styles["nav-item"]} ${location.pathname === `/profile/${user.id.slice(1)}` ? styles.active : ""}`}>
                     <BiUser className={styles["nav-icon"]} />
                     <span>프로필</span>
                   </div>
@@ -106,7 +106,7 @@ function LeftBar({ uid }: { uid: string }) {
         </div>
         <div className={styles.profile} tabIndex={-1} onClick={onProfileClick} onBlur={onProfileBlur}>
           <div className={styles["profile-img"]}>
-            <img src={user.profileImg !== "" ? user.profileImg : "img/default_profile.png"} alt="userImg"></img>
+            <img referrerPolicy="no-referrer" src={user.profileImg ? user.profileImg : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userimg"></img>
           </div>
           <div className={`${styles["profile-info"]} flex`}>
             <div className={`${styles["profile-item"]} flex`}>

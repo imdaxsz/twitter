@@ -4,10 +4,11 @@ import App from "./components/App";
 import { app } from "./fBase";
 import { BrowserRouter } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
-import "App.css";
+import "./styles/global.css";
 import { Provider } from "react-redux";
 import { store } from "store/store";
-import "./Fonts/font.css";
+import "./fonts/font.css";
+
 
 console.log(app);
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);

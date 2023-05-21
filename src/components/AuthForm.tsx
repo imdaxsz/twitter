@@ -4,6 +4,7 @@ import { auth, dbService } from "fBase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateCurrentUser } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { updateProfile } from "firebase/auth";
+import { UserState } from "store/userSlice";
 
 const AuthForm = () => {
   const [email, setEmail] = useState("");
@@ -36,24 +37,24 @@ const AuthForm = () => {
           const dt = new Date();
           const joinDate = dt.getFullYear().toString() + (dt.getMonth() + 1).toString();
 
-          const userData = {
+          const userData: UserState = {
             id: "@" + id,
             name: id,
             joinDate,
-            profileImg: "",
-            headerImg: "",
+            profileImg: null,
+            headerImg: null,
             bio: "",
             likes: [],
             bookmarks: [],
-            following: 0,
-            follower: 0,
+            following: [],
+            follower: [],
             // tweets: [],
             // replies: [],
           };
 
           try {
-            const docRef = await setDoc(doc(dbService, "users", result.user.uid), userData);
-            console.log("Document wirtten with ID: ", docRef);
+            const userRef = await setDoc(doc(dbService, "users", result.user.uid), userData);
+            console.log("Document wirtten with ID: ", userRef);
           } catch (error) {
             console.error("Error adding document:", error);
           }

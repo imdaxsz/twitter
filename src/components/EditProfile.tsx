@@ -5,13 +5,13 @@ import { doc, updateDoc } from "firebase/firestore";
 import { auth, dbService, storageService } from "fBase";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
-import { ProfileState, changeProfile } from "store/userSlice";
+import { changeProfile } from "store/userSlice";
 import ImageCropper from "./ImageCropper";
 import useImageCompress from "hooks/imageCompress";
 import { dataURItoFile } from "../utils/common";
 import { v4 as uuidv4 } from "uuid";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
-import { updateCurrentUser, updateProfile } from "firebase/auth";
+import { updateProfile } from "firebase/auth";
 import Loading from "./Loading";
 
 interface EditProps {
@@ -34,14 +34,6 @@ function EditProfile({ uid, setModal }: EditProps) {
   const compressImage = useImageCompress().compressImage;
 
   const [loading, setLoading] = useState(false);
-
-  // useEffect(() => {
-  //   setNewBio(user.bio);
-  //   setNewName(user.name);
-  //   setNewHeader(user.headerImg);
-  //   // setNewProfile(user.profileImg);
-  //   console.log(user.bio, user.name, user.profileImg);
-  // }, []);
 
   useEffect(() => {
     return () => {
@@ -101,13 +93,11 @@ function EditProfile({ uid, setModal }: EditProps) {
   };
 
   const handleUploadImage = (image: string) => {
-    // setNewHeader(image);
     setNewProfile(image);
   };
 
   const handleUploadImage2 = (image: string) => {
     setNewHeader(image);
-    // setNewProfile(image);
   };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -182,12 +172,8 @@ function EditProfile({ uid, setModal }: EditProps) {
               <div className="darken radius-100"></div>
               <div className="edit-img-box">
                 <div className="edit-img" onClick={onProfileClick}>
-                  {/* <label htmlFor="file-profile"> */}
                   <TbCameraPlus className="edit-icon" />
-
-                  {/* </label> */}
                 </div>
-                {/* <input id="file-profile" type="file" accept="image/*" /> */}
               </div>
               <img className="profile-img" referrerPolicy="no-referrer" src={newProfile ? newProfile : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userImg"></img>
             </div>

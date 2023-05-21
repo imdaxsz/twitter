@@ -11,6 +11,8 @@ import { CgTrash } from "react-icons/cg";
 import styles from "styles/tweet.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
+import TweetModal from "./TweetModal";
+import { Link } from "react-router-dom";
 
 export interface TweetType {
   id: string;
@@ -27,7 +29,6 @@ export interface TweetType {
 interface TweetProps {
   tweetObj: TweetType;
   uid: string;
-  // userImg: string;
 }
 
 function Tweet({ tweetObj, uid }: TweetProps) {
@@ -35,13 +36,12 @@ function Tweet({ tweetObj, uid }: TweetProps) {
   const urlRef = ref(storageService, tweetObj.attachmentUrl);
   const user = useSelector((state: RootState) => state.user);
   const userRef = doc(dbService, "users", uid);
-  const dispatch = useDispatch();
 
-  // const [editing, setEditing] = useState(false);
+  const [editing, setEditing] = useState(false);
   // const [newTweet, setNewTweet] = useState(tweetObj.text);
 
   const [more, setMore] = useState(false);
-  const [userImg, setUserImg] = useState("");
+  const [userImg, setUserImg] = useState<string | null>(null);
   const [name, setName] = useState("");
 
   useEffect(() => {
@@ -49,7 +49,7 @@ function Tweet({ tweetObj, uid }: TweetProps) {
   }, []);
 
   const getuserImg = (uid: string) => {
-    onSnapshot(doc(dbService, "profiles", uid), (doc) => {
+    onSnapshot(doc(dbService, "users", uid), (doc) => {
       if (doc.exists()) {
         setUserImg(doc.data().profileImg);
         setName(doc.data().name);
@@ -78,7 +78,7 @@ function Tweet({ tweetObj, uid }: TweetProps) {
   const onBookmarkClick = async () => {
     const docSnap = await getDoc(doc(dbService, "users", uid));
     if (docSnap.exists()) {
-      let bookmarks:string[] = docSnap.data().bookmarks;
+      let bookmarks: string[] = docSnap.data().bookmarks;
       const tweet = bookmarks.find((a) => a === tweetObj.id);
       if (!tweet) {
         await updateDoc(userRef, { bookmarks: [tweetObj.id, ...bookmarks] });
@@ -89,7 +89,10 @@ function Tweet({ tweetObj, uid }: TweetProps) {
     }
   };
 
-  // const toggleEditing = () => setEditing((prev) => !prev);
+  const toggleEditing = () => setEditing(true);
+
+  const month = new Date(tweetObj.createdAt).getMonth() + 1;
+  const date = new Date(tweetObj.createdAt).getDate();
 
   // const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   //   e.preventDefault();
@@ -100,70 +103,84 @@ function Tweet({ tweetObj, uid }: TweetProps) {
   // const onChange = (e: React.ChangeEvent<HTMLInputElement>) => setNewTweet(e.target.value);
 
   return (
-    <div className={styles.tweet}>
-      {more && (
-        <div className="more-modal modal-shadow">
-          <div className="more-item-box">
-            <div className="more-item">
-              <AiFillEdit className="icon" />
-              <h4>수정하기</h4>
+    <>
+      {editing && <TweetModal uid={uid} setTweetModal={setEditing} />}
+      <div className={styles.tweet}>
+        {more && (
+          <div className="more-modal modal-shadow">
+            <div className="more-item-box">
+              <div className="more-item" onClick={toggleEditing}>
+                <AiFillEdit className="icon" />
+                <h4>수정하기</h4>
+              </div>
+            </div>
+            <div className="more-item-box" onClick={onDeleteClick}>
+              <div className="more-item red">
+                <CgTrash className="icon red" />
+                <h4>삭제하기</h4>
+              </div>
             </div>
           </div>
-          <div className="more-item-box" onClick={onDeleteClick}>
-            <div className="more-item red">
-              <CgTrash className="icon red" />
-              <h4>삭제하기</h4>
-            </div>
+        )}
+        <Link to={`profile/${tweetObj.creatorId?.slice(1)}`}>
+          <div className={styles["user-img"]}>
+            <img referrerPolicy="no-referrer" src={userImg ? userImg : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userImg"></img>
           </div>
-        </div>
-      )}
-      <div className={styles["user-img"]}>
-        <img src={userImg !== "" ? userImg : "img/default_profile.png"} alt="userImg"></img>
-      </div>
-      <div className={styles.content}>
-        <div className="flex mb-2">
-          <div className={`${styles.info} flex`}>
-            <div className={styles["user-name"]}>
-              {/* <h4>{tweetObj.creatorName}</h4> */}
-              <h4>{name}</h4>
+        </Link>
+        <div className={styles.content}>
+          <div className="flex mb-2">
+            <div className={`${styles.info} flex`}>
+              <Link to={`profile/${tweetObj.creatorId?.slice(1)}`}>
+                <div className={`line ${styles["user-name"]}`}>
+                  <h4>{name}</h4>
+                </div>
+              </Link>
+              <Link to={`profile/${tweetObj.creatorId?.slice(1)}`}>
+                <div className={styles["user-id"]}>
+                  <p>{tweetObj.creatorId}</p>
+                </div>
+              </Link>
+              <div className="p-4">
+                <p>·</p>
+              </div>
+              <div>
+                <p>
+                  {month}월 {date}일
+                </p>
+              </div>
             </div>
-            <div className={styles["user-id"]}>
-              <p>{tweetObj.creatorId}</p>
-            </div>
+            {tweetObj.creatorUid === uid && (
+              <button title="더 보기" className="twticon-box more blue" onFocus={onMoreClick} onBlur={onMoreBlur}>
+                <RiMoreFill className="icon" />
+              </button>
+            )}
           </div>
-          {tweetObj.creatorUid === uid && (
-            <button title="더 보기" className="twticon-box more blue" onFocus={onMoreClick} onBlur={onMoreBlur}>
-              <RiMoreFill className="icon" />
-            </button>
+          {tweetObj.text !== "" && (
+            <div className={styles.text}>
+              <span>{tweetObj.text}</span>
+            </div>
           )}
-        </div>
-        {tweetObj.text !== "" && (
-          <div className={styles.text}>
-            <span>{tweetObj.text}</span>
-          </div>
-        )}
-        {tweetObj.attachmentUrl !== "" && (
-          <div className={styles.twtimg}>
-            <img src={tweetObj.attachmentUrl} alt={tweetObj.attachmentUrl} />
-          </div>
-        )}
-        {/* <div style={{ clear: "both" }}></div> */}
-        <div className={styles.icons}>
-          <div title="답글" className={`twticon-box blue ${styles.twt} ${styles["l-1"]}`}>
-            <TbMessageCircle2 className="icon" />
-          </div>
-          <div title="리트윗" className={`twticon-box green ${styles.twt} ${styles["l-2"]}`}>
-            <AiOutlineRetweet className="icon" />
-          </div>
-          <div title="마음에 들어요" className={`twticon-box pink ${styles.twt} ${styles["l-3"]}`}>
-            <RiHeart3Line className="icon" />
-          </div>
-          <div title="북마크" onClick={onBookmarkClick} className={`twticon-box blue ${styles.twt} ${styles["l-4"]}`}>
-            <FiBookmark className="icon" />
+          {tweetObj.attachmentUrl !== "" && (
+            <div className={styles.twtimg}>
+              <img src={tweetObj.attachmentUrl} alt={tweetObj.attachmentUrl} />
+            </div>
+          )}
+          <div className={styles.icons}>
+            <div title="답글" className={`twticon-box blue ${styles.twt} ${styles["l-1"]}`}>
+              <TbMessageCircle2 className="icon" />
+            </div>
+            <div title="리트윗" className={`twticon-box green ${styles.twt} ${styles["l-2"]}`}>
+              <AiOutlineRetweet className="icon" />
+            </div>
+            <div title="마음에 들어요" className={`twticon-box pink ${styles.twt} ${styles["l-3"]}`}>
+              <RiHeart3Line className="icon" />
+            </div>
+            <div title="북마크" onClick={onBookmarkClick} className={`twticon-box blue ${styles.twt} ${styles["l-4"]}`}>
+              <FiBookmark className="icon" />
+            </div>
           </div>
         </div>
-      </div>
-      {/* {editing ? (
+        {/* {editing ? (
         <>
           <form onSubmit={onSubmit} className="container tweetEdit">
             <input type="text" placeholder="Edit your tweet" value={newTweet} required autoFocus onChange={onChange} className="formInput" />
@@ -174,7 +191,8 @@ function Tweet({ tweetObj, uid }: TweetProps) {
           </span>
         </>
       ) : ( */}
-    </div>
+      </div>
+    </>
   );
 }
 

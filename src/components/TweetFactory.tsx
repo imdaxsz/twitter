@@ -17,9 +17,10 @@ interface FactoryProps {
 /* Create Tweet Component*/
 const TweetFactory = ({ uid, setTweetModal }: FactoryProps) => {
   const [tweet, setTweet] = useState("");
+
   const [attachment, setAttachment] = useState("");
   const user = useSelector((state: RootState) => state.user);
-  const { isLoading: isCompressLoading, compressImage } = useImageCompress();
+  const compressImage = useImageCompress().compressImage;
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -41,13 +42,10 @@ const TweetFactory = ({ uid, setTweetModal }: FactoryProps) => {
     if (attachment !== "") {
       // 파일 경로 참조 만들기
       const attachmentRef = ref(storageService, `${uid}/${uuidv4()}`);
-
       // storage 참조 경로로 파일 업로드 하기
       const response = await uploadString(attachmentRef, attachment, "data_url");
-
       // storage 참조 경로에 있는 파일의 URL을 다운로드해서 attchmentUrl에 넣어서 업데이트
       attachmentUrl = await getDownloadURL(response.ref);
-      // reponse.ref == attachmentref
     }
 
     const tweetObj = {
@@ -77,7 +75,6 @@ const TweetFactory = ({ uid, setTweetModal }: FactoryProps) => {
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setTweet(e.currentTarget.value);
-    console.log(textareaRef.current);
     if (textareaRef && textareaRef.current) {
       textareaRef.current.style.height = "0px";
       const scrollHeight = textareaRef.current.scrollHeight;
@@ -115,10 +112,9 @@ const TweetFactory = ({ uid, setTweetModal }: FactoryProps) => {
 
   return (
     <form onSubmit={onSubmit}>
-      {/* <Loading loading={true } /> */}
       <div className={styles.container}>
         <div className={styles.user}>
-          <img referrerPolicy="no-referrer" src={user.profileImg !== "" ? user.profileImg : "img/default_profile.png"} alt="userimg"></img>
+          <img referrerPolicy="no-referrer" src={user.profileImg ? user.profileImg : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userimg"></img>
         </div>
         <div className={styles.content}>
           <div className={styles["textarea-container"]}>
@@ -144,13 +140,12 @@ const TweetFactory = ({ uid, setTweetModal }: FactoryProps) => {
               <label htmlFor="attach-file">
                 <IoImageOutline className={styles.icon} />
               </label>
-              <input id="attach-file" type="file" accept="image/*" ref={fileInput} onChange={onFileChange}  />
+              <input id="attach-file" type="file" accept="image/*" ref={fileInput} onChange={onFileChange} />
               <VscSmiley className={styles.icon} />
             </div>
           </div>
         </div>
       </div>
-      {/* {isCompressLoading && "이미지 압축 중.."} */}
     </form>
   );
 };

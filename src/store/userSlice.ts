@@ -4,8 +4,8 @@ export interface UserState {
   id: string;
   name: string;
   joinDate: string;
-  profileImg: string;
-  headerImg: string;
+  profileImg: string | null;
+  headerImg: string | null;
   bio: string;
   likes: string[];
   bookmarks: string[];
@@ -17,8 +17,8 @@ const initialState: UserState = {
   id: "",
   name: "",
   joinDate: "",
-  profileImg: "",
-  headerImg: "",
+  profileImg: null,
+  headerImg: null,
   bio: "",
   likes: [],
   bookmarks: [],
@@ -28,8 +28,8 @@ const initialState: UserState = {
 
 export interface ProfileState {
   name: string;
-  profileImg: string;
-  headerImg: string;
+  profileImg: string | null;
+  headerImg: string | null;
   bio: string;
 }
 
@@ -43,12 +43,12 @@ export const userSlice = createSlice({
     initUser(state, action: PayloadAction<UserState>) {
       Object.assign(state, action.payload);
     },
-    setId(state, action: PayloadAction<string>) {
-      state.id = action.payload;
-    },
-    setJoinDate(state, action: PayloadAction<string>) {
-      state.id = action.payload;
-    },
+    // setId(state, action: PayloadAction<string>) {
+    //   state.id = action.payload;
+    // },
+    // setJoinDate(state, action: PayloadAction<string>) {
+    //   state.id = action.payload;
+    // },
     changeProfile(state, action: PayloadAction<ProfileState>) {
       state.name = action.payload.name;
       state.bio = action.payload.bio;
@@ -85,7 +85,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { reset, initUser, setId, setJoinDate, changeProfile, changeProfileImg, addBookmarks, removeBookmarks, addLikes, removeLikes, addFollower, removeFollower, addFollowing, removeFollowing } =
-  userSlice.actions;
+export const { reset, initUser, changeProfile, changeProfileImg, addBookmarks, removeBookmarks, addLikes, removeLikes, addFollower, removeFollower, addFollowing, removeFollowing } = userSlice.actions;
 
 export default userSlice.reducer;

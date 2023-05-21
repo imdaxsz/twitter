@@ -6,6 +6,7 @@ import AuthForm from "components/AuthForm";
 import styles from "styles/auth.module.css";
 import { FaTwitter, FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
+import { UserState } from "store/userSlice";
 
 const Auth = () => {
   const onSocialClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -21,26 +22,23 @@ const Auth = () => {
     provider &&
       (await signInWithPopup(auth, provider).then(async (result) => {
         let id = "";
-        if (typeof result.user.email === "string")
-          id = result.user.email?.split("@")[0];
-        
+        if (typeof result.user.email === "string") id = result.user.email?.split("@")[0];
+
         let name = "";
-        if (typeof result.user.displayName === "string")
-          name = result.user.displayName;
-        
+        if (typeof result.user.displayName === "string") name = result.user.displayName;
+
         let profileImg = "";
-        if (result.user.photoURL)
-          profileImg = result.user.photoURL;
-        
+        if (result.user.photoURL) profileImg = result.user.photoURL;
+
         const dt = new Date();
         const joinDate = dt.getFullYear().toString() + (dt.getMonth() + 1).toString();
 
-        const userData = {
-          id: "@"+id,
+        const userData: UserState = {
+          id: "@" + id,
           name,
           joinDate,
           profileImg,
-          headerImg:"",
+          headerImg: null,
           bio: "",
           likes: [],
           bookmarks: [],
@@ -51,8 +49,8 @@ const Auth = () => {
         };
 
         try {
-          const docRef = await setDoc(doc(dbService, "users", result.user.uid), userData);
-          console.log("Document wirtten with ID: ", docRef);
+          const userRef = await setDoc(doc(dbService, "users", result.user.uid), userData);
+          console.log("Document wirtten with ID: ", userRef);
         } catch (error) {
           console.error("Error adding document:", error);
         }
