@@ -7,19 +7,19 @@ import RightBar from "./RightBar";
 import BookMarks from "routes/Bookmarks";
 import Explore from "routes/Explore";
 import Notifications from "routes/Notifications";
+import ConnectPeople from "routes/ConnectPeople";
 
 interface Router {
   isLoggedIn: boolean;
   uid: string;
-  refreshUser: () => Promise<void>;
   // setMode: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const AppRouter = ({ isLoggedIn, uid, refreshUser }: Router) => {
+const AppRouter = ({ isLoggedIn, uid }: Router) => {
   return (
     <div>
       <div className="app-container">
-        {isLoggedIn && <LeftBar />}
+        {isLoggedIn && <LeftBar uid={uid} />}
         <Routes>
           {isLoggedIn ? (
             <>
@@ -27,7 +27,8 @@ const AppRouter = ({ isLoggedIn, uid, refreshUser }: Router) => {
               <Route path="explore" element={<Explore />} />
               <Route path="notifications" element={<Notifications uid={uid} />} />
               <Route path="bookmarks" element={<BookMarks uid={uid} />} />
-              <Route path="profile" element={<Profile uid={uid} refreshUser={refreshUser} />} />
+              <Route path="profile/:id" element={<Profile uid={uid} />} />
+              <Route path="connect_people" element={<ConnectPeople />} />
             </>
           ) : (
             <Route path="/" element={<Auth />} />
