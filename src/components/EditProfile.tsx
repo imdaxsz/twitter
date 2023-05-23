@@ -36,10 +36,12 @@ function EditProfile({ uid, setModal }: EditProps) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    document.body.style.overflow = "hidden";
     return () => {
       setLoading(false);
-    }
-  }, [])
+      document.body.style.overflow = "auto";
+    };
+  }, []);
 
   const handleCompressImage = async (newFile: string | null, option: string) => {
     let imageFile: File;
@@ -105,10 +107,9 @@ function EditProfile({ uid, setModal }: EditProps) {
     e.preventDefault();
 
     let profileUrl = user.profileImg;
-    let headerUrl: string|null = null;
+    let headerUrl: string | null = null;
 
-    if (newHeader)
-      headerUrl = user.headerImg;
+    if (newHeader) headerUrl = user.headerImg;
 
     if (newProfile && newProfile !== user.profileImg) {
       const attachmentRef = ref(storageService, `${uid}/${uuidv4()}`);
@@ -131,7 +132,6 @@ function EditProfile({ uid, setModal }: EditProps) {
         photoURL: profileUrl,
       });
     }
-
     setModal(false);
   };
 
@@ -139,71 +139,78 @@ function EditProfile({ uid, setModal }: EditProps) {
     setModal(false);
   };
 
+  const onOutsideClick = () => {
+    if (!profileModal && !headerModal)
+      setModal(false);
+  }
+
   return (
     <>
       <Loading loading={loading} />
       {profileModal && <ImageCropper aspectRatio={1 / 1} onCrop={handleUploadImage} modal={profileModal} setModal={setProfileModal}></ImageCropper>}
       {headerModal && <ImageCropper aspectRatio={3 / 1} onCrop={handleUploadImage2} modal={headerModal} setModal={setHeaderModal}></ImageCropper>}
-      <form className="modal-wrapper" onSubmit={onSubmit}>
-        <div className="modal modal-shadow">
-          <div className="modal-top flex">
-            <div className="modal-icon" onClick={onCloseClick}>
-              <VscClose className="modal-svg" />
-            </div>
-            <span>프로필 수정</span>
-            <button className="btn xs black">저장</button>
-          </div>
-          <div className="modal-header">
-            <div className="darken" />
-            <div className="edit-img-box">
-              <div className="edit-img" onClick={onHeaderClick}>
-                <TbCameraPlus className="edit-icon" />
+      <div className="modal-wrapper" onClick={onOutsideClick}>
+        <form onSubmit={onSubmit}>
+          <div className="modal modal-shadow" onClick={(e)=>e.stopPropagation()}>
+            <div className="modal-top flex">
+              <div className="modal-icon" onClick={onCloseClick}>
+                <VscClose className="modal-svg" />
               </div>
-              {newHeader && (
-                <div className="edit-img del">
-                  <VscChromeClose className="edit-icon" onClick={onDeleteHeaderClick} />
-                </div>
-              )}
+              <span>프로필 수정</span>
+              <button className="btn xs black">저장</button>
             </div>
-            {newHeader && <img src={newHeader} alt="headerImg"></img>}
-          </div>
-          <div className="modal-img-box">
-            <div className="modal-profile-img">
-              <div className="darken radius-100"></div>
+            <div className="modal-header">
+              <div className="darken" />
               <div className="edit-img-box">
-                <div className="edit-img" onClick={onProfileClick}>
+                <div className="edit-img" onClick={onHeaderClick}>
                   <TbCameraPlus className="edit-icon" />
                 </div>
+                {newHeader && (
+                  <div className="edit-img del">
+                    <VscChromeClose className="edit-icon" onClick={onDeleteHeaderClick} />
+                  </div>
+                )}
               </div>
-              <img className="profile-img" referrerPolicy="no-referrer" src={newProfile ? newProfile : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userImg"></img>
+              {newHeader && <img src={newHeader} alt="headerImg"></img>}
+            </div>
+            <div className="modal-img-box">
+              <div className="modal-profile-img">
+                <div className="darken radius-100"></div>
+                <div className="edit-img-box">
+                  <div className="edit-img" onClick={onProfileClick}>
+                    <TbCameraPlus className="edit-icon" />
+                  </div>
+                </div>
+                <img className="profile-img" referrerPolicy="no-referrer" src={newProfile ? newProfile : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userImg"></img>
+              </div>
+            </div>
+            <div className="p1 mt-50 modal-input">
+              <label htmlFor="name">
+                <div className="modal-input-box">
+                  <div className={"input-label " + (newName === "" ? "md-label" : "")}>
+                    <span>이름</span>
+                  </div>
+                  <div className="input-container">
+                    <input id="name" type="text" value={newName} onChange={onNameChange}></input>
+                  </div>
+                </div>
+              </label>
+            </div>
+            <div className="p1 modal-textarea">
+              <label htmlFor="introduce">
+                <div className="modal-input-box">
+                  <div className={"input-label " + (newBio === "" ? "md-label" : "")}>
+                    <span>자기소개</span>
+                  </div>
+                  <div className="textarea-container">
+                    <textarea id="introduce" value={newBio} onChange={onBioChange}></textarea>
+                  </div>
+                </div>
+              </label>
             </div>
           </div>
-          <div className="p1 mt-50 modal-input">
-            <label htmlFor="name">
-              <div className="modal-input-box">
-                <div className={"input-label " + (newName === "" ? "md-label" : "")}>
-                  <span>이름</span>
-                </div>
-                <div className="input-container">
-                  <input id="name" type="text" value={newName} onChange={onNameChange}></input>
-                </div>
-              </div>
-            </label>
-          </div>
-          <div className="p1 modal-textarea">
-            <label htmlFor="introduce">
-              <div className="modal-input-box">
-                <div className={"input-label " + (newBio === "" ? "md-label" : "")}>
-                  <span>자기소개</span>
-                </div>
-                <div className="textarea-container">
-                  <textarea id="introduce" value={newBio} onChange={onBioChange}></textarea>
-                </div>
-              </div>
-            </label>
-          </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </>
   );
 }

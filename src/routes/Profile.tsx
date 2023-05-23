@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, Outlet, useLocation, useParams } from "react-router-dom";
 import TopBar from "components/TopBar";
 import { MdCalendarMonth } from "react-icons/md";
 import styles from "styles/profile.module.css";
@@ -38,7 +38,7 @@ const Profile = ({ uid }: ProfileProps) => {
   };
 
   const getUserData = async () => {
-    const q = query(dbCollection(dbService, "users"), where("id", "==", `@${paramId}`));
+    const q = query(dbCollection(dbService, "users"), where("id", "==", paramId));
 
     onSnapshot(q, (snapshot) => {
       const userObj: UserInfo = {
@@ -72,7 +72,7 @@ const Profile = ({ uid }: ProfileProps) => {
               <div className={styles["user-img"]}>
                 <img referrerPolicy="no-referrer" src={userInfo?.profileImg ? userInfo?.profileImg : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userimg"></img>
               </div>
-              {paramId === user.id.slice(1) ? (
+              {paramId === user.id ? (
                 <button className={`small ${styles["edit-btn"]}`} onClick={onEditClick}>
                   프로필 수정
                 </button>
@@ -85,12 +85,12 @@ const Profile = ({ uid }: ProfileProps) => {
                 <h4>{userInfo?.name}</h4>
               </div>
               <div className={`flex ${styles.id}`}>
-                <p>{userInfo?.id}</p>
+                <p>@{userInfo?.id}</p>
               </div>
             </div>
             {userInfo?.bio && (
               <div className={`flex ${styles.bio}`}>
-                <p>{userInfo?.bio}</p>
+                <span>{userInfo?.bio}</span>
               </div>
             )}
             <div className={`flex ${styles.join}`}>
@@ -113,28 +113,28 @@ const Profile = ({ uid }: ProfileProps) => {
           <nav className={styles.nav}>
             <ul>
               <li className={styles["w-1"]}>
-                <Link to="/profile">
+                <Link to={`/profile/${paramId}`}>
                   <div className={`${styles.tab} ${location.pathname === `/profile/${user.id.slice(1)}` ? styles.active : ""}`}>
                     <p>트윗</p>
                   </div>
                 </Link>
               </li>
               <li className={styles["w-1"]}>
-                <Link to="/profile/with_replies">
+                <Link to={`/profile/${paramId}/with_replies`}>
                   <div className={`${styles.tab} ${location.pathname === "/profile/with_replies" ? styles.active : ""}`}>
                     <p>답글</p>
                   </div>
                 </Link>
               </li>
               <li className={styles["w-2"]}>
-                <Link to="/profile/media">
+                <Link to={`/profile/${paramId}/media`}>
                   <div className={`${styles.tab} ${location.pathname === "/profile/media" ? styles.active : ""}`}>
                     <p>미디어</p>
                   </div>
                 </Link>
               </li>
               <li className={styles["w-3"]}>
-                <Link to="/profile/likes">
+                <Link to={`/profile/${paramId}/likes`}>
                   <div className={`${styles.tab} ${location.pathname === "/profile/likes" ? styles.active : ""}`}>
                     <p>마음에 들어요</p>
                   </div>
@@ -142,6 +142,7 @@ const Profile = ({ uid }: ProfileProps) => {
               </li>
             </ul>
           </nav>
+          <Outlet />
         </div>
       </div>
     </>
