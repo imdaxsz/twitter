@@ -7,24 +7,27 @@ import { HiOutlineBookmark } from "react-icons/hi";
 import { BiUser } from "react-icons/bi";
 import { auth } from "fBase";
 import styles from "styles/leftbar.module.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
 import TweetModal from "./TweetModal";
+import { setIsNew, setModal } from "store/EditSlice";
 
 function LeftBar({ uid }: { uid: string }) {
   const location = useLocation();
-  const [modal, setModal] = useState(false);
-  const [tweetModal, setTweetModal] = useState(false);
   const navigate = useNavigate();
 
+  const [profileModal, setProfileModal] = useState(false);
+  const { isNew, editModal:tweetModal } = useSelector((state: RootState) => state.edit);
+
   const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
 
   const onProfileClick = () => {
-    setModal(true);
+    setProfileModal(true);
   };
 
   const onProfileBlur = () => {
-    setTimeout(() => setModal(false), 100);
+    setTimeout(() => setProfileModal(false), 100);
   };
 
   const onLogOutClick = () => {
@@ -36,14 +39,15 @@ function LeftBar({ uid }: { uid: string }) {
   };
 
   const onTweetClick = () => {
-    setTweetModal(true);
+    dispatch(setModal(true));
+    dispatch(setIsNew(true));
   };
 
   return (
     <>
-      {tweetModal && <TweetModal uid={uid} setTweetModal={setTweetModal} />}
+      {tweetModal && isNew && <TweetModal uid={uid} />}
       <div className={styles.container}>
-        {modal && (
+        {profileModal && (
           <div onClick={onLogOutClick} className={`${styles.modal} modal-shadow flex`}>
             <h4>로그아웃</h4>
           </div>
@@ -91,8 +95,8 @@ function LeftBar({ uid }: { uid: string }) {
                 </Link>
               </li>
               <li>
-                <Link to={`/profile/${user.id.slice(1)}`}>
-                  <div className={`${styles["nav-item"]} ${location.pathname === `/profile/${user.id.slice(1)}` ? styles.active : ""}`}>
+                <Link to={`/profile/${user.id}`}>
+                  <div className={`${styles["nav-item"]} ${location.pathname === `/profile/${user.id}` ? styles.active : ""}`}>
                     <BiUser className={styles["nav-icon"]} />
                     <span>프로필</span>
                   </div>
@@ -113,7 +117,7 @@ function LeftBar({ uid }: { uid: string }) {
               <h4>{user.name}</h4>
             </div>
             <div className={`${styles["profile-item"]} flex`}>
-              <p>{user.id}</p>
+              <p>@{user.id}</p>
             </div>
           </div>
           <div className="twticon-box more right">
