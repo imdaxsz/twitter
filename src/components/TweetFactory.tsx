@@ -4,27 +4,31 @@ import React, { useEffect, useRef, useState } from "react";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { IoImageOutline } from "react-icons/io5";
 import { VscSmiley, VscChromeClose } from "react-icons/vsc";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
 import useImageCompress from "hooks/imageCompress";
 import styles from "styles/factory.module.css";
+import { doc, updateDoc } from "firebase/firestore";
+import { resetEdit } from "store/EditSlice";
 
 interface FactoryProps {
   uid: string;
-  setTweetModal?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 /* Create Tweet Component*/
-const TweetFactory = ({ uid, setTweetModal }: FactoryProps) => {
+const TweetFactory = ({ uid }: FactoryProps) => {
   const [tweet, setTweet] = useState("");
 
   const [attachment, setAttachment] = useState("");
   const user = useSelector((state: RootState) => state.user);
-  const compressImage = useImageCompress().compressImage;
+  const edit = useSelector((state: RootState) => state.edit);
+  const dispatch = useDispatch();
 
+  const compressImage = useImageCompress().compressImage;
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
+    // textarea 높이 조정
     if (textareaRef && textareaRef.current) {
       textareaRef.current.style.height = "0px";
       const scrollHeight = textareaRef.current.scrollHeight;
@@ -32,38 +36,51 @@ const TweetFactory = ({ uid, setTweetModal }: FactoryProps) => {
     }
   }, [tweet]);
 
+  useEffect(() => {
+    if (edit.editObj.id !== "") {
+      console.log(edit.editObj);
+      setTweet(edit.editObj.text);
+      setAttachment(edit.editObj.attachmentUrl);
+    } else {
+      setTweet("");
+      setAttachment("");
+    }
+  }, []);
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (setTweetModal)
-      setTweetModal(false);
-
     let attachmentUrl = "";
-
-    if (attachment !== "") {
-      // 파일 경로 참조 만들기
+    if (attachment !== "" && edit.editObj.attachmentUrl === "") {
+      console.log("diff");
       const attachmentRef = ref(storageService, `${uid}/${uuidv4()}`);
       // storage 참조 경로로 파일 업로드 하기
       const response = await uploadString(attachmentRef, attachment, "data_url");
       // storage 참조 경로에 있는 파일의 URL을 다운로드해서 attchmentUrl에 넣어서 업데이트
       attachmentUrl = await getDownloadURL(response.ref);
-    }
+    } 
 
-    const tweetObj = {
-      text: tweet,
-      createdAt: Date.now(),
-      creatorId: user.id,
-      creatorUid: uid,
-      attachmentUrl,
-      likes: 0,
-      retweets: 0,
-      replies: [],
-    };
+    if (edit.editObj.id !== "" && edit.editObj.text !== tweet) {
+      const docRef = doc(dbService, "tweets", edit.editObj.id);
+      await updateDoc(docRef, { text: tweet });
+      dispatch(resetEdit());
+    } else {
+      const tweetObj = {
+        text: tweet,
+        createdAt: Date.now(),
+        creatorId: user.id,
+        creatorUid: uid,
+        attachmentUrl,
+        likes: 0,
+        retweets: 0,
+        replies: [],
+      };
 
-    try {
-      const docRef = await dbAddDoc(dbCollection(dbService, "tweets"), tweetObj);
-      console.log("Document wirtten with ID: ", docRef);
-    } catch (error) {
-      console.error("Error adding document:", error);
+      try {
+        const docRef = await dbAddDoc(dbCollection(dbService, "tweets"), tweetObj);
+        console.log("Document wirtten with ID: ", docRef);
+      } catch (error) {
+        console.error("Error adding document:", error);
+      }
     }
 
     setTweet("");
@@ -71,6 +88,7 @@ const TweetFactory = ({ uid, setTweetModal }: FactoryProps) => {
     if (fileInput.current) {
       fileInput.current.value = "";
     }
+    dispatch(resetEdit());
   };
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -88,6 +106,7 @@ const TweetFactory = ({ uid, setTweetModal }: FactoryProps) => {
     const {
       currentTarget: { files },
     } = e;
+    console.log(files);
     if (files instanceof FileList) {
       const theFile = files[0];
       const compressedImage = await compressImage(theFile);
@@ -97,8 +116,10 @@ const TweetFactory = ({ uid, setTweetModal }: FactoryProps) => {
       reader.onloadend = (finishedEvent) => {
         console.log(finishedEvent);
         if (finishedEvent.target && typeof finishedEvent.target.result == "string") {
+          console.log("이미지 저장됨");
           setAttachment(finishedEvent.target.result);
-        }
+          console.log(attachment);
+        } else console.log("저장X");
       };
     }
   };
@@ -122,25 +143,27 @@ const TweetFactory = ({ uid, setTweetModal }: FactoryProps) => {
           </div>
           {attachment && (
             <div className={styles.attachment}>
-              <img
-                src={attachment}
-                style={{
-                  backgroundImage: attachment,
-                }}
-                alt={attachment}
-              />
-              <div className={styles.clear} onClick={onClearAttachment}>
-                <VscChromeClose className={styles["clear-icon"]} />
-              </div>
+              <img src={attachment} alt={attachment} />
+              {edit.editObj.attachmentUrl === "" && (
+                <div className={styles.clear} onClick={onClearAttachment}>
+                  <VscChromeClose className={styles["clear-icon"]} />
+                </div>
+              )}
             </div>
           )}
           <div className={styles.bottom}>
             <input type="submit" value="트윗하기" disabled={tweet === "" && attachment === ""} className={`btn small ${styles["btn-tweet"]}`} />
+            {edit.editObj.id === "" && (
+              <>
+                <div title="미디어" className={styles["icon-box"]}>
+                  <label htmlFor="attach-file">
+                    <IoImageOutline className={styles.icon} />
+                  </label>
+                </div>
+                <input id="attach-file" type="file" accept="image/*" ref={fileInput} onChange={onFileChange} />
+              </>
+            )}
             <div title="미디어" className={styles["icon-box"]}>
-              <label htmlFor="attach-file">
-                <IoImageOutline className={styles.icon} />
-              </label>
-              <input id="attach-file" type="file" accept="image/*" ref={fileInput} onChange={onFileChange} />
               <VscSmiley className={styles.icon} />
             </div>
           </div>

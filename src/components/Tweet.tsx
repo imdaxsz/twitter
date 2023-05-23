@@ -9,10 +9,9 @@ import { FiBookmark } from "react-icons/fi";
 import { AiOutlineRetweet, AiFillEdit } from "react-icons/ai";
 import { CgTrash } from "react-icons/cg";
 import styles from "styles/tweet.module.css";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "store/store";
-import TweetModal from "./TweetModal";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { setEditObj, setModal } from "store/EditSlice";
 
 export interface TweetType {
   id: string;
@@ -34,11 +33,8 @@ interface TweetProps {
 function Tweet({ tweetObj, uid }: TweetProps) {
   const tweetTextRef = doc(dbService, "tweets", `${tweetObj.id}`);
   const urlRef = ref(storageService, tweetObj.attachmentUrl);
-  const user = useSelector((state: RootState) => state.user);
   const userRef = doc(dbService, "users", uid);
-
-  const [editing, setEditing] = useState(false);
-  // const [newTweet, setNewTweet] = useState(tweetObj.text);
+  const dispatch = useDispatch();
 
   const [more, setMore] = useState(false);
   const [userImg, setUserImg] = useState<string | null>(null);
@@ -57,7 +53,8 @@ function Tweet({ tweetObj, uid }: TweetProps) {
     });
   };
 
-  const onDeleteClick = async () => {
+  const onDeleteClick = async (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
     const ok = window.confirm("트윗을 삭제할까요?");
     if (ok) {
       await deleteDoc(tweetTextRef);
@@ -69,10 +66,6 @@ function Tweet({ tweetObj, uid }: TweetProps) {
 
   const onMoreClick = () => {
     setMore(true);
-  };
-
-  const onMoreBlur = () => {
-    setTimeout(() => setMore(false), 100);
   };
 
   const onBookmarkClick = async () => {
@@ -89,32 +82,30 @@ function Tweet({ tweetObj, uid }: TweetProps) {
     }
   };
 
-  const toggleEditing = () => setEditing(true);
+  const onClickEdit = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    console.log("clicked");
+    dispatch(setEditObj(tweetObj));
+    dispatch(setModal(true));
+    setMore(false);
+  };
 
   const month = new Date(tweetObj.createdAt).getMonth() + 1;
   const date = new Date(tweetObj.createdAt).getDate();
 
-  // const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   await updateDoc(tweetTextRef, { text: newTweet });
-  //   setEditing(false);
-  // };
-
-  // const onChange = (e: React.ChangeEvent<HTMLInputElement>) => setNewTweet(e.target.value);
-
   return (
     <>
-      {editing && <TweetModal uid={uid} setTweetModal={setEditing} />}
+      {more && <div className="more-modal-wrapper" onClick={() => setMore(false)}></div>}
       <div className={styles.tweet}>
         {more && (
           <div className="more-modal modal-shadow">
-            <div className="more-item-box">
-              <div className="more-item" onClick={toggleEditing}>
+            <div className="more-item-box p1" onClick={onClickEdit}>
+              <div className="more-item">
                 <AiFillEdit className="icon" />
                 <h4>수정하기</h4>
               </div>
             </div>
-            <div className="more-item-box" onClick={onDeleteClick}>
+            <div className="more-item-box p1" onClick={onDeleteClick}>
               <div className="more-item red">
                 <CgTrash className="icon red" />
                 <h4>삭제하기</h4>
@@ -137,7 +128,7 @@ function Tweet({ tweetObj, uid }: TweetProps) {
               </Link>
               <Link to={`profile/${tweetObj.creatorId?.slice(1)}`}>
                 <div className={styles["user-id"]}>
-                  <p>{tweetObj.creatorId}</p>
+                  <p>@{tweetObj.creatorId}</p>
                 </div>
               </Link>
               <div className="p-4">
@@ -150,7 +141,7 @@ function Tweet({ tweetObj, uid }: TweetProps) {
               </div>
             </div>
             {tweetObj.creatorUid === uid && (
-              <button title="더 보기" className="twticon-box more blue" onFocus={onMoreClick} onBlur={onMoreBlur}>
+              <button title="더 보기" className="twticon-box more blue" onFocus={onMoreClick}>
                 <RiMoreFill className="icon" />
               </button>
             )}
@@ -180,17 +171,6 @@ function Tweet({ tweetObj, uid }: TweetProps) {
             </div>
           </div>
         </div>
-        {/* {editing ? (
-        <>
-          <form onSubmit={onSubmit} className="container tweetEdit">
-            <input type="text" placeholder="Edit your tweet" value={newTweet} required autoFocus onChange={onChange} className="formInput" />
-            <input type="submit" value="Update Tweet" className="formBtn" />
-          </form>
-          <span onClick={toggleEditing} className="formBtn cancelBtn">
-            Cancel
-          </span>
-        </>
-      ) : ( */}
       </div>
     </>
   );
