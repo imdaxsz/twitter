@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { PeopleType } from "components/People";
 import { TweetType } from "components/Tweet";
 
 export interface UserState {
@@ -10,8 +11,8 @@ export interface UserState {
   bio: string;
   likes: string[];
   bookmarks: TweetType[];
-  following: string[];
-  follower: string[];
+  following: PeopleType[];
+  follower: PeopleType[];
 }
 
 const initialState: UserState = {
@@ -44,12 +45,6 @@ export const userSlice = createSlice({
     initUser(state, action: PayloadAction<UserState>) {
       Object.assign(state, action.payload);
     },
-    // setId(state, action: PayloadAction<string>) {
-    //   state.id = action.payload;
-    // },
-    // setJoinDate(state, action: PayloadAction<string>) {
-    //   state.id = action.payload;
-    // },
     changeProfile(state, action: PayloadAction<ProfileState>) {
       state.name = action.payload.name;
       state.bio = action.payload.bio;
@@ -71,17 +66,17 @@ export const userSlice = createSlice({
     removeLikes(state, action: PayloadAction<string>) {
       state.likes = state.likes.filter((id) => id !== action.payload);
     },
-    addFollower(state, action: PayloadAction<string>) {
+    addFollower(state, action: PayloadAction<PeopleType>) {
       state.follower.push(action.payload);
     },
     removeFollower(state, action: PayloadAction<string>) {
-      state.follower = state.follower.filter((id) => id !== action.payload);
+      state.follower = state.follower.filter((follow) => follow.id !== action.payload);
     },
-    addFollowing(state, action: PayloadAction<string>) {
+    addFollowing(state, action: PayloadAction<PeopleType>) {
       state.following.push(action.payload);
     },
     removeFollowing(state, action: PayloadAction<string>) {
-      state.following = state.following.filter((id) => id !== action.payload);
+      state.following = state.following.filter((follow) => follow.id !== action.payload);
     },
   },
 });
