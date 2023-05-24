@@ -28,6 +28,7 @@ function FollowRecommend({ user, uid, followingList }: PersonProps) {
 
   useEffect(() => {
     if (followingList.findIndex((following) => following.id === user.id) >= 0) setFollowing(true);
+    else setFollowing(false);
   }, [followingList]);
 
   return (
