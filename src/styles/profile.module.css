@@ -127,11 +127,16 @@
   float: left;
 }
 
+.follow li {
+  width: 50%;
+}
+
 .tab {
   height: 53px;
   padding: 0 16px;
   display: flex;
   justify-content: center;
+  position: relative;
   align-items: center;
   cursor: pointer;
   transition: all 0.2s;
@@ -143,11 +148,15 @@
 
 .tab p {
   font-size: 15px;
-  margin: 16px 0px;
+
 }
 
-.active {
-  font-weight: bold;
+.box {
+  position: relative;
+  height: 100%;
+  padding: 16px 0px;
+  display: flex;
+  align-items: center;
 }
 
 .w-1 {
@@ -166,3 +175,6 @@
   margin-right: 4px;
 }
 
+.w-0 {
+  width: 50%;
+}
