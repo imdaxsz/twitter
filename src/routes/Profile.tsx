@@ -26,7 +26,7 @@ interface UserInfo {
 
 const Profile = ({ uid }: ProfileProps) => {
   const location = useLocation();
-  
+
   const { id: paramId } = useParams();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
@@ -66,82 +66,86 @@ const Profile = ({ uid }: ProfileProps) => {
       <div className="wrapper">
         <TopBar title={userInfo?.name ? userInfo.name : ""} uid={uid} />
         <div className="container">
-          <div className={styles.header}>{userInfo?.headerImg ? <img src={userInfo.headerImg} alt="header"></img> : <div className={styles["default-header"]}></div>}</div>
-          <div className={styles.profile}>
-            <div className={styles.top}>
-              <div className={styles["user-img"]}>
-                <img referrerPolicy="no-referrer" src={userInfo?.profileImg ? userInfo?.profileImg : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userimg"></img>
+          { location.pathname.split("/").slice(-1)[0] === paramId &&
+          <>
+            <div className={styles.header}>{userInfo?.headerImg ? <img src={userInfo.headerImg} alt="header"></img> : <div className={styles["default-header"]}></div>}</div>
+            <div className={styles.profile}>
+              <div className={styles.top}>
+                <div className={styles["user-img"]}>
+                  <img referrerPolicy="no-referrer" src={userInfo?.profileImg ? userInfo?.profileImg : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userimg"></img>
+                </div>
+                {paramId === user.id ? (
+                  <button className={`small ${styles["edit-btn"]}`} onClick={onEditClick}>
+                    프로필 수정
+                  </button>
+                ) : (
+                  <button className={`small btn black`}>팔로우</button>
+                )}
               </div>
-              {paramId === user.id ? (
-                <button className={`small ${styles["edit-btn"]}`} onClick={onEditClick}>
-                  프로필 수정
-                </button>
-              ) : (
-                <button className={`small btn black`}>팔로우</button>
+              <div className={`${styles.info} flex-row`}>
+                <div className={`flex ${styles.name}`}>
+                  <h4>{userInfo?.name}</h4>
+                </div>
+                <div className={`flex ${styles.id}`}>
+                  <p>@{userInfo?.id}</p>
+                </div>
+              </div>
+              {userInfo?.bio && (
+                <div className={`flex ${styles.bio}`}>
+                  <span>{userInfo?.bio}</span>
+                </div>
               )}
-            </div>
-            <div className={`${styles.info} flex-row`}>
-              <div className={`flex ${styles.name}`}>
-                <h4>{userInfo?.name}</h4>
+              <div className={`flex ${styles.join}`}>
+                <MdCalendarMonth className={`icon ${styles["mr-4"]}`} />
+                {userInfo && (
+                  <p>
+                    가입일: {userInfo.joinDate.slice(0, 4)}년 {userInfo.joinDate[4]}월
+                  </p>
+                )}
               </div>
-              <div className={`flex ${styles.id}`}>
-                <p>@{userInfo?.id}</p>
+              <div className={`flex ${styles.follow}`}>
+                <div className={`flex ${styles.following}`}>
+                  <span>{userInfo?.following}</span>
+                  <p>&nbsp;팔로우 중</p>
+                </div>
+                <span>{userInfo?.follower}</span>
+                <p>&nbsp;팔로워</p>
               </div>
             </div>
-            {userInfo?.bio && (
-              <div className={`flex ${styles.bio}`}>
-                <span>{userInfo?.bio}</span>
-              </div>
-            )}
-            <div className={`flex ${styles.join}`}>
-              <MdCalendarMonth className={`icon ${styles["mr-4"]}`} />
-              {userInfo && (
-                <p>
-                  가입일: {userInfo.joinDate.slice(0, 4)}년 {userInfo.joinDate[4]}월
-                </p>
-              )}
-            </div>
-            <div className={`flex ${styles.follow}`}>
-              <div className={`flex ${styles.following}`}>
-                <span>{userInfo?.following}</span>
-                <p>&nbsp;팔로우 중</p>
-              </div>
-              <span>{userInfo?.follower}</span>
-              <p>&nbsp;팔로워</p>
-            </div>
-          </div>
-          <nav className={styles.nav}>
-            <ul>
-              <li className={styles["w-1"]}>
-                <Link to={`/profile/${paramId}`}>
-                  <div className={`${styles.tab} ${location.pathname === `/profile/${user.id.slice(1)}` ? styles.active : ""}`}>
-                    <p>트윗</p>
-                  </div>
-                </Link>
-              </li>
-              <li className={styles["w-1"]}>
-                <Link to={`/profile/${paramId}/with_replies`}>
-                  <div className={`${styles.tab} ${location.pathname === "/profile/with_replies" ? styles.active : ""}`}>
-                    <p>답글</p>
-                  </div>
-                </Link>
-              </li>
-              <li className={styles["w-2"]}>
-                <Link to={`/profile/${paramId}/media`}>
-                  <div className={`${styles.tab} ${location.pathname === "/profile/media" ? styles.active : ""}`}>
-                    <p>미디어</p>
-                  </div>
-                </Link>
-              </li>
-              <li className={styles["w-3"]}>
-                <Link to={`/profile/${paramId}/likes`}>
-                  <div className={`${styles.tab} ${location.pathname === "/profile/likes" ? styles.active : ""}`}>
-                    <p>마음에 들어요</p>
-                  </div>
-                </Link>
-              </li>
-            </ul>
-          </nav>
+            <nav className={styles.nav}>
+              <ul>
+                <li className={styles["w-1"]}>
+                  <Link to={`/profile/${paramId}`}>
+                    <div className={`${styles.tab} ${location.pathname.split("/").slice(-1)[0] === paramId && "active"}`}>
+                      <p>트윗</p>
+                    </div>
+                  </Link>
+                </li>
+                <li className={styles["w-1"]}>
+                  <Link to={`/profile/${paramId}/with_replies`}>
+                    <div className={`${styles.tab} ${location.pathname.split("/").slice(-1)[0] === "with_replies" && "active"}`}>
+                      <p>답글</p>
+                    </div>
+                  </Link>
+                </li>
+                <li className={styles["w-2"]}>
+                  <Link to={`/profile/${paramId}/media`}>
+                    <div className={`${styles.tab} ${location.pathname.split("/").slice(-1)[0] === "media" && "active"}`}>
+                      <p>미디어</p>
+                    </div>
+                  </Link>
+                </li>
+                <li className={styles["w-3"]}>
+                  <Link to={`/profile/${paramId}/likes`}>
+                    <div className={`${styles.tab} ${location.pathname.split("/").slice(-1)[0] === "likes" && "active"}`}>
+                      <p>마음에 들어요</p>
+                    </div>
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          </>
+          }
           <Outlet />
         </div>
       </div>
