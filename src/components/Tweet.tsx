@@ -1,4 +1,4 @@
-import { deleteDoc, doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { dbService, storageService } from "fBase";
 import { deleteObject, ref } from "firebase/storage";
 import React, { useState, useEffect } from "react";
@@ -49,6 +49,10 @@ function Tweet({ tweetObj, uid }: TweetProps) {
     getuserImg(tweetObj.creatorUid);
   }, []);
 
+  useEffect(() => {
+    if (user.bookmarks.findIndex((tweet) => tweet.id === tweetObj.id) >= 0) setBookmark(true);
+  }, [user.bookmarks]);
+
   const getuserImg = (uid: string) => {
     onSnapshot(doc(dbService, "users", uid), (doc) => {
       if (doc.exists()) {
@@ -61,7 +65,7 @@ function Tweet({ tweetObj, uid }: TweetProps) {
   const onImgClick = () => {
     window.open(tweetObj.attachmentUrl);
   };
-  
+
   const onMoreClick = () => {
     setMore(true);
   };
@@ -86,23 +90,20 @@ function Tweet({ tweetObj, uid }: TweetProps) {
   };
 
   const onBookmarkClick = async () => {
-    const docSnap = await getDoc(doc(dbService, "users", uid));
-    if (docSnap.exists()) {
-      const bookmarks: TweetType[] = docSnap.data().bookmarks;
-      if (user.bookmarks.findIndex((tweet) => tweet.id === tweetObj.id)<0) {
-        // 북마크에 없는 경우 새로 추가
-        await updateDoc(userRef, { bookmarks: [tweetObj, ...bookmarks] });
-        setBookmark(true);
-      } else {
-        // 북마크에 있는 경우 삭제
-        const result = bookmarks.filter((tweet) => tweet.id !== tweetObj.id);
+    if (user.bookmarks.findIndex((tweet) => tweet.id === tweetObj.id) < 0) {
+      // 북마크에 없는 경우 새로 추가
+      await updateDoc(userRef, { bookmarks: [tweetObj, ...user.bookmarks] });
+      setBookmark(true);
+    } else {
+      // 북마크에 있는 경우 삭제
+      const ok = window.confirm("트윗을 북마크에서 삭제할까요?");
+      if (ok) {
+        const result = user.bookmarks.filter((tweet) => tweet.id !== tweetObj.id);
         await updateDoc(userRef, { bookmarks: [...result] });
         setBookmark(false);
       }
-      console.log(user.bookmarks);
     }
   };
-
 
   const month = new Date(tweetObj.createdAt).getMonth() + 1;
   const date = new Date(tweetObj.createdAt).getDate();

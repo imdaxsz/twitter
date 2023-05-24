@@ -2,7 +2,7 @@ import TopBar from "components/TopBar";
 import Tweet from "components/Tweet";
 import { useSelector } from "react-redux";
 import { RootState } from "store/store";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Loading from "components/Loading";
 
 function BookMarks({ uid }: { uid: string }) {
