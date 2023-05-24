@@ -2,20 +2,20 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { follow, unFollow } from "hooks/follow";
 
-export interface PeopleType {
+export interface PersonType {
   id: string;
   name: string;
   profileImg: string | null;
   bio?: string;
 }
 
-interface PeopleProps {
-  user: PeopleType;
+export interface PersonProps {
+  user: PersonType;
   uid: string;
-  FollowingList: PeopleType[];
+  followingList: PersonType[];
 }
 
-const People = ({ user, uid, FollowingList }: PeopleProps) => {
+const Person = ({ user, uid, followingList }: PersonProps) => {
   const navigate = useNavigate();
 
   const [following, setFollowing] = useState(false);
@@ -27,19 +27,19 @@ const People = ({ user, uid, FollowingList }: PeopleProps) => {
 
   const onFollowClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    follow(uid, user, FollowingList);
+    follow(uid, user, followingList);
     setFollowing(true);
   };
-  
+
   const onUnfollowClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    unFollow(uid, user.id, FollowingList);
+    unFollow(uid, user.id, followingList);
     setFollowing(false);
   };
 
   useEffect(() => {
-    if (FollowingList.findIndex((following) => following.id === user.id) >= 0) setFollowing(true);
-  }, [FollowingList]);
+    if (followingList.findIndex((following) => following.id === user.id) >= 0) setFollowing(true);
+  }, [followingList]);
 
   return (
     <div className="flex w1 p1 people-container" onClick={onClick}>
@@ -76,4 +76,4 @@ const People = ({ user, uid, FollowingList }: PeopleProps) => {
   );
 };
 
-export default People;
+export default Person;

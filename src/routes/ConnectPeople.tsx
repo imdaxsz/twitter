@@ -3,11 +3,11 @@ import { useState, useEffect } from "react";
 import { getUsers } from "hooks/getUsers";
 import { useSelector } from "react-redux";
 import { RootState } from "store/store";
-import People, { PeopleType } from "components/People";
+import Person, { PersonType } from "components/Person";
 
-const ConnectPeople = () => {
+const ConnectPeople = ({ uid }: { uid: string }) => {
   const user = useSelector((state: RootState) => state.user);
-  const [users, setUsers] = useState<PeopleType[]>([]);
+  const [users, setUsers] = useState<PersonType[]>([]);
 
   useEffect(() => {
     getUsers(setUsers, user.id, 20);
@@ -19,8 +19,8 @@ const ConnectPeople = () => {
       <div className="container">
         <h3 className="title p1 flex">나를 위한 추천</h3>
 
-        {users.map((user) => {
-          return <People key={user.id} id={user.id} name={user.name} profileImg={user.profileImg} bio={user.bio} />;
+        {users.map((u) => {
+          return <Person key={u.id} user={u} uid={uid} followingList={user.following} />;
         })}
       </div>
     </div>

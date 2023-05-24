@@ -6,12 +6,12 @@ import { useSelector } from "react-redux";
 import { RootState } from "store/store";
 import { useEffect, useState } from "react";
 import { getUsers } from "hooks/getUsers";
-import { PeopleType } from "./People";
+import { PersonType } from "./Person";
 
-function RightBar() {
+function RightBar({ uid }: { uid: string }) {
   const location = useLocation();
   const user = useSelector((state: RootState) => state.user);
-  const [users, setUsers] = useState<PeopleType[]>([]);
+  const [users, setUsers] = useState<PersonType[]>([]);
 
   useEffect(() => {
     getUsers(setUsers, user.id, 3);
@@ -24,10 +24,10 @@ function RightBar() {
         <div className={styles.title}>
           <h3>팔로우 추천</h3>
         </div>
-        {users.map((user) => {
-          return <FollowRecommend key={user.id} id={user.id} name={user.name} profileImg={user.profileImg} />;
+        {users.map((u) => {
+          return <FollowRecommend key={u.id} user={u} uid={uid} followingList={user.following} />;
         })}
-        {users.length === 1 && (
+        {users.length > 0 && (
           <Link to="connect_people">
             <div className={styles.more}>
               <p>더보기</p>
