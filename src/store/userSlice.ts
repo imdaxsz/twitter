@@ -9,7 +9,7 @@ export interface UserState {
   profileImg: string | null;
   headerImg: string | null;
   bio: string;
-  likes: string[];
+  likes: TweetType[];
   bookmarks: TweetType[];
   following: PersonType[];
   follower: PersonType[];
@@ -60,11 +60,11 @@ export const userSlice = createSlice({
     removeBookmarks(state, action: PayloadAction<string>) {
       state.bookmarks = state.bookmarks.filter((tweet) => tweet.id !== action.payload);
     },
-    addLikes(state, action: PayloadAction<string>) {
+    addLikes(state, action: PayloadAction<TweetType>) {
       state.likes.push(action.payload);
     },
     removeLikes(state, action: PayloadAction<string>) {
-      state.likes = state.likes.filter((id) => id !== action.payload);
+      state.likes = state.likes.filter((tweet) => tweet.id !== action.payload);
     },
     addFollower(state, action: PayloadAction<PersonType>) {
       state.follower.push(action.payload);

@@ -42,6 +42,7 @@ function Tweet({ tweetObj, uid }: TweetProps) {
   const [userImg, setUserImg] = useState<string | null>(null);
   const [name, setName] = useState("");
 
+  const [retweet, setRetweet] = useState(false);
   const [like, setLike] = useState(false);
   const [bookmark, setBookmark] = useState(false);
 
@@ -52,6 +53,10 @@ function Tweet({ tweetObj, uid }: TweetProps) {
   useEffect(() => {
     if (user.bookmarks.findIndex((tweet) => tweet.id === tweetObj.id) >= 0) setBookmark(true);
   }, [user.bookmarks]);
+
+    useEffect(() => {
+      if (user.likes.findIndex((tweet) => tweet.id === tweetObj.id) >= 0) setLike(true);
+    }, [user.likes]);
 
   const getuserImg = (uid: string) => {
     onSnapshot(doc(dbService, "users", uid), (doc) => {
@@ -105,6 +110,19 @@ function Tweet({ tweetObj, uid }: TweetProps) {
     }
   };
 
+  const onLikeClick = async () => {
+    if (user.likes.findIndex((tweet) => tweet.id === tweetObj.id) < 0) {
+      // 마음에 들어요
+      await updateDoc(userRef, { likes: [tweetObj, ...user.likes] });
+      setLike(true);
+    } else {
+      // 마음에 들어요 취소
+      const result = user.likes.filter((tweet) => tweet.id !== tweetObj.id);
+      await updateDoc(userRef, { likes: [...result] });
+      setLike(false);
+    }
+  };
+
   const month = new Date(tweetObj.createdAt).getMonth() + 1;
   const date = new Date(tweetObj.createdAt).getDate();
 
@@ -136,12 +154,12 @@ function Tweet({ tweetObj, uid }: TweetProps) {
         <div className={styles.content}>
           <div className="flex mb-2">
             <div className={`${styles.info} flex`}>
-              <Link to={`profile/${tweetObj.creatorId?.slice(1)}`}>
-                <div className={`line ${styles["user-name"]}`}>
+              <Link to={`profile/${tweetObj.creatorId}`}>
+                <div className={`underline ${styles["user-name"]}`}>
                   <h4>{name}</h4>
                 </div>
               </Link>
-              <Link to={`profile/${tweetObj.creatorId?.slice(1)}`}>
+              <Link to={`profile/${tweetObj.creatorId}`}>
                 <div className={styles["user-id"]}>
                   <p>@{tweetObj.creatorId}</p>
                 </div>
@@ -176,9 +194,9 @@ function Tweet({ tweetObj, uid }: TweetProps) {
               <TbMessageCircle2 className="icon" />
             </div>
             <div title="리트윗" className={`twticon-box green ${styles.twt} ${styles["l-2"]}`}>
-              <AiOutlineRetweet className={`icon ${like && "fill"}`} />
+              <AiOutlineRetweet className={`icon ${retweet && "fill"}`} />
             </div>
-            <div title="마음에 들어요" className={`twticon-box pink ${styles.twt} ${styles["l-3"]}`}>
+            <div title="마음에 들어요" className={`twticon-box pink ${styles.twt} ${styles["l-3"]}`} onClick={onLikeClick}>
               {like ? <RiHeart3Fill className="icon fill" /> : <RiHeart3Line className="icon" />}
             </div>
             <div title="북마크" className={`twticon-box blue ${styles.twt} ${styles["l-4"]}`} onClick={onBookmarkClick}>
