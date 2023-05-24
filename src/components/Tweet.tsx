@@ -2,16 +2,17 @@ import { deleteDoc, doc, getDoc, onSnapshot, updateDoc } from "firebase/firestor
 import { dbService, storageService } from "fBase";
 import { deleteObject, ref } from "firebase/storage";
 import React, { useState, useEffect } from "react";
-import { RiMoreFill } from "react-icons/ri";
+import { useDispatch, useSelector } from "react-redux";
+import { setEditObj, setModal } from "store/EditSlice";
+import { RootState } from "store/store";
+import { Link } from "react-router-dom";
+import { RiHeart3Fill, RiHeart3Line, RiMoreFill } from "react-icons/ri";
 import { TbMessageCircle2 } from "react-icons/tb";
-import { RiHeart3Line } from "react-icons/ri";
 import { FiBookmark } from "react-icons/fi";
 import { AiOutlineRetweet, AiFillEdit } from "react-icons/ai";
+import { FaBookmark } from "react-icons/fa";
 import { CgTrash } from "react-icons/cg";
 import styles from "styles/tweet.module.css";
-import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
-import { setEditObj, setModal } from "store/EditSlice";
 
 export interface TweetType {
   id: string;
@@ -34,11 +35,15 @@ function Tweet({ tweetObj, uid }: TweetProps) {
   const tweetTextRef = doc(dbService, "tweets", `${tweetObj.id}`);
   const urlRef = ref(storageService, tweetObj.attachmentUrl);
   const userRef = doc(dbService, "users", uid);
+  const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
 
   const [more, setMore] = useState(false);
   const [userImg, setUserImg] = useState<string | null>(null);
   const [name, setName] = useState("");
+
+  const [like, setLike] = useState(false);
+  const [bookmark, setBookmark] = useState(false);
 
   useEffect(() => {
     getuserImg(tweetObj.creatorUid);
@@ -53,6 +58,14 @@ function Tweet({ tweetObj, uid }: TweetProps) {
     });
   };
 
+  const onImgClick = () => {
+    window.open(tweetObj.attachmentUrl);
+  };
+  
+  const onMoreClick = () => {
+    setMore(true);
+  };
+
   const onDeleteClick = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     const ok = window.confirm("트윗을 삭제할까요?");
@@ -64,31 +77,32 @@ function Tweet({ tweetObj, uid }: TweetProps) {
     }
   };
 
-  const onMoreClick = () => {
-    setMore(true);
-  };
-
-  const onBookmarkClick = async () => {
-    const docSnap = await getDoc(doc(dbService, "users", uid));
-    if (docSnap.exists()) {
-      let bookmarks: string[] = docSnap.data().bookmarks;
-      const tweet = bookmarks.find((a) => a === tweetObj.id);
-      if (!tweet) {
-        await updateDoc(userRef, { bookmarks: [tweetObj.id, ...bookmarks] });
-      } else {
-        bookmarks = bookmarks.filter((id) => id !== tweet);
-        await updateDoc(userRef, { bookmarks: [...bookmarks] });
-      }
-    }
-  };
-
-  const onClickEdit = (e: React.MouseEvent<HTMLDivElement>) => {
+  const onEditClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     console.log("clicked");
     dispatch(setEditObj(tweetObj));
     dispatch(setModal(true));
     setMore(false);
   };
+
+  const onBookmarkClick = async () => {
+    const docSnap = await getDoc(doc(dbService, "users", uid));
+    if (docSnap.exists()) {
+      const bookmarks: TweetType[] = docSnap.data().bookmarks;
+      if (user.bookmarks.findIndex((tweet) => tweet.id === tweetObj.id)<0) {
+        // 북마크에 없는 경우 새로 추가
+        await updateDoc(userRef, { bookmarks: [tweetObj, ...bookmarks] });
+        setBookmark(true);
+      } else {
+        // 북마크에 있는 경우 삭제
+        const result = bookmarks.filter((tweet) => tweet.id !== tweetObj.id);
+        await updateDoc(userRef, { bookmarks: [...result] });
+        setBookmark(false);
+      }
+      console.log(user.bookmarks);
+    }
+  };
+
 
   const month = new Date(tweetObj.createdAt).getMonth() + 1;
   const date = new Date(tweetObj.createdAt).getDate();
@@ -99,7 +113,7 @@ function Tweet({ tweetObj, uid }: TweetProps) {
       <div className={styles.tweet}>
         {more && (
           <div className="more-modal modal-shadow">
-            <div className="more-item-box p1" onClick={onClickEdit}>
+            <div className="more-item-box p1" onClick={onEditClick}>
               <div className="more-item">
                 <AiFillEdit className="icon" />
                 <h4>수정하기</h4>
@@ -152,7 +166,7 @@ function Tweet({ tweetObj, uid }: TweetProps) {
             </div>
           )}
           {tweetObj.attachmentUrl !== "" && (
-            <div className={styles.twtimg}>
+            <div className={styles.twtimg} onClick={onImgClick}>
               <img src={tweetObj.attachmentUrl} alt={tweetObj.attachmentUrl} />
             </div>
           )}
@@ -161,13 +175,13 @@ function Tweet({ tweetObj, uid }: TweetProps) {
               <TbMessageCircle2 className="icon" />
             </div>
             <div title="리트윗" className={`twticon-box green ${styles.twt} ${styles["l-2"]}`}>
-              <AiOutlineRetweet className="icon" />
+              <AiOutlineRetweet className={`icon ${like && "fill"}`} />
             </div>
             <div title="마음에 들어요" className={`twticon-box pink ${styles.twt} ${styles["l-3"]}`}>
-              <RiHeart3Line className="icon" />
+              {like ? <RiHeart3Fill className="icon fill" /> : <RiHeart3Line className="icon" />}
             </div>
-            <div title="북마크" onClick={onBookmarkClick} className={`twticon-box blue ${styles.twt} ${styles["l-4"]}`}>
-              <FiBookmark className="icon" />
+            <div title="북마크" className={`twticon-box blue ${styles.twt} ${styles["l-4"]}`} onClick={onBookmarkClick}>
+              {bookmark ? <FaBookmark className="icon bm fill" /> : <FiBookmark className="icon" />}
             </div>
           </div>
         </div>

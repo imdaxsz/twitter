@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { TweetType } from "components/Tweet";
 
 export interface UserState {
   id: string;
@@ -8,7 +9,7 @@ export interface UserState {
   headerImg: string | null;
   bio: string;
   likes: string[];
-  bookmarks: string[];
+  bookmarks: TweetType[];
   following: string[];
   follower: string[];
 }
@@ -58,11 +59,11 @@ export const userSlice = createSlice({
     changeProfileImg(state, action: PayloadAction<string>) {
       state.profileImg = action.payload;
     },
-    addBookmarks(state, action: PayloadAction<string>) {
+    addBookmarks(state, action: PayloadAction<TweetType>) {
       state.bookmarks.push(action.payload);
     },
     removeBookmarks(state, action: PayloadAction<string>) {
-      state.bookmarks = state.bookmarks.filter((id) => id !== action.payload);
+      state.bookmarks = state.bookmarks.filter((tweet) => tweet.id !== action.payload);
     },
     addLikes(state, action: PayloadAction<string>) {
       state.likes.push(action.payload);
