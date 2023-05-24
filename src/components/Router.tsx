@@ -14,7 +14,6 @@ import DefaultTweets from "routes/DefaultTweet";
 interface Router {
   isLoggedIn: boolean;
   uid: string;
-  // setMode: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const AppRouter = ({ isLoggedIn, uid }: Router) => {
@@ -34,8 +33,8 @@ const AppRouter = ({ isLoggedIn, uid }: Router) => {
                 <Route path="with_replies" element={<div>답글</div>} />
                 <Route path="media" element={<Media uid={uid} />} />
                 <Route path="likes" element={<div>마음에 들어요</div>} />
-                <Route path="follower" element={<div>팔로워</div>}/>
-                <Route path="following" element={<div>팔로잉</div>}/>
+                <Route path="follower" element={<div>팔로워</div>} />
+                <Route path="following" element={<div>팔로잉</div>} />
               </Route>
               <Route path="connect_people" element={<ConnectPeople uid={uid} />} />
             </>
@@ -44,7 +43,7 @@ const AppRouter = ({ isLoggedIn, uid }: Router) => {
           )}
           <Route path="*" element={<Auth />} />
         </Routes>
-        {isLoggedIn && <RightBar />}
+        {isLoggedIn && <RightBar uid={uid} />}
       </div>
     </div>
   );

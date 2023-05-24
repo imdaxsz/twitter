@@ -128,7 +128,7 @@ function Tweet({ tweetObj, uid }: TweetProps) {
             </div>
           </div>
         )}
-        <Link to={`profile/${tweetObj.creatorId?.slice(1)}`}>
+        <Link to={`profile/${tweetObj.creatorId}`}>
           <div className={styles["user-img"]}>
             <img referrerPolicy="no-referrer" src={userImg ? userImg : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userImg"></img>
           </div>

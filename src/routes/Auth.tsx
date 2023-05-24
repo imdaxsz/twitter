@@ -34,7 +34,7 @@ const Auth = () => {
         const joinDate = dt.getFullYear().toString() + (dt.getMonth() + 1).toString();
 
         const userData: UserState = {
-          id: "@" + id,
+          id,
           name,
           joinDate,
           profileImg,

@@ -62,7 +62,7 @@ function LeftBar({ uid }: { uid: string }) {
             <ul>
               <li>
                 <Link to="/">
-                  <div className={`${styles["nav-item"]} ${location.pathname === "/" ? styles.active : ""}`}>
+                  <div className={`${styles["nav-item"]} ${location.pathname === "/" && styles.active}`}>
                     <AiFillHome className={styles["nav-icon"]} />
                     <span>홈</span>
                   </div>
@@ -70,7 +70,7 @@ function LeftBar({ uid }: { uid: string }) {
               </li>
               <li>
                 <Link to="/explore">
-                  <div className={`${styles["nav-item"]} ${location.pathname === "/explore" ? styles.active : ""}`}>
+                  <div className={`${styles["nav-item"]} ${location.pathname === "/explore" && styles.active}`}>
                     <FaHashtag className={styles["nav-icon"]} />
                     <span>
                       <b>탐색하기</b>
@@ -80,7 +80,7 @@ function LeftBar({ uid }: { uid: string }) {
               </li>
               <li>
                 <Link to="/notifications">
-                  <div className={`${styles["nav-item"]} ${location.pathname === "/notifications" ? styles.active : ""}`}>
+                  <div className={`${styles["nav-item"]} ${location.pathname === "/notifications" && styles.active}`}>
                     <RiNotification2Line className={styles["nav-icon"]} />
                     <span>알림</span>
                   </div>
@@ -88,7 +88,7 @@ function LeftBar({ uid }: { uid: string }) {
               </li>
               <li>
                 <Link to="/bookmarks">
-                  <div className={`${styles["nav-item"]} ${location.pathname === "/bookmarks" ? styles.active : ""}`}>
+                  <div className={`${styles["nav-item"]} ${location.pathname === "/bookmarks" && styles.active}`}>
                     <HiOutlineBookmark className={styles["nav-icon"]} />
                     <span>북마크</span>
                   </div>
@@ -96,7 +96,7 @@ function LeftBar({ uid }: { uid: string }) {
               </li>
               <li>
                 <Link to={`/profile/${user.id}`}>
-                  <div className={`${styles["nav-item"]} ${location.pathname === `/profile/${user.id}` ? styles.active : ""}`}>
+                  <div className={`${styles["nav-item"]} ${location.pathname.split("/")[1] === `profile` && styles.active}`}>
                     <BiUser className={styles["nav-icon"]} />
                     <span>프로필</span>
                   </div>

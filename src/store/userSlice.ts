@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { PeopleType } from "components/People";
+import { PersonType } from "components/Person";
 import { TweetType } from "components/Tweet";
 
 export interface UserState {
@@ -11,8 +11,8 @@ export interface UserState {
   bio: string;
   likes: string[];
   bookmarks: TweetType[];
-  following: PeopleType[];
-  follower: PeopleType[];
+  following: PersonType[];
+  follower: PersonType[];
 }
 
 const initialState: UserState = {
@@ -66,13 +66,13 @@ export const userSlice = createSlice({
     removeLikes(state, action: PayloadAction<string>) {
       state.likes = state.likes.filter((id) => id !== action.payload);
     },
-    addFollower(state, action: PayloadAction<PeopleType>) {
+    addFollower(state, action: PayloadAction<PersonType>) {
       state.follower.push(action.payload);
     },
     removeFollower(state, action: PayloadAction<string>) {
       state.follower = state.follower.filter((follow) => follow.id !== action.payload);
     },
-    addFollowing(state, action: PayloadAction<PeopleType>) {
+    addFollowing(state, action: PayloadAction<PersonType>) {
       state.following.push(action.payload);
     },
     removeFollowing(state, action: PayloadAction<string>) {
