@@ -3,11 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { PersonProps } from "./Person";
 import { useState, useEffect } from "react";
 import { follow, unFollow } from "hooks/follow";
+import { useSelector } from "react-redux";
+import { RootState } from "store/store";
 
-function FollowRecommend({ user, uid, followingList }: PersonProps) {
+function FollowRecommend({ user, uid, followList }: PersonProps) {
   const navigate = useNavigate();
+  const currentUser = useSelector((state: RootState) => state.user);
 
-  const [following, setFollowing] = useState(false);
+  const initState = followList.findIndex((following) => following.id === user.id) >= 0;
+  const [following, setFollowing] = useState(initState);
   const [btnText, setBtnText] = useState(0);
 
   const onClick = () => {
@@ -16,20 +20,20 @@ function FollowRecommend({ user, uid, followingList }: PersonProps) {
 
   const onFollowClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    follow(uid, user, followingList);
+    follow(uid, user, currentUser, followList);
     setFollowing(true);
   };
 
   const onUnfollowClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    unFollow(uid, user.id, followingList);
+    unFollow(uid, user, currentUser, followList);
     setFollowing(false);
   };
 
   useEffect(() => {
-    if (followingList.findIndex((following) => following.id === user.id) >= 0) setFollowing(true);
+    if (followList.findIndex((following) => following.id === user.id) >= 0) setFollowing(true);
     else setFollowing(false);
-  }, [followingList]);
+  }, [followList]);
 
   return (
     <div className={styles.user} onClick={onClick}>

@@ -20,7 +20,7 @@ const ConnectPeople = ({ uid }: { uid: string }) => {
         <h3 className="title p1 flex">나를 위한 추천</h3>
 
         {users.map((u) => {
-          return <Person key={u.id} user={u} uid={uid} followingList={user.following} />;
+          return <Person key={u.id} user={u} uid={uid} followList={user.following} />;
         })}
       </div>
     </div>

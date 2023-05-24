@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { follow, unFollow } from "hooks/follow";
+import { useSelector } from "react-redux";
+import { RootState } from "store/store";
 
 export interface PersonType {
   id: string;
@@ -12,13 +14,15 @@ export interface PersonType {
 export interface PersonProps {
   user: PersonType;
   uid: string;
-  followingList: PersonType[];
+  followList: PersonType[];
 }
 
-const Person = ({ user, uid, followingList }: PersonProps) => {
+const Person = ({ user, uid, followList }: PersonProps) => {
   const navigate = useNavigate();
+  const currentUser = useSelector((state: RootState) => state.user);
 
-  const [following, setFollowing] = useState(false);
+  const initState = currentUser.following.findIndex((following) => following.id === user.id) >= 0;
+  const [following, setFollowing] = useState(initState);
   const [btnText, setBtnText] = useState(0);
 
   const onClick = () => {
@@ -27,20 +31,20 @@ const Person = ({ user, uid, followingList }: PersonProps) => {
 
   const onFollowClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    follow(uid, user, followingList);
+    follow(uid, user, currentUser, currentUser.following);
     setFollowing(true);
   };
 
   const onUnfollowClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    unFollow(uid, user.id, followingList);
+    unFollow(uid, user, currentUser, currentUser.following);
     setFollowing(false);
   };
 
   useEffect(() => {
-    if (followingList.findIndex((following) => following.id === user.id) >= 0) setFollowing(true);
+    if (currentUser.following.findIndex((following) => following.id === user.id) >= 0) setFollowing(true);
     else setFollowing(false);
-  }, [followingList]);
+  }, [currentUser.following]);
 
   return (
     <div className="flex w1 p1 people-container" onClick={onClick}>

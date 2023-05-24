@@ -4,11 +4,11 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import { RootState } from "store/store";
 import styles from "styles/profile.module.css";
 
-const Following = ({ uid }:{uid:string}) => {
+const Following = ({ uid, filter }: { uid: string; filter: string }) => {
   const location = useLocation();
   const { id: paramId } = useParams();
 
-  const {following} = useSelector((state: RootState) => state.user);
+  const { following, follower } = useSelector((state: RootState) => state.user);
 
   return (
     <div>
@@ -36,9 +36,19 @@ const Following = ({ uid }:{uid:string}) => {
           </li>
         </ul>
       </nav>
-      {following.map((follow) => {
-        return <Person key={follow.id} user={follow} uid={uid} followingList={following} />;
-      })}
+      {filter === "following" ? (
+        <>
+          {following.map((follow) => {
+            return <Person key={follow.id} user={follow} uid={uid} followList={following} />;
+          })}
+        </>
+      ) : (
+        <>
+          {follower.map((follow) => {
+            return <Person key={follow.id} user={follow} uid={uid} followList={follower} />;
+          })}
+        </>
+      )}
     </div>
   );
 };
