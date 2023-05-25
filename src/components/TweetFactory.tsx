@@ -13,10 +13,11 @@ import { resetEdit } from "store/EditSlice";
 
 interface FactoryProps {
   uid: string;
+  reply?: boolean;
 }
 
 /* Create Tweet Component*/
-const TweetFactory = ({ uid }: FactoryProps) => {
+const TweetFactory = ({ uid, reply }: FactoryProps) => {
   const [tweet, setTweet] = useState("");
 
   const [attachment, setAttachment] = useState("");
@@ -73,6 +74,7 @@ const TweetFactory = ({ uid }: FactoryProps) => {
         likes: 0,
         retweets: 0,
         replies: [],
+        // mention: ""
       };
 
       try {
@@ -139,7 +141,7 @@ const TweetFactory = ({ uid }: FactoryProps) => {
         </div>
         <div className={styles.content}>
           <div className={styles["textarea-container"]}>
-            <textarea className={styles.textarea} ref={textareaRef} value={tweet} onChange={onChange} placeholder="무슨 일이 일어나고 있나요?" maxLength={150} />
+            <textarea className={styles.textarea} ref={textareaRef} value={tweet} onChange={onChange} placeholder={ !reply ? "무슨 일이 일어나고 있나요?" : "내 답글을 트윗합니다."} maxLength={150} />
           </div>
           {attachment && (
             <div className={styles.attachment}>

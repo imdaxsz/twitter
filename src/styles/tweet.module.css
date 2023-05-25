@@ -84,8 +84,6 @@
   align-items: center;
 }
 
-
-
 .user-name {
   font-weight: bold;
 }
@@ -96,11 +94,21 @@
 
 .icons {
   display: flex;
-  min-height: 20px;
+  height: 20px;
   margin-top: 12px;
   padding-right: 60px;
   /* padding-bottom: 12px; */
+  justify-content: space-between;
   position: relative;
+}
+
+.icons p {
+  font-size: 13px;
+  padding: 0 12px 0 4px;
+  margin-bottom: 2px;
+  min-width: 7px;
+  /* position: absolute;
+  left: 26.75px; */
 }
 
 .twt {
@@ -112,21 +120,94 @@
 }
 
 .l-2 {
-  left: 136.75px;
+  position: relative;
+  display: flex;
 }
 
 .l-3 {
-  left: 273.5px;
+  position: relative;
+  display: flex;
 }
 
 .l-4 {
-  left: 411.25px;
+  /* left: 411.25px; */
 }
 
-.tweet h4 {
-  font-size: 16px;
+.tweet h4,
+.tweet p {
+  font-size: 15px;
 }
 
 .tweet span {
-  font-size: 16px;
+  font-size: 17px;
+}
+
+.detail .info {
+  height: 48px;
+  align-items: flex-start;
+}
+
+.detail .info div {
+  height: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.detail .tweet {
+  justify-content: flex-start;
+  border-bottom: solid 1px #fff;
+  max-height: 1000px;
+  cursor: default;
+}
+
+.detail .tweet:hover {
+  background: #fff;
+}
+
+.detail .content {
+  width: 100%;
+}
+
+.detail .user-img {
+  position: relative;
+  top: 0px;
+  left: 0px;
+}
+
+.detail .user-id {
+  margin: 0px;
+}
+
+.detail .mb {
+  margin-bottom: 4px;
+}
+
+.detail .border {
+  width: 100%;
+  border-top: solid 1px #eee;
+  border-bottom: solid 1px #eee;
+}
+
+.detail .icons {
+  margin-top: 0px;
+  min-height: 48px;
+}
+
+.detail .text {
+  margin-top: 12px;
+  min-height: 24px;
+  height: fit-content;
+  font-size: 17px;
+}
+
+.detail .date {
+  display: flex;
+  align-items: center;
+  margin: 16px 0px;
+  min-height: 20px;
+}
+
+.detail .twtimg {
+  max-height: 700px;
+  cursor: pointer;
 }

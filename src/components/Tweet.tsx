@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setEditObj, setModal } from "store/EditSlice";
 import { RootState } from "store/store";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { RiHeart3Fill, RiHeart3Line, RiMoreFill } from "react-icons/ri";
 import { TbMessageCircle2 } from "react-icons/tb";
 import { FiBookmark } from "react-icons/fi";
@@ -29,14 +29,16 @@ export interface TweetType {
 interface TweetProps {
   tweetObj: TweetType;
   uid: string;
+  detail?: boolean;
 }
 
-function Tweet({ tweetObj, uid }: TweetProps) {
+function Tweet({ tweetObj, uid, detail }: TweetProps) {
   const tweetTextRef = doc(dbService, "tweets", `${tweetObj.id}`);
   const urlRef = ref(storageService, tweetObj.attachmentUrl);
   const userRef = doc(dbService, "users", uid);
   const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [more, setMore] = useState(false);
   const [userImg, setUserImg] = useState<string | null>(null);
@@ -54,9 +56,9 @@ function Tweet({ tweetObj, uid }: TweetProps) {
     if (user.bookmarks.findIndex((tweet) => tweet.id === tweetObj.id) >= 0) setBookmark(true);
   }, [user.bookmarks]);
 
-    useEffect(() => {
-      if (user.likes.findIndex((tweet) => tweet.id === tweetObj.id) >= 0) setLike(true);
-    }, [user.likes]);
+  useEffect(() => {
+    if (user.likes.findIndex((tweet) => tweet.id === tweetObj.id) >= 0) setLike(true);
+  }, [user.likes]);
 
   const getuserImg = (uid: string) => {
     onSnapshot(doc(dbService, "users", uid), (doc) => {
@@ -67,11 +69,16 @@ function Tweet({ tweetObj, uid }: TweetProps) {
     });
   };
 
+  const ontweetClick = () => {
+    navigate(`/${tweetObj.creatorId}/status/${tweetObj.id}`);
+  };
+
   const onImgClick = () => {
     window.open(tweetObj.attachmentUrl);
   };
 
-  const onMoreClick = () => {
+  const onMoreClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     setMore(true);
   };
 
@@ -82,6 +89,14 @@ function Tweet({ tweetObj, uid }: TweetProps) {
       await deleteDoc(tweetTextRef);
       if (tweetObj.attachmentUrl !== "") {
         await deleteObject(urlRef);
+      }
+      if (user.bookmarks.findIndex((twt) => twt.id === tweetObj.id) >= 0) {
+        const result = user.bookmarks.filter((twt) => twt.id !== tweetObj.id);
+        await updateDoc(userRef, { bookmarks: [...result] });
+      }
+      if (user.likes.findIndex((twt) => twt.id === tweetObj.id) >= 0) {
+        const result = user.likes.filter((twt) => twt.id !== tweetObj.id);
+        await updateDoc(userRef, { likes: [...result] });
       }
     }
   };
@@ -94,7 +109,8 @@ function Tweet({ tweetObj, uid }: TweetProps) {
     setMore(false);
   };
 
-  const onBookmarkClick = async () => {
+  const onBookmarkClick = async (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
     if (user.bookmarks.findIndex((tweet) => tweet.id === tweetObj.id) < 0) {
       // 북마크에 없는 경우 새로 추가
       await updateDoc(userRef, { bookmarks: [tweetObj, ...user.bookmarks] });
@@ -110,15 +126,18 @@ function Tweet({ tweetObj, uid }: TweetProps) {
     }
   };
 
-  const onLikeClick = async () => {
+  const onLikeClick = async (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
     if (user.likes.findIndex((tweet) => tweet.id === tweetObj.id) < 0) {
       // 마음에 들어요
       await updateDoc(userRef, { likes: [tweetObj, ...user.likes] });
+      await updateDoc(tweetTextRef, { likes: tweetObj.likes + 1 });
       setLike(true);
     } else {
       // 마음에 들어요 취소
       const result = user.likes.filter((tweet) => tweet.id !== tweetObj.id);
       await updateDoc(userRef, { likes: [...result] });
+      await updateDoc(tweetTextRef, { likes: tweetObj.likes - 1 });
       setLike(false);
     }
   };
@@ -129,78 +148,111 @@ function Tweet({ tweetObj, uid }: TweetProps) {
   return (
     <>
       {more && <div className="more-modal-wrapper" onClick={() => setMore(false)}></div>}
-      <div className={styles.tweet}>
-        {more && (
-          <div className="more-modal modal-shadow">
-            <div className="more-item-box p1" onClick={onEditClick}>
-              <div className="more-item">
-                <AiFillEdit className="icon" />
-                <h4>수정하기</h4>
-              </div>
-            </div>
-            <div className="more-item-box p1" onClick={onDeleteClick}>
-              <div className="more-item red">
-                <CgTrash className="icon red" />
-                <h4>삭제하기</h4>
-              </div>
-            </div>
-          </div>
-        )}
-        <Link to={`profile/${tweetObj.creatorId}`}>
-          <div className={styles["user-img"]}>
-            <img referrerPolicy="no-referrer" src={userImg ? userImg : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userImg"></img>
-          </div>
-        </Link>
-        <div className={styles.content}>
-          <div className="flex mb-2">
-            <div className={`${styles.info} flex`}>
-              <Link to={`profile/${tweetObj.creatorId}`}>
-                <div className={`underline ${styles["user-name"]}`}>
-                  <h4>{name}</h4>
+      <div className={` ${detail === true ? styles.detail : ""}`}>
+        <div className={styles.tweet} onClick={ontweetClick}>
+          {more && (
+            <div className="more-modal modal-shadow">
+              <div className="more-item-box p1" onClick={onEditClick}>
+                <div className="more-item">
+                  <AiFillEdit className="icon" />
+                  <h4>수정하기</h4>
                 </div>
-              </Link>
-              <Link to={`profile/${tweetObj.creatorId}`}>
-                <div className={styles["user-id"]}>
-                  <p>@{tweetObj.creatorId}</p>
-                </div>
-              </Link>
-              <div className="p-4">
-                <p>·</p>
               </div>
-              <div>
-                <p>
-                  {month}월 {date}일
-                </p>
+              <div className="more-item-box p1" onClick={onDeleteClick}>
+                <div className="more-item red">
+                  <CgTrash className="icon red" />
+                  <h4>삭제하기</h4>
+                </div>
               </div>
             </div>
-            {tweetObj.creatorUid === uid && (
-              <button title="더 보기" className="twticon-box more blue" onFocus={onMoreClick}>
-                <RiMoreFill className="icon" />
-              </button>
+          )}
+          {!detail && (
+            <Link to={`/${tweetObj.creatorId}`}>
+              <div className={styles["user-img"]}>
+                <img referrerPolicy="no-referrer" src={userImg ? userImg : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userImg"></img>
+              </div>
+            </Link>
+          )}
+          <div className={styles.content}>
+            <div className={`flex mb-2 ${styles.mb}`}>
+              {detail && (
+                <Link to={`/${tweetObj.creatorId}`}>
+                  <div className={styles["user-img"]}>
+                    <img referrerPolicy="no-referrer" src={userImg ? userImg : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userImg"></img>
+                  </div>
+                </Link>
+              )}
+              <div className={`${styles.info} ${!detail ? "flex" : "flex-col"}`}>
+                <Link to={`/${tweetObj.creatorId}`}>
+                  <div className={`underline ${styles["user-name"]}`}>
+                    <h4>{name}</h4>
+                  </div>
+                </Link>
+                <Link to={`/${tweetObj.creatorId}`}>
+                  <div className={styles["user-id"]}>
+                    <p>@{tweetObj.creatorId}</p>
+                  </div>
+                </Link>
+                {!detail && (
+                  <>
+                    <div className="p-4">
+                      <p>·</p>
+                    </div>
+                    <div>
+                      <p>
+                        {month}월 {date}일
+                      </p>
+                    </div>
+                  </>
+                )}
+              </div>
+              {tweetObj.creatorUid === uid && (
+                <button title="더 보기" className="twticon-box more blue" onClick={onMoreClick}>
+                  <RiMoreFill className="icon" />
+                </button>
+              )}
+            </div>
+            {tweetObj.text !== "" && (
+              <div className={styles.text}>
+                <span>{tweetObj.text}</span>
+              </div>
             )}
-          </div>
-          {tweetObj.text !== "" && (
-            <div className={styles.text}>
-              <span>{tweetObj.text}</span>
-            </div>
-          )}
-          {tweetObj.attachmentUrl !== "" && (
-            <div className={styles.twtimg} onClick={onImgClick}>
-              <img src={tweetObj.attachmentUrl} alt={tweetObj.attachmentUrl} />
-            </div>
-          )}
-          <div className={styles.icons}>
-            <div title="답글" className={`twticon-box blue ${styles.twt} ${styles["l-1"]}`}>
-              <TbMessageCircle2 className="icon" />
-            </div>
-            <div title="리트윗" className={`twticon-box green ${styles.twt} ${styles["l-2"]}`}>
-              <AiOutlineRetweet className={`icon ${retweet && "fill"}`} />
-            </div>
-            <div title="마음에 들어요" className={`twticon-box pink ${styles.twt} ${styles["l-3"]}`} onClick={onLikeClick}>
-              {like ? <RiHeart3Fill className="icon fill" /> : <RiHeart3Line className="icon" />}
-            </div>
-            <div title="북마크" className={`twticon-box blue ${styles.twt} ${styles["l-4"]}`} onClick={onBookmarkClick}>
-              {bookmark ? <FaBookmark className="icon bm fill" /> : <FiBookmark className="icon" />}
+            {tweetObj.attachmentUrl !== "" && (
+              <div className={styles.twtimg} onClick={onImgClick}>
+                <img src={tweetObj.attachmentUrl} alt={tweetObj.attachmentUrl} />
+              </div>
+            )}
+            {detail && (
+              <div className={styles.date}>
+                <p>오후 5:10 · 2023년 5월 25일</p>
+              </div>
+            )}
+            <div className={styles.border}>
+              <div className={styles.icons}>
+                <div className={`flex ${styles["l-3"]}`}>
+                  <div title="답글" className={`twticon-box blue ${styles.twt} ${styles["l-1"]}`}>
+                    <TbMessageCircle2 className="icon" />
+                  </div>
+                  {<p>{tweetObj.replies.length > 0 && tweetObj.replies.length}</p>}
+                </div>
+                <div className={`flex green ${styles["l-2"]}`}>
+                  <div title="리트윗" className={`twticon-box ${styles.twt}}`}>
+                    <AiOutlineRetweet className={`icon ${retweet && "fill"}`} />
+                  </div>
+                  {<p className={`${retweet && "fill"}`}>{tweetObj.retweets > 0 && tweetObj.retweets}</p>}
+                </div>
+                <div className={`flex pink ${styles["l-3"]}`}>
+                  <div title="마음에 들어요" className={`twticon-box ${styles.twt} `} onClick={onLikeClick}>
+                    {like ? <RiHeart3Fill className="icon fill" /> : <RiHeart3Line className="icon" />}
+                  </div>
+                  {<p className={`${like && "fill"}`}>{tweetObj.likes}</p>}
+                </div>
+                <div className={`flex ${styles["l-3"]}`}>
+                  <div title="북마크" className={`twticon-box blue ${styles.twt} ${styles["l-4"]}`} onClick={onBookmarkClick}>
+                    {bookmark ? <FaBookmark className="icon bm fill" /> : <FiBookmark className="icon" />}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
