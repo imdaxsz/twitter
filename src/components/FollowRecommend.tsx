@@ -15,7 +15,7 @@ function FollowRecommend({ user, uid, followList }: PersonProps) {
   const [btnText, setBtnText] = useState(0);
 
   const onClick = () => {
-    navigate(`profile/${user.id}`);
+    navigate(`${user.id}`);
   };
 
   const onFollowClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -42,7 +42,7 @@ function FollowRecommend({ user, uid, followList }: PersonProps) {
       </div>
       <div className={styles["info-box"]}>
         <div className={`flex-col ${styles.info}`}>
-          <div className={styles.item}>
+          <div className={`underline ${styles.item}`}>
             <h4>{user.name}</h4>
           </div>
           <div className={styles.item}>

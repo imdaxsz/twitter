@@ -26,7 +26,7 @@ const Person = ({ user, uid, followList }: PersonProps) => {
   const [btnText, setBtnText] = useState(0);
 
   const onClick = () => {
-    navigate(`/profile/${user.id}`);
+    navigate(`/${user.id}`);
   };
 
   const onFollowClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -54,7 +54,7 @@ const Person = ({ user, uid, followList }: PersonProps) => {
       <div className="people-content">
         <div className="people-top flex">
           <div className="h1">
-            <div className="flex flex-item">
+            <div className="flex flex-item underline">
               <h4>{user.name}</h4>
             </div>
             <div className="flex flex-item">

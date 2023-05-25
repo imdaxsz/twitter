@@ -95,7 +95,7 @@ function LeftBar({ uid }: { uid: string }) {
                 </Link>
               </li>
               <li>
-                <Link to={`/profile/${user.id}`}>
+                <Link to={`/${user.id}`}>
                   <div className={`${styles["nav-item"]} ${location.pathname.split("/")[1] === `profile` && styles.active}`}>
                     <BiUser className={styles["nav-icon"]} />
                     <span>프로필</span>

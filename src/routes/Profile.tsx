@@ -121,7 +121,7 @@ const Profile = ({ uid }: ProfileProps) => {
               <nav className={styles.nav}>
                 <ul>
                   <li className={styles["w-1"]}>
-                    <Link to={`/profile/${paramId}`}>
+                    <Link to={`/${paramId}`}>  
                       <div className={`${styles.tab} ${location.pathname.split("/").slice(-1)[0] === paramId && "active"}`}>
                         <div className={styles.box}>
                           <p>트윗</p>
@@ -131,7 +131,7 @@ const Profile = ({ uid }: ProfileProps) => {
                     </Link>
                   </li>
                   <li className={styles["w-1"]}>
-                    <Link to={`/profile/${paramId}/with_replies`}>
+                    <Link to={`/${paramId}/with_replies`}>
                       <div className={`${styles.tab} ${location.pathname.split("/").slice(-1)[0] === "with_replies" && "active"}`}>
                         <div className={styles.box}>
                           <p>답글</p>
@@ -141,7 +141,7 @@ const Profile = ({ uid }: ProfileProps) => {
                     </Link>
                   </li>
                   <li className={styles["w-2"]}>
-                    <Link to={`/profile/${paramId}/media`}>
+                    <Link to={`/${paramId}/media`}>
                       <div className={`${styles.tab} ${location.pathname.split("/").slice(-1)[0] === "media" && "active"}`}>
                         <div className={styles.box}>
                           <p>미디어</p>
@@ -151,7 +151,7 @@ const Profile = ({ uid }: ProfileProps) => {
                     </Link>
                   </li>
                   <li className={styles["w-3"]}>
-                    <Link to={`/profile/${paramId}/likes`}>
+                    <Link to={`/${paramId}/likes`}>
                       <div className={`${styles.tab} ${location.pathname.split("/").slice(-1)[0] === "likes" && "active"}`}>
                         <div className={styles.box}>
                           <p>마음에 들어요</p>
