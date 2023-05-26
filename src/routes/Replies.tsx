@@ -1,7 +1,7 @@
 import Tweet, { TweetType } from "components/Tweet";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import getTweet from "hooks/getTweet";
+import getTweets from "hooks/getTweet";
 import Loading from "components/Loading";
 import { useDispatch } from "react-redux";
 import { setCount } from "store/store";
@@ -14,7 +14,7 @@ const Replies = ({ uid }: { uid: string }) => {
 
   useEffect(() => {
     if (id) {
-      getTweet(setTweets, id, "replies");
+      getTweets(setTweets, id, "replies");
       setLoading(false);
       dispatch(setCount(tweets.length));
     }

@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { dbService, dbCollection } from "fBase";
-import { query, onSnapshot, orderBy, where } from "firebase/firestore";
 import Tweet, { TweetType } from "components/Tweet";
 import TweetFactory from "components/TweetFactory";
 import TopBar from "components/TopBar";
@@ -8,6 +6,7 @@ import Loading from "components/Loading";
 import TweetModal from "components/TweetModal";
 import { useSelector } from "react-redux";
 import { RootState } from "store/store";
+import getTweets from "hooks/getTweet";
 
 const Home = ({ uid }: { uid: string }) => {
   const [tweets, setTweets] = useState<TweetType[]>([]);
@@ -15,26 +14,8 @@ const Home = ({ uid }: { uid: string }) => {
   const edit = useSelector((state: RootState) => state.edit);
 
   useEffect(() => {
-    const q = query(dbCollection(dbService, "tweets"), where("mention", "==", ""), orderBy("createdAt", "desc"));
-    onSnapshot(q, (snapshot) => {
-      const tweetArr: TweetType[] = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        attachmentUrl: doc.data().attachmentUrl,
-        text: doc.data().text,
-        creatorId: doc.data().creatorId,
-        creatorUid: doc.data().creatorUid,
-        createdAt: doc.data().createdAt,
-        likes: doc.data().likes,
-        retweets: doc.data().retweets,
-        replies: doc.data().replies,
-        mention: doc.data().mention,
-        mentionTo: doc.data().mentionTo
-      }));
-
-      setTweets(tweetArr);
+    getTweets(setTweets, undefined, "all");
       setLoading(false);
-    });
-
     return () => {
       setLoading(true);
     };

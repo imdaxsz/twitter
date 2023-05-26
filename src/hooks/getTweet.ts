@@ -2,12 +2,14 @@ import { TweetType } from "components/Tweet";
 import { dbCollection, dbService } from "fBase";
 import { onSnapshot, orderBy, query, where } from "firebase/firestore";
 
-type getTweetFun = (setTweets: React.Dispatch<React.SetStateAction<TweetType[]>>, id: string, filter?: string) => void;
+type getTweetFun = (setTweets: React.Dispatch<React.SetStateAction<TweetType[]>>, id?: string, filter?: string) => void;
 
-const getTweet: getTweetFun = (setTweets, id, filter) => {
+const getTweets: getTweetFun = (setTweets, id, filter) => {
   let q;
-  
-  if (filter === "media") {
+
+  if (filter === "all") {
+    q = query(dbCollection(dbService, "tweets"), where("mention", "==", ""), orderBy("createdAt", "desc"));
+  } else if (filter === "media") {
     q = query(dbCollection(dbService, "tweets"), where("creatorId", "==", id), where("attachmentUrl", "!=", ""), orderBy("attachmentUrl"), orderBy("createdAt", "desc"));
   } else if (filter === "replies") {
     q = query(dbCollection(dbService, "tweets"), where("creatorId", "==", id), where("mention", "!=", ""), orderBy("mention"), orderBy("createdAt", "desc"));
@@ -26,11 +28,11 @@ const getTweet: getTweetFun = (setTweets, id, filter) => {
       retweets: doc.data().retweets,
       replies: doc.data().replies,
       mention: doc.data().mention,
-      mentionTo: doc.data().mentionTo
+      mentionTo: doc.data().mentionTo,
     }));
 
     setTweets(tweetArr);
   });
 };
 
-export default getTweet;
+export default getTweets;
