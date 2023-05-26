@@ -19,7 +19,7 @@ function RightBar({ uid }: { uid: string }) {
 
   return (
     <div className={styles.container}>
-      {location.pathname !== "/explore" && <SearchBar />}
+      {!["explore", "search"].includes(location.pathname.split("/")[1]) && <SearchBar />}
       <div className={styles.follow}>
         <div className={styles.title}>
           <h3>팔로우 추천</h3>

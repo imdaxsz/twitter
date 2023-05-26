@@ -61,14 +61,18 @@ const Person = ({ user, uid, followList }: PersonProps) => {
               <p>@{user.id}</p>
             </div>
           </div>
-          {following ? (
-            <button className="btn xs btn-white" onMouseEnter={() => setBtnText(1)} onMouseLeave={() => setBtnText(0)} onClick={onUnfollowClick}>
-              {btnText === 0 ? "팔로잉" : "언팔로우"}
-            </button>
-          ) : (
-            <button className="btn xs black" onClick={onFollowClick}>
-              팔로우
-            </button>
+          {currentUser.id !== user.id && (
+            <>
+              {following ? (
+                <button className="btn xs btn-white" onMouseEnter={() => setBtnText(1)} onMouseLeave={() => setBtnText(0)} onClick={onUnfollowClick}>
+                  {btnText === 0 ? "팔로잉" : "언팔로우"}
+                </button>
+              ) : (
+                <button className="btn xs black" onClick={onFollowClick}>
+                  팔로우
+                </button>
+              )}
+            </>
           )}
         </div>
         {user.bio && (

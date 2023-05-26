@@ -43,7 +43,7 @@ const AppRouter = ({ isLoggedIn, uid }: Router) => {
               </Route>
               <Route path="/:id/status/:tweetId" element={<TweetDetail uid={uid} />} />
               <Route path="connect_people" element={<ConnectPeople uid={uid} />} />
-              <Route path="search/*" element={<SearchResult />} />
+              <Route path="search" element={<SearchResult uid={uid} />} />
             </>
           ) : (
             <Route path="/" element={<Auth />} />

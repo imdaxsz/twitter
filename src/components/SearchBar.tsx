@@ -1,11 +1,13 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import styles from "styles/searchbar.module.css";
+import { useNavigate } from "react-router-dom";
 
-function SearchBar() {
+function SearchBar({keyword}:{keyword?:string}) {
   const [word, setWord] = useState("");
   const focusRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWord(e.currentTarget.value);
@@ -13,6 +15,7 @@ function SearchBar() {
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    navigate(`/search?q=${word}`);
     console.log(word);
   };
 
@@ -24,6 +27,11 @@ function SearchBar() {
     focusSearchBar();
     setWord("");
   };
+
+  useEffect(() => {
+    if (keyword)
+      setWord(keyword);
+  }, [])
 
   return (
     <form onSubmit={onSubmit} aria-label="트위터 검색" role="search">

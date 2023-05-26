@@ -13,8 +13,10 @@ const getTweets: getTweetFun = (setTweets, id, filter) => {
     q = query(dbCollection(dbService, "tweets"), where("creatorId", "==", id), where("attachmentUrl", "!=", ""), orderBy("attachmentUrl"), orderBy("createdAt", "desc"));
   } else if (filter === "replies") {
     q = query(dbCollection(dbService, "tweets"), where("creatorId", "==", id), where("mention", "!=", ""), orderBy("mention"), orderBy("createdAt", "desc"));
-  } else {
+  } else if (filter === "my") {
     q = query(dbCollection(dbService, "tweets"), where("creatorId", "==", id), where("mention", "==", ""), orderBy("createdAt", "desc"));
+  } else {
+    q = query(dbCollection(dbService, "tweets"), where("text", ">=", filter), where("text", "<=", filter + "\uf8ff"), orderBy("text"), orderBy("createdAt", "desc"));
   }
   onSnapshot(q, (snapshot) => {
     const tweetArr: TweetType[] = snapshot.docs.map((doc) => ({
