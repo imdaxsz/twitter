@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setEditObj, setModal } from "store/EditSlice";
 import { RootState } from "store/store";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { RiHeart3Fill, RiHeart3Line, RiMoreFill } from "react-icons/ri";
 import { TbMessageCircle2 } from "react-icons/tb";
 import { FiBookmark } from "react-icons/fi";
@@ -73,6 +73,11 @@ function Tweet({ tweetObj, uid, detail }: TweetProps) {
 
   const ontweetClick = () => {
     navigate(`/${tweetObj.creatorId}/status/${tweetObj.id}`);
+  };
+
+  const onUserClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    navigate(`/${tweetObj.creatorId}`);
   };
 
   const onImgClick = () => {
@@ -169,32 +174,24 @@ function Tweet({ tweetObj, uid, detail }: TweetProps) {
             </div>
           )}
           {!detail && (
-            <Link to={`/${tweetObj.creatorId}`}>
-              <div className={styles["user-img"]}>
-                <img referrerPolicy="no-referrer" src={userImg ? userImg : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userImg"></img>
-              </div>
-            </Link>
+            <div className={styles["user-img"]} onClick={onUserClick}>
+              <img referrerPolicy="no-referrer" src={userImg ? userImg : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userImg"></img>
+            </div>
           )}
           <div className={styles.content}>
             <div className={`flex mb-2 ${styles.mb}`}>
               {detail && (
-                <Link to={`/${tweetObj.creatorId}`}>
-                  <div className={styles["user-img"]}>
-                    <img referrerPolicy="no-referrer" src={userImg ? userImg : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userImg"></img>
-                  </div>
-                </Link>
+                <div className={styles["user-img"]} onClick={onUserClick}>
+                  <img referrerPolicy="no-referrer" src={userImg ? userImg : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userImg"></img>
+                </div>
               )}
               <div className={`${styles.info} ${!detail ? "flex" : "flex-col"}`}>
-                <Link to={`/${tweetObj.creatorId}`}>
-                  <div className={`underline ${styles["user-name"]}`}>
-                    <h4>{name}</h4>
-                  </div>
-                </Link>
-                <Link to={`/${tweetObj.creatorId}`}>
-                  <div className={styles["user-id"]}>
-                    <p>@{tweetObj.creatorId}</p>
-                  </div>
-                </Link>
+                <div className={`underline ${styles["user-name"]}`} onClick={onUserClick}>
+                  <h4>{name}</h4>
+                </div>
+                <div className={styles["user-id"]} onClick={onUserClick}>
+                  <p>@{tweetObj.creatorId}</p>
+                </div>
                 {!detail && (
                   <>
                     <div className="p-4">
