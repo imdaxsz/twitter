@@ -24,6 +24,8 @@ export interface TweetType {
   likes: number;
   retweets: number;
   replies: string[];
+  mention: string;
+  mentionTo: string;
 }
 
 interface TweetProps {
@@ -212,6 +214,13 @@ function Tweet({ tweetObj, uid, detail }: TweetProps) {
                 </button>
               )}
             </div>
+            {tweetObj.mention !== "" && (
+              <div className={styles.mention}>
+                <p>
+                  <span>{tweetObj.mentionTo}</span> 님에게 보내는 답글
+                </p>
+              </div>
+            )}
             {tweetObj.text !== "" && (
               <div className={styles.text}>
                 <span>{tweetObj.text}</span>

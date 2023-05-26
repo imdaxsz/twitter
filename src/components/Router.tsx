@@ -8,11 +8,13 @@ import BookMarks from "routes/Bookmarks";
 import Explore from "routes/Explore";
 import Notifications from "routes/Notifications";
 import ConnectPeople from "routes/ConnectPeople";
-import  Media  from "routes/Media";
+import Media from "routes/Media";
 import DefaultTweets from "routes/DefaultTweet";
 import Following from "routes/FollowList";
 import Likes from "routes/Likes";
 import TweetDetail from "routes/TweetDetail";
+import SearchResult from "routes/SearchResult";
+import Replies from "routes/Replies";
 
 interface Router {
   isLoggedIn: boolean;
@@ -33,7 +35,7 @@ const AppRouter = ({ isLoggedIn, uid }: Router) => {
               <Route path="bookmarks" element={<BookMarks uid={uid} />} />
               <Route path="/:id" element={<Profile uid={uid} />}>
                 <Route path="" element={<DefaultTweets uid={uid} />} />
-                <Route path="with_replies" element={<div>답글</div>} />
+                <Route path="with_replies" element={<Replies uid={uid} />} />
                 <Route path="media" element={<Media uid={uid} />} />
                 <Route path="likes" element={<Likes uid={uid} />} />
                 <Route path="followers" element={<Following uid={uid} filter="followers" />} />
@@ -41,6 +43,7 @@ const AppRouter = ({ isLoggedIn, uid }: Router) => {
               </Route>
               <Route path="/:id/status/:tweetId" element={<TweetDetail uid={uid} />} />
               <Route path="connect_people" element={<ConnectPeople uid={uid} />} />
+              <Route path="search/*" element={<SearchResult />} />
             </>
           ) : (
             <Route path="/" element={<Auth />} />

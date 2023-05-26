@@ -8,16 +8,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
 import useImageCompress from "hooks/imageCompress";
 import styles from "styles/factory.module.css";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { resetEdit } from "store/EditSlice";
 
 interface FactoryProps {
   uid: string;
-  reply?: boolean;
+  mention?: string;
+  mentionTo?: string;
 }
 
 /* Create Tweet Component*/
-const TweetFactory = ({ uid, reply }: FactoryProps) => {
+const TweetFactory = ({ uid, mention, mentionTo }: FactoryProps) => {
   const [tweet, setTweet] = useState("");
 
   const [attachment, setAttachment] = useState("");
@@ -65,7 +66,7 @@ const TweetFactory = ({ uid, reply }: FactoryProps) => {
       await updateDoc(docRef, { text: tweet });
       dispatch(resetEdit());
     } else {
-      const tweetObj = {
+      let tweetObj = {
         text: tweet,
         createdAt: Date.now(),
         creatorId: user.id,
@@ -74,12 +75,20 @@ const TweetFactory = ({ uid, reply }: FactoryProps) => {
         likes: 0,
         retweets: 0,
         replies: [],
-        // mention: ""
+        mention: (mention ? mention : ""),
+        mentionTo: (mentionTo? mentionTo : "")
       };
-
+      
       try {
         const docRef = await dbAddDoc(dbCollection(dbService, "tweets"), tweetObj);
-        console.log("Document wirtten with ID: ", docRef);
+        if (typeof mention === "string") {
+          const twtRef = doc(dbService, "tweets", mention);
+          const twtSnap = await getDoc(twtRef);
+          if (twtSnap.exists()) {
+            await updateDoc(twtRef, { replies: [...twtSnap.data().replies, docRef.id] });
+          }
+        }
+        console.log("Document wirtten with ID: ", docRef.id);
       } catch (error) {
         console.error("Error adding document:", error);
       }
@@ -141,7 +150,7 @@ const TweetFactory = ({ uid, reply }: FactoryProps) => {
         </div>
         <div className={styles.content}>
           <div className={styles["textarea-container"]}>
-            <textarea className={styles.textarea} ref={textareaRef} value={tweet} onChange={onChange} placeholder={ !reply ? "무슨 일이 일어나고 있나요?" : "내 답글을 트윗합니다."} maxLength={150} />
+            <textarea className={styles.textarea} ref={textareaRef} value={tweet} onChange={onChange} placeholder={ !mention ? "무슨 일이 일어나고 있나요?" : "내 답글을 트윗합니다."} maxLength={150} />
           </div>
           {attachment && (
             <div className={styles.attachment}>

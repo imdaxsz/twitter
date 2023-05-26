@@ -20,6 +20,8 @@ const initialState: EditingState = {
     likes: 0,
     retweets: 0,
     replies: [],
+    mention: "",
+    mentionTo: ""
   },
 };
 
