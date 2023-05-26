@@ -1,4 +1,4 @@
-import { deleteDoc, doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { dbService, storageService } from "fBase";
 import { deleteObject, ref } from "firebase/storage";
 import React, { useState, useEffect } from "react";
@@ -104,6 +104,14 @@ function Tweet({ tweetObj, uid, detail }: TweetProps) {
       if (user.likes.findIndex((twt) => twt.id === tweetObj.id) >= 0) {
         const result = user.likes.filter((twt) => twt.id !== tweetObj.id);
         await updateDoc(userRef, { likes: [...result] });
+      }
+      if (tweetObj.mention !== "") {
+        const docRef = doc(dbService, "tweets", tweetObj.mention);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const result:string[] = docSnap.data().replies.filter((id:string)=> id!==tweetObj.id)
+          await updateDoc(docRef, { replies: result });
+        }
       }
     }
   };
@@ -235,25 +243,25 @@ function Tweet({ tweetObj, uid, detail }: TweetProps) {
             )}
             <div className={styles.border}>
               <div className={styles.icons}>
-                <div className={`flex ${styles["l-3"]}`}>
-                  <div title="답글" className={`twticon-box blue ${styles.twt} ${styles["l-1"]}`}>
+                <div className={`flex ${styles["icon-area"]}`}>
+                  <div title="답글" className={`twticon-box blue ${styles.twt}`}>
                     <TbMessageCircle2 className="icon" />
                   </div>
                   {<p>{tweetObj.replies.length > 0 && tweetObj.replies.length}</p>}
                 </div>
-                <div className={`flex green ${styles["l-2"]}`}>
+                <div className={`flex green ${styles["icon-area"]}`}>
                   <div title="리트윗" className={`twticon-box ${styles.twt}}`}>
                     <AiOutlineRetweet className={`icon ${retweet && "fill"}`} />
                   </div>
                   {<p className={`${retweet && "fill"}`}>{tweetObj.retweets > 0 && tweetObj.retweets}</p>}
                 </div>
-                <div className={`flex pink ${styles["l-3"]}`}>
+                <div className={`flex pink ${styles["icon-area"]}`}>
                   <div title="마음에 들어요" className={`twticon-box ${styles.twt} `} onClick={onLikeClick}>
                     {like ? <RiHeart3Fill className="icon fill" /> : <RiHeart3Line className="icon" />}
                   </div>
                   {<p className={`${like && "fill"}`}>{tweetObj.likes}</p>}
                 </div>
-                <div className={`flex ${styles["l-3"]}`}>
+                <div className={`flex ${styles["icon-area"]}`}>
                   <div title="북마크" className={`twticon-box blue ${styles.twt} ${styles["l-4"]}`} onClick={onBookmarkClick}>
                     {bookmark ? <FaBookmark className="icon bm fill" /> : <FiBookmark className="icon" />}
                   </div>
