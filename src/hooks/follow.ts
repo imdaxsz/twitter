@@ -21,11 +21,11 @@ export const follow:FollowParam = async (uid, user, currentUser, followingList) 
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => {
     followId = doc.id;
-    followerList = doc.data().follower;
+    followerList = doc.data().followers;
   });
   if (followId !== "") {
     const followRef = doc(dbService, "users", followId);
-    await updateDoc(followRef, { follower: [currentUser, ...followerList] });
+    await updateDoc(followRef, { followers: [currentUser, ...followerList] });
   }
 };
 
@@ -41,10 +41,10 @@ export const unFollow: FollowParam = async (uid, user, currentUser, followingLis
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => {
     followId = doc.id;
-    followerList = doc.data().follower;
+    followerList = doc.data().followers;
   });
   if (followId !== "") {
     const followRef = doc(dbService, "users", followId);
-    await updateDoc(followRef, { follower: [...followerList.filter((follow) => follow.id !== currentUser.id)] });
+    await updateDoc(followRef, { followers: [...followerList.filter((follow) => follow.id !== currentUser.id)] });
   }
 };

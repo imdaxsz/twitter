@@ -1,7 +1,7 @@
 import Tweet, { TweetType } from "components/Tweet";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import getTweets from "hooks/getTweet";
+import { getTweets } from "hooks/getTweet";
 import Loading from "components/Loading";
 import { useDispatch } from "react-redux";
 import { setCount } from "store/store";

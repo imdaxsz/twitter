@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "store/store";
 import Tweet, { TweetType } from "components/Tweet";
 import { getUsers } from "hooks/getUsers";
-import getTweets from "hooks/getTweet";
+import { getTweets } from "hooks/getTweet";
 
 const SearchResult = ({uid}:{uid:string}) => {
   const navigate = useNavigate();
@@ -79,7 +79,7 @@ const SearchResult = ({uid}:{uid:string}) => {
           ) : (
             <div>
               {users.map((u) => {
-                return <Person key={u.id} user={u} uid={uid} followList={user.following} />;
+                return <Person key={u.id} user={u} uid={uid} />;
               })}
             </div>
           )}

@@ -1,39 +1,17 @@
 import styles from "styles/rightbar.module.css";
 import { useNavigate } from "react-router-dom";
 import { PersonProps } from "./Person";
-import { useState, useEffect } from "react";
-import { follow, unFollow } from "hooks/follow";
 import { useSelector } from "react-redux";
 import { RootState } from "store/store";
+import FollowBtn from "./FollowBtn";
 
-function FollowRecommend({ user, uid, followList }: PersonProps) {
+function FollowRecommend({ user, uid }: PersonProps) {
   const navigate = useNavigate();
   const currentUser = useSelector((state: RootState) => state.user);
-
-  const initState = followList.findIndex((following) => following.id === user.id) >= 0;
-  const [following, setFollowing] = useState(initState);
-  const [btnText, setBtnText] = useState(0);
 
   const onClick = () => {
     navigate(`${user.id}`);
   };
-
-  const onFollowClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    follow(uid, user, currentUser, followList);
-    setFollowing(true);
-  };
-
-  const onUnfollowClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    unFollow(uid, user, currentUser, followList);
-    setFollowing(false);
-  };
-
-  useEffect(() => {
-    if (followList.findIndex((following) => following.id === user.id) >= 0) setFollowing(true);
-    else setFollowing(false);
-  }, [followList]);
 
   return (
     <div className={styles.user} onClick={onClick}>
@@ -49,15 +27,7 @@ function FollowRecommend({ user, uid, followList }: PersonProps) {
             <p>@{user.id}</p>
           </div>
         </div>
-        {following ? (
-          <button className="btn xs btn-white" onMouseEnter={() => setBtnText(1)} onMouseLeave={() => setBtnText(0)} onClick={onUnfollowClick}>
-            {btnText === 0 ? "팔로잉" : "언팔로우"}
-          </button>
-        ) : (
-          <button className="btn xs black" onClick={onFollowClick}>
-            팔로우
-          </button>
-        )}
+        <FollowBtn uid={uid} user={user} currentUser={currentUser} />
       </div>
     </div>
   );

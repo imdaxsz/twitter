@@ -10,11 +10,11 @@ import Notifications from "routes/Notifications";
 import ConnectPeople from "routes/ConnectPeople";
 import Media from "routes/Media";
 import DefaultTweets from "routes/DefaultTweet";
-import Following from "routes/FollowList";
 import Likes from "routes/Likes";
 import TweetDetail from "routes/TweetDetail";
 import SearchResult from "routes/SearchResult";
 import Replies from "routes/Replies";
+import FollowList from "routes/FollowList";
 
 interface Router {
   isLoggedIn: boolean;
@@ -38,8 +38,8 @@ const AppRouter = ({ isLoggedIn, uid }: Router) => {
                 <Route path="with_replies" element={<Replies uid={uid} />} />
                 <Route path="media" element={<Media uid={uid} />} />
                 <Route path="likes" element={<Likes uid={uid} />} />
-                <Route path="followers" element={<Following uid={uid} filter="followers" />} />
-                <Route path="following" element={<Following uid={uid} filter="following" />} />
+                <Route path="followers" element={<FollowList uid={uid} filter="followers" />} />
+                <Route path="following" element={<FollowList uid={uid} filter="following" />} />
               </Route>
               <Route path="/:id/status/:tweetId" element={<TweetDetail uid={uid} />} />
               <Route path="connect_people" element={<ConnectPeople uid={uid} />} />

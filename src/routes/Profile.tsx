@@ -8,6 +8,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "store/store";
 import { onSnapshot, query, where } from "firebase/firestore";
 import { dbCollection, dbService } from "fBase";
+import FollowBtn from "components/FollowBtn";
+import { PersonType } from "components/Person";
 
 interface ProfileProps {
   uid: string;
@@ -20,7 +22,7 @@ interface UserInfo {
   profileImg: string | null;
   headerImg: string | null;
   following: number;
-  follower: number;
+  followers: number;
   joinDate: string;
 }
 
@@ -29,6 +31,7 @@ const Profile = ({ uid }: ProfileProps) => {
 
   const { id: paramId } = useParams();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [userBtnProps, setUserBtnProps] = useState<PersonType | null>(null);
 
   const user = useSelector((state: RootState) => state.user);
   const [modal, setModal] = useState(false);
@@ -47,11 +50,18 @@ const Profile = ({ uid }: ProfileProps) => {
         bio: snapshot.docs[0].data().bio,
         profileImg: snapshot.docs[0].data().profileImg,
         headerImg: snapshot.docs[0].data().headerImg,
-        follower: snapshot.docs[0].data().follower.length,
+        followers: snapshot.docs[0].data().followers.length,
         following: snapshot.docs[0].data().following.length,
         joinDate: snapshot.docs[0].data().joinDate,
       };
+      const userProfile: PersonType = {
+        id: snapshot.docs[0].data().id,
+        name: snapshot.docs[0].data().name,
+        bio: snapshot.docs[0].data().bio,
+        profileImg: snapshot.docs[0].data().profileImg,
+      };
       setUserInfo(userObj);
+      setUserBtnProps(userProfile);
     });
   };
 
@@ -79,7 +89,7 @@ const Profile = ({ uid }: ProfileProps) => {
                       프로필 수정
                     </button>
                   ) : (
-                    <button className={`small btn black`}>팔로우</button>
+                    userBtnProps && <FollowBtn uid={uid} user={userBtnProps} currentUser={user} />
                   )}
                 </div>
                 <div className={`${styles.info} flex-row`}>
@@ -112,7 +122,7 @@ const Profile = ({ uid }: ProfileProps) => {
                   </Link>
                   <Link to={"followers"}>
                     <div className={`flex underline `}>
-                      <span>{userInfo?.follower}</span>
+                      <span>{userInfo?.followers}</span>
                       <p>&nbsp;팔로워</p>
                     </div>
                   </Link>
@@ -121,7 +131,7 @@ const Profile = ({ uid }: ProfileProps) => {
               <nav className={styles.nav}>
                 <ul>
                   <li className={styles["w-1"]}>
-                    <Link to={`/${paramId}`}>  
+                    <Link to={`/${paramId}`}>
                       <div className={`${styles.tab} ${location.pathname.split("/").slice(-1)[0] === paramId && "active"}`}>
                         <div className={styles.box}>
                           <p>트윗</p>

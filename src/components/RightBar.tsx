@@ -25,7 +25,7 @@ function RightBar({ uid }: { uid: string }) {
           <h3>팔로우 추천</h3>
         </div>
         {users.map((u) => {
-          return <FollowRecommend key={u.id} user={u} uid={uid} followList={user.following} />;
+          return <FollowRecommend key={u.id} user={u} uid={uid}  />;
         })}
         {users.length > 0 && (
           <Link to="connect_people">

@@ -1,21 +1,29 @@
-import Person from "components/Person";
+import Person, { PersonType } from "components/Person";
 import { useSelector } from "react-redux";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { RootState } from "store/store";
 import styles from "styles/profile.module.css";
+import { useEffect } from "react";
+import { useState } from "react";
+import { getUserFollowList } from "hooks/getUsers";
 
-const Following = ({ uid, filter }: { uid: string; filter: string }) => {
+const FollowList = ({ uid, filter }: { uid: string; filter: string }) => {
   const location = useLocation();
   const { id: paramId } = useParams();
+  const [following, setFollowing] = useState<PersonType[]>([]);
+  const [followers, setFollowers] = useState<PersonType[]>([]);
 
-  const { following, follower } = useSelector((state: RootState) => state.user);
+  useEffect(() => {
+    if (filter === "following" && paramId) getUserFollowList(setFollowing, paramId, "following");
+    else if (filter === "followers" && paramId) getUserFollowList(setFollowers, paramId, "followers");
+  }, [paramId]);
 
   return (
     <div>
       <nav className={`${styles.nav} `}>
         <ul>
           <li className={styles["w-0"]}>
-            <Link to={`/profile/${paramId}/followers`}>
+            <Link to={`/${paramId}/followers`}>
               <div className={`${styles.tab} ${location.pathname.split("/").slice(-1)[0] === "followers" && "active"}`}>
                 <div className={styles.box}>
                   <p>팔로워</p>
@@ -25,7 +33,7 @@ const Following = ({ uid, filter }: { uid: string; filter: string }) => {
             </Link>
           </li>
           <li className={styles["w-0"]}>
-            <Link to={`/profile/${paramId}/following`}>
+            <Link to={`/${paramId}/following`}>
               <div className={`${styles.tab} ${location.pathname.split("/").slice(-1)[0] === "following" && "active"}`}>
                 <div className={styles.box}>
                   <p>팔로잉</p>
@@ -36,16 +44,16 @@ const Following = ({ uid, filter }: { uid: string; filter: string }) => {
           </li>
         </ul>
       </nav>
-      {filter === "following" ? (
+      {filter === "following" && paramId ? (
         <>
           {following.map((follow) => {
-            return <Person key={follow.id} user={follow} uid={uid} followList={following} />;
+            return <Person key={follow.id} user={follow} uid={uid} />;
           })}
         </>
       ) : (
         <>
-          {follower.map((follow) => {
-            return <Person key={follow.id} user={follow} uid={uid} followList={follower} />;
+          {followers.map((follow) => {
+            return <Person key={follow.id} user={follow} uid={uid} />;
           })}
         </>
       )}
@@ -53,4 +61,4 @@ const Following = ({ uid, filter }: { uid: string; filter: string }) => {
   );
 };
 
-export default Following;
+export default FollowList;
