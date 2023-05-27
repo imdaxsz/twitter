@@ -9,10 +9,12 @@ export interface UserState {
   profileImg: string | null;
   headerImg: string | null;
   bio: string;
-  likes: TweetType[];
-  bookmarks: TweetType[];
+  myTweets: string[];
+  retweets: string[];
+  likes: string[];
+  bookmarks: string[];
   following: PersonType[];
-  follower: PersonType[];
+  followers: PersonType[];
 }
 
 const initialState: UserState = {
@@ -22,10 +24,12 @@ const initialState: UserState = {
   profileImg: null,
   headerImg: null,
   bio: "",
+  myTweets: [],
+  retweets: [],
   likes: [],
   bookmarks: [],
   following: [],
-  follower: [],
+  followers: [],
 };
 
 export interface ProfileState {
@@ -54,23 +58,29 @@ export const userSlice = createSlice({
     changeProfileImg(state, action: PayloadAction<string>) {
       state.profileImg = action.payload;
     },
-    addBookmarks(state, action: PayloadAction<TweetType>) {
+    addBookmarks(state, action: PayloadAction<string>) {
       state.bookmarks.push(action.payload);
     },
     removeBookmarks(state, action: PayloadAction<string>) {
-      state.bookmarks = state.bookmarks.filter((tweet) => tweet.id !== action.payload);
+      state.bookmarks = state.bookmarks.filter((id) => id !== action.payload);
     },
-    addLikes(state, action: PayloadAction<TweetType>) {
+    addLikes(state, action: PayloadAction<string>) {
       state.likes.push(action.payload);
     },
     removeLikes(state, action: PayloadAction<string>) {
-      state.likes = state.likes.filter((tweet) => tweet.id !== action.payload);
+      state.likes = state.likes.filter((id) => id !== action.payload);
+    },
+    removeMyTweets(state, action: PayloadAction<string>) {
+      state.myTweets = state.myTweets.filter((id) => id !== action.payload);
+    },
+    removeRetweets(state, action: PayloadAction<string>) {
+      state.retweets = state.retweets.filter((id) => id !== action.payload);
     },
     addFollower(state, action: PayloadAction<PersonType>) {
-      state.follower.push(action.payload);
+      state.followers.push(action.payload);
     },
     removeFollower(state, action: PayloadAction<string>) {
-      state.follower = state.follower.filter((follow) => follow.id !== action.payload);
+      state.followers = state.followers.filter((follow) => follow.id !== action.payload);
     },
     addFollowing(state, action: PayloadAction<PersonType>) {
       state.following.push(action.payload);
@@ -81,6 +91,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { reset, initUser, changeProfile, changeProfileImg, addBookmarks, removeBookmarks, addLikes, removeLikes, addFollower, removeFollower, addFollowing, removeFollowing } = userSlice.actions;
+export const { reset, initUser, changeProfile, changeProfileImg, addBookmarks, removeBookmarks, addLikes, removeLikes, removeMyTweets, removeRetweets, addFollower, removeFollower, addFollowing, removeFollowing } = userSlice.actions;
 
 export default userSlice.reducer;

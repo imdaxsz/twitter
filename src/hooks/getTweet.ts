@@ -1,10 +1,12 @@
 import { TweetType } from "components/Tweet";
 import { dbCollection, dbService } from "fBase";
-import { onSnapshot, orderBy, query, where } from "firebase/firestore";
+import { getDocs, onSnapshot, orderBy, query, where } from "firebase/firestore";
 
 type getTweetFun = (setTweets: React.Dispatch<React.SetStateAction<TweetType[]>>, id?: string, filter?: string) => void;
 
-const getTweets: getTweetFun = (setTweets, id, filter) => {
+type getUserTweetFun = (setTweets: React.Dispatch<React.SetStateAction<string[]>>, id?: string, filter?: string) => void;
+
+export const getTweets: getTweetFun = (setTweets, id, filter) => {
   let q;
 
   if (filter === "all") {
@@ -37,4 +39,15 @@ const getTweets: getTweetFun = (setTweets, id, filter) => {
   });
 };
 
-export default getTweets;
+export const getUserTweets: getUserTweetFun = (setTweets, id, filter) => {
+  if (id) {
+    const q = query(dbCollection(dbService, "users"), where("id", "==", id));
+    onSnapshot(q, (snapshot) => {
+      snapshot.docs.map((doc) => {
+        if (filter === "likes") setTweets(doc.data().likes);
+        else if (filter === "default") setTweets(doc.data().myTweets);
+        else if (filter === "bookmarks") setTweets(doc.data().bookmarks);
+      });
+    });
+  }
+};
