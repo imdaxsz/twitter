@@ -15,7 +15,7 @@ function App() {
   const userObj = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
 
-  const getUserInfo = (user:User) => {
+  const getUserInfo = (user: User) => {
     let userObj: UserState;
     onSnapshot(doc(dbService, "users", user.uid), (doc) => {
       if (doc.exists()) {
@@ -26,14 +26,16 @@ function App() {
           profileImg: user.photoURL,
           headerImg: doc.data().headerImg,
           bio: doc.data().bio,
+          myTweets: doc.data().myTweets,
+          retweets: doc.data().retweets,
           likes: doc.data().likes,
           bookmarks: doc.data().bookmarks,
           following: doc.data().following,
-          follower: doc.data().follower,
+          followers: doc.data().followers,
         };
         dispatch(initUser(userObj));
       }
-    });    
+    });
   };
 
   useEffect(() => {
@@ -50,7 +52,7 @@ function App() {
     });
   }, []);
 
-  return <div className={`background`}>{init ? <AppRouter isLoggedIn={Boolean(userObj.id!=="")} uid={uid} /> : <Initialization />}</div>;
+  return <div className={`background`}>{init ? <AppRouter isLoggedIn={Boolean(userObj.id !== "")} uid={uid} /> : <Initialization />}</div>;
 }
 
 export default App;

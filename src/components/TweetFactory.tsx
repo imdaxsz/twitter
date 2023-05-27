@@ -33,7 +33,6 @@ const TweetFactory = ({ uid, mention, mentionTo }: FactoryProps) => {
   const [loading, setLoading] = useState(false);
   const [percentage, setPercentage] = useState(0);
 
-  
   useEffect(() => {
     // textarea 높이 조정
     if (textareaRef && textareaRef.current) {
@@ -54,7 +53,8 @@ const TweetFactory = ({ uid, mention, mentionTo }: FactoryProps) => {
     }
   }, []);
 
-  useEffect(() => { // progressbar 조절
+  useEffect(() => {
+    // progressbar 조절
     if (loading) {
       let interval = setInterval(() => {
         setPercentage((prev) => {
@@ -72,9 +72,8 @@ const TweetFactory = ({ uid, mention, mentionTo }: FactoryProps) => {
     }
   }, [percentage, loading]);
 
-
   // 트윗 추가하기
-  const addTweet = async(tweetObj:any) => {
+  const addTweet = async (tweetObj: any) => {
     const docRef = await dbAddDoc(dbCollection(dbService, "tweets"), tweetObj);
     if (typeof mention === "string") {
       const twtRef = doc(dbService, "tweets", mention);
@@ -82,6 +81,9 @@ const TweetFactory = ({ uid, mention, mentionTo }: FactoryProps) => {
       if (twtSnap.exists()) {
         await updateDoc(twtRef, { replies: [...twtSnap.data().replies, docRef.id] });
       }
+    } else {
+      const userRef = doc(dbService, "users", uid);
+      await updateDoc(userRef, { myTweets: [...user.myTweets, docRef.id] });
     }
     console.log("Document wirtten with ID: ", docRef.id);
     setLoading(false);

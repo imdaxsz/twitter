@@ -40,10 +40,12 @@ const Auth = () => {
           profileImg,
           headerImg: null,
           bio: "",
+          myTweets: [],
+          retweets: [],
           likes: [],
           bookmarks: [],
           following: [],
-          follower: [],
+          followers: [],
           // tweets: [],
           // replies: [],
         };

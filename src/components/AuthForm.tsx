@@ -44,10 +44,12 @@ const AuthForm = () => {
             profileImg: null,
             headerImg: null,
             bio: "",
+            myTweets: [],
+            retweets: [],
             likes: [],
             bookmarks: [],
             following: [],
-            follower: [],
+            followers: [],
             // tweets: [],
             // replies: [],
           };
