@@ -10,6 +10,7 @@ import useImageCompress from "hooks/imageCompress";
 import styles from "styles/factory.module.css";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { resetEdit } from "store/EditSlice";
+import ProgressBar from "@ramonak/react-progress-bar";
 
 interface FactoryProps {
   uid: string;
@@ -29,6 +30,10 @@ const TweetFactory = ({ uid, mention, mentionTo }: FactoryProps) => {
   const compressImage = useImageCompress().compressImage;
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
+  const [loading, setLoading] = useState(false);
+  const [percentage, setPercentage] = useState(0);
+
+  
   useEffect(() => {
     // textarea 높이 조정
     if (textareaRef && textareaRef.current) {
@@ -49,17 +54,58 @@ const TweetFactory = ({ uid, mention, mentionTo }: FactoryProps) => {
     }
   }, []);
 
+  useEffect(() => { // progressbar 조절
+    if (loading) {
+      let interval = setInterval(() => {
+        setPercentage((prev) => {
+          if (percentage < 90) {
+            return prev + Math.floor(Math.random() * 20);
+          } else if (percentage >= 90 && percentage < 100) {
+            return prev + 1;
+          } else return 100;
+        });
+      }, 10);
+      if (percentage >= 100) {
+        clearInterval(interval);
+      }
+      return () => clearInterval(interval);
+    }
+  }, [percentage, loading]);
+
+
+  // 트윗 추가하기
+  const addTweet = async(tweetObj:any) => {
+    const docRef = await dbAddDoc(dbCollection(dbService, "tweets"), tweetObj);
+    if (typeof mention === "string") {
+      const twtRef = doc(dbService, "tweets", mention);
+      const twtSnap = await getDoc(twtRef);
+      if (twtSnap.exists()) {
+        await updateDoc(twtRef, { replies: [...twtSnap.data().replies, docRef.id] });
+      }
+    }
+    console.log("Document wirtten with ID: ", docRef.id);
+    setLoading(false);
+    setPercentage(15);
+    setTweet("");
+    setAttachment("");
+    if (fileInput.current) {
+      fileInput.current.value = "";
+    }
+    dispatch(resetEdit());
+  };
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    let start = Date.now();
+    setLoading(true);
     e.preventDefault();
     let attachmentUrl = "";
     if (attachment !== "" && edit.editObj.attachmentUrl === "") {
-      console.log("diff");
       const attachmentRef = ref(storageService, `${uid}/${uuidv4()}`);
       // storage 참조 경로로 파일 업로드 하기
       const response = await uploadString(attachmentRef, attachment, "data_url");
       // storage 참조 경로에 있는 파일의 URL을 다운로드해서 attchmentUrl에 넣어서 업데이트
       attachmentUrl = await getDownloadURL(response.ref);
-    } 
+    }
 
     if (edit.editObj.id !== "" && edit.editObj.text !== tweet) {
       const docRef = doc(dbService, "tweets", edit.editObj.id);
@@ -75,31 +121,23 @@ const TweetFactory = ({ uid, mention, mentionTo }: FactoryProps) => {
         likes: 0,
         retweets: 0,
         replies: [],
-        mention: (mention ? mention : ""),
-        mentionTo: (mentionTo? mentionTo : "")
+        mention: mention ? mention : "",
+        mentionTo: mentionTo ? mentionTo : "",
       };
-      
+
       try {
-        const docRef = await dbAddDoc(dbCollection(dbService, "tweets"), tweetObj);
-        if (typeof mention === "string") {
-          const twtRef = doc(dbService, "tweets", mention);
-          const twtSnap = await getDoc(twtRef);
-          if (twtSnap.exists()) {
-            await updateDoc(twtRef, { replies: [...twtSnap.data().replies, docRef.id] });
-          }
+        let end = Date.now();
+        if (end - start < 200) {
+          setTimeout(async () => {
+            addTweet(tweetObj);
+          }, 600);
+        } else {
+          addTweet(tweetObj);
         }
-        console.log("Document wirtten with ID: ", docRef.id);
       } catch (error) {
         console.error("Error adding document:", error);
       }
     }
-
-    setTweet("");
-    setAttachment("");
-    if (fileInput.current) {
-      fileInput.current.value = "";
-    }
-    dispatch(resetEdit());
   };
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -144,13 +182,14 @@ const TweetFactory = ({ uid, mention, mentionTo }: FactoryProps) => {
 
   return (
     <form onSubmit={onSubmit}>
+      {loading && <ProgressBar completed={percentage} maxCompleted={100} height="0.2rem" borderRadius="2px" baseBgColor="rgba(0,0,0,0)" bgColor="rgb(29, 155, 240)" isLabelVisible={false} />}
       <div className={styles.container}>
         <div className={styles.user}>
           <img referrerPolicy="no-referrer" src={user.profileImg ? user.profileImg : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userimg"></img>
         </div>
         <div className={styles.content}>
           <div className={styles["textarea-container"]}>
-            <textarea className={styles.textarea} ref={textareaRef} value={tweet} onChange={onChange} placeholder={ !mention ? "무슨 일이 일어나고 있나요?" : "내 답글을 트윗합니다."} maxLength={150} />
+            <textarea className={styles.textarea} ref={textareaRef} value={tweet} onChange={onChange} placeholder={!mention ? "무슨 일이 일어나고 있나요?" : "내 답글을 트윗합니다."} maxLength={150} />
           </div>
           {attachment && (
             <div className={styles.attachment}>
