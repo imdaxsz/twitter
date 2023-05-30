@@ -36,7 +36,7 @@ const FollowBtn = ({ uid, user, currentUser}: FollowBtnProps) => {
   };
 
   useEffect(() => {
-    console.log(currentUser.following);
+    // console.log(currentUser.following);
     if (currentUser.following.findIndex((following) => following.id === user.id) >= 0) setFollowing(true);
     else setFollowing(false);
   }, [currentUser.following]);

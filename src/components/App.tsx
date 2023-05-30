@@ -52,7 +52,9 @@ function App() {
     });
   }, []);
 
-  return <div className={`background`}>{init ? <AppRouter isLoggedIn={Boolean(userObj.id !== "")} uid={uid} /> : <Initialization />}</div>;
+  return <div className={`background`}>
+    {init ? <AppRouter isLoggedIn={Boolean(userObj.id !== "")} uid={uid} /> : <Initialization />}
+  </div>;
 }
 
 export default App;
