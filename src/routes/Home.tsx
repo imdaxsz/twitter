@@ -4,31 +4,46 @@ import TweetFactory from "components/TweetFactory";
 import TopBar from "components/TopBar";
 import Loading from "components/Loading";
 import TweetModal from "components/TweetModal";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
-import getTweets from "hooks/getTweet";
+import { getTweets } from "hooks/getTweet";
+import { FaFeatherAlt } from "react-icons/fa";
+import { setIsNew, setModal } from "store/EditSlice";
 
-const Home = ({ uid }: { uid: string }) => {
+const Home = ({ uid, isMobile }: { uid: string; isMobile?: boolean }) => {
   const [tweets, setTweets] = useState<TweetType[]>([]);
   const [loading, setLoading] = useState(true);
   const edit = useSelector((state: RootState) => state.edit);
+  const { isNew, editModal: tweetModal } = useSelector((state: RootState) => state.edit);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getTweets(setTweets, undefined, "all");
-      setLoading(false);
+    setLoading(false);
     return () => {
       setLoading(true);
     };
   }, []);
 
+  const onTweetClick = () => {
+    dispatch(setModal(true));
+    dispatch(setIsNew(true));
+  };
+
   return (
     <>
-      {edit.editModal && edit.editObj.id !== "" && <TweetModal uid={uid} />}
+      {edit.editModal && edit.editObj.id !== "" && <TweetModal uid={uid} isMobile={isMobile} />}
+      {isMobile && tweetModal && isNew && <TweetModal uid={uid} isMobile={isMobile} />}
+      {isMobile && (
+        <button className="btn medium mb-tweet" onClick={onTweetClick}>
+          <FaFeatherAlt />
+        </button>
+      )}
       <div className="wrapper">
         <Loading loading={loading} />
-        <TopBar title={"홈"} uid={uid} />
+        <TopBar title={"홈"} uid={uid} isMobile={isMobile} />
         <div className="container">
-          <TweetFactory uid={uid} />
+          {!isMobile && <TweetFactory uid={uid} />}
           <div>
             {tweets.map((tweet) => (
               <Tweet key={tweet.id} tweetObj={tweet} uid={uid} />

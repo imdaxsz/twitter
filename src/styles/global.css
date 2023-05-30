@@ -41,6 +41,16 @@ p {
   color: #536471;
 }
 
+.active p {
+  color: #0f1419;
+  font-weight: bold;
+}
+
+.underline:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+}
+
 img {
   background: white;
   object-fit: cover;
@@ -84,8 +94,20 @@ img {
   transition: all 0.2s;
 }
 
-.btn:hover:not(.black) {
+.btn:hover:not(.black, .btn-white) {
   background-color: #1a8edb;
+}
+
+.btn-white {
+  color: #0f1419;
+  background-color: white;
+  border: solid 1px rgb(207, 217, 222);
+}
+
+.btn-white:hover {
+  color: rgb(244, 33, 46);
+  background-color: rgba(244, 33, 46, 0.1);
+  border-color: rgb(253, 201, 206);
 }
 
 input[disabled] {
@@ -114,6 +136,14 @@ input[disabled] {
   font-size: 15px;
 }
 
+.mb-tweet {
+  position: fixed;
+  z-index: 300;
+  bottom: 73px;
+  right: 20px;
+  box-shadow: rgba(101, 119, 134, 0.2) 0px 0px 8px, rgba(101, 119, 134, 0.25) 0px 1px 3px 1px;
+}
+
 .black {
   background-color: #0f1419;
 }
@@ -124,23 +154,68 @@ input[disabled] {
   color: #4d6171;
 }
 
+.fill {
+  color: rgb(29, 161, 242);
+}
+
+.blue,
+.green,
+.pink {
+  background: rgba(255, 255, 255, 0);
+}
+
+.blue:hover {
+  background: #e1eef6;
+}
+
+.blue:hover .icon {
+  color: #1d9bf0;
+}
+.green:hover :nth-child(1) {
+  background: #def1eb;
+}
+
+.green:hover .icon,
+.green:hover :nth-child(2),
+.green .fill {
+  color: rgb(0, 186, 124);
+}
+
+.pink:hover :nth-child(1) {
+  background: #f7e0eb;
+}
+
+.pink:hover .icon,
+.pink:hover :nth-child(2),
+.pink .fill {
+  color: rgb(249, 24, 128);
+}
+
+.bm {
+  width: 16.7px;
+  height: 16.7px;
+}
+
 .red {
   color: red;
 }
 
 .app-container {
-  width: 100%;
-  /* min-height: 100vh; */
+  /* width: 100vw; */
   margin: 0 auto;
   display: flex;
-  /* justify-content: center; */
+  justify-content: center;
   position: relative;
+  min-height: 100vh;
 }
 
 .wrapper {
-  width: 600px;
-  position: absolute;
-  left: 401px;
+  width: 100%;
+  min-width: 600px;
+  max-width: 600px;
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
 }
 
 .init {
@@ -152,6 +227,7 @@ input[disabled] {
 .container {
   position: absolute;
   top: 53px;
+  left: 0px;
   width: 100%;
   min-height: 100vh;
   max-width: 600px;
@@ -186,17 +262,42 @@ input[disabled] {
 }
 
 .lg-logo {
-  color: rgb(29, 161, 242);
+  color: rgb(29, 155, 240);
   width: 70px;
   height: 70px;
+}
+
+.sm-logo {
+  color: rgb(29, 155, 240);
+  width: 24.51px;
+  height: 100%;
 }
 
 .mb-2 {
   margin-bottom: 2px;
 }
 
+.m-auto {
+  margin: 0 auto;
+}
+
 .p-4 {
   padding: 0 4px;
+}
+
+.active-bar {
+  background-color: rgb(29, 155, 240);
+  min-width: 56px;
+  width: 100%;
+  height: 4px;
+  border-bottom-left-radius: 9999px;
+  border-bottom-right-radius: 9999px;
+  border-top-left-radius: 9999px;
+  border-top-right-radius: 9999px;
+  position: absolute;
+  bottom: 0%;
+  left: 50%;
+  transform: translate(-50%, 0%);
 }
 
 /* 트윗 아이콘 */
@@ -209,7 +310,7 @@ input[disabled] {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
+  /* position: absolute; */
 }
 
 .blue,
@@ -225,16 +326,9 @@ input[disabled] {
 .blue:hover .icon {
   color: #1d9bf0;
 }
-.green:hover {
-  background: #def1eb;
-}
 
 .green:hover .icon {
   color: #00ba7c;
-}
-
-.pink:hover {
-  background: #f7e0eb;
 }
 
 .pink:hover .icon {
@@ -269,6 +363,7 @@ input[disabled] {
 }
 
 .more {
+  position: absolute;
   color: #455765;
   right: 8px;
   justify-content: center;
@@ -328,11 +423,6 @@ input[disabled] {
   background-color: rgba(0, 0, 0, 0.4);
   position: fixed;
   z-index: 80;
-  /* position: fixed;
-  z-index: 9999; */
-  /* display: flex;
-  align-items: center;
-  justify-content: center; */
 }
 
 .modal {
@@ -347,7 +437,6 @@ input[disabled] {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  /* position: relative; */
 }
 
 .twt-modal {
@@ -493,8 +582,6 @@ input[disabled] {
 .modal-input-box {
   width: 100%;
   height: 100%;
-  /* display: flex;
-  flex-direction: row; */
   border: solid 1px black;
   border-color: rgb(207, 217, 222);
   border-radius: 4px;
@@ -623,4 +710,65 @@ input[disabled] {
   width: 100%;
   height: 50%;
   display: flex;
+}
+
+@media screen and (max-width: 1298px) {
+  .btn {
+    transition: all 0s;
+  }
+  .medium {
+    width: 50.4px;
+    height: 50.4px;
+    padding: 0;
+  }
+}
+
+@media screen and (max-width: 688px) {
+  .wrapper,
+  .container {
+    min-width: calc(100vw - 88px);
+  }
+  .modal {
+    min-width: 80vw;
+  }
+}
+
+@media screen and (max-width: 499px) {
+  .app-container {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-y: scroll;
+  }
+  .wrapper,
+  .container {
+    min-width: 100vw;
+  }
+
+  .container {
+    overflow-y: scroll;
+  }
+
+  .modal {
+    width: 100%;
+    min-width: 100vw;
+    height: 100%;
+    min-height: 100vh;
+    top: 0;
+    left: 0;
+    transform: translate(0, 0);
+    border-radius: 0px;
+  }
+
+  .modal-wrapper {
+    z-index: 9990;
+  }
+
+  .crop-container {
+    top: 0%;
+    left: 50%;
+    max-width: 50vw;
+    transform: translate(-50%, 0);
+    z-index: 9999;
+  }
 }

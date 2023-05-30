@@ -3,7 +3,7 @@ import { dbAddDoc, dbCollection, dbService, storageService } from "fBase";
 import React, { useEffect, useRef, useState } from "react";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { IoImageOutline } from "react-icons/io5";
-import { VscSmiley, VscChromeClose } from "react-icons/vsc";
+import { VscChromeClose } from "react-icons/vsc";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
 import useImageCompress from "hooks/imageCompress";
@@ -11,15 +11,18 @@ import styles from "styles/factory.module.css";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { resetEdit } from "store/EditSlice";
 import ProgressBar from "@ramonak/react-progress-bar";
+import { MdKeyboardBackspace } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 interface FactoryProps {
   uid: string;
   mention?: string;
   mentionTo?: string;
+  isMobile?: boolean;
 }
 
 /* Create Tweet Component*/
-const TweetFactory = ({ uid, mention, mentionTo }: FactoryProps) => {
+const TweetFactory = ({ uid, mention, mentionTo, isMobile }: FactoryProps) => {
   const [tweet, setTweet] = useState("");
 
   const [attachment, setAttachment] = useState("");
@@ -29,6 +32,7 @@ const TweetFactory = ({ uid, mention, mentionTo }: FactoryProps) => {
 
   const compressImage = useImageCompress().compressImage;
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const [percentage, setPercentage] = useState(0);
@@ -132,12 +136,15 @@ const TweetFactory = ({ uid, mention, mentionTo }: FactoryProps) => {
         if (end - start < 200) {
           setTimeout(async () => {
             addTweet(tweetObj);
+            if (isMobile) navigate("/");
           }, 600);
         } else {
           addTweet(tweetObj);
+          if (isMobile) navigate("/");
         }
       } catch (error) {
         console.error("Error adding document:", error);
+        if (isMobile) navigate("/");
       }
     }
   };
@@ -185,40 +192,63 @@ const TweetFactory = ({ uid, mention, mentionTo }: FactoryProps) => {
   return (
     <form onSubmit={onSubmit}>
       {loading && <ProgressBar completed={percentage} maxCompleted={100} height="0.2rem" borderRadius="2px" baseBgColor="rgba(0,0,0,0)" bgColor="rgb(29, 155, 240)" isLabelVisible={false} />}
-      <div className={styles.container}>
-        <div className={styles.user}>
-          <img referrerPolicy="no-referrer" src={user.profileImg ? user.profileImg : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userimg"></img>
-        </div>
-        <div className={styles.content}>
-          <div className={styles["textarea-container"]}>
-            <textarea className={styles.textarea} ref={textareaRef} value={tweet} onChange={onChange} placeholder={!mention ? "무슨 일이 일어나고 있나요?" : "내 답글을 트윗합니다."} maxLength={150} />
+      {isMobile && (
+        <div className="modal-top flex">
+          <div className="modal-icon" onClick={() => dispatch(resetEdit())}>
+            <MdKeyboardBackspace className="modal-svg" />
           </div>
-          {attachment && (
-            <div className={styles.attachment}>
-              <img src={attachment} alt={attachment} />
-              {edit.editObj.attachmentUrl === "" && (
-                <div className={styles.clear} onClick={onClearAttachment}>
-                  <VscChromeClose className={styles["clear-icon"]} />
-                </div>
+          <input type="submit" value="트윗하기" disabled={tweet === "" && attachment === ""} className={`btn small ${styles["btn-tweet"]}`} />
+        </div>
+      )}
+      <div className={styles.container}>
+        <div className={styles.default}>
+          <div className={styles.user}>
+            <img referrerPolicy="no-referrer" src={user.profileImg ? user.profileImg : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userimg"></img>
+          </div>
+          <div className={styles.content}>
+            <div className={styles["textarea-container"]}>
+              <textarea className={styles.textarea} autoFocus={isMobile} ref={textareaRef} value={tweet} onChange={onChange} placeholder={!mention ? "무슨 일이 일어나고 있나요?" : "내 답글을 트윗하세요."} maxLength={150} />
+            </div>
+            {attachment && (
+              <div className={styles.attachment}>
+                <img src={attachment} alt={attachment} />
+                {edit.editObj.attachmentUrl === "" && (
+                  <div className={styles.clear} onClick={onClearAttachment}>
+                    <VscChromeClose className={styles["clear-icon"]} />
+                  </div>
+                )}
+              </div>
+            )}
+            {!isMobile && (
+              <div className={styles.bottom}>
+                <input type="submit" value={!mention ? "트윗하기" : "답글"} disabled={tweet === "" && attachment === ""} className={`btn small ${styles["btn-tweet"]}`} />
+                {edit.editObj.id === "" && (
+                  <>
+                    <div title="미디어" className={styles["icon-box"]}>
+                      <label htmlFor="attach-file">
+                        <IoImageOutline className={styles.icon} />
+                      </label>
+                    </div>
+                    <input id="attach-file" type="file" accept="image/*" ref={fileInput} onChange={onFileChange} />
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+          {isMobile && (
+            <div className={styles.bottom}>
+              {edit.editObj.id === "" && (
+                <>
+                  <div title="미디어" className={styles["icon-box"]}>
+                    <label htmlFor="attach-file">
+                      <IoImageOutline className={styles.icon} />
+                    </label>
+                  </div>
+                  <input id="attach-file" type="file" accept="image/*" ref={fileInput} onChange={onFileChange} />
+                </>
               )}
             </div>
           )}
-          <div className={styles.bottom}>
-            <input type="submit" value="트윗하기" disabled={tweet === "" && attachment === ""} className={`btn small ${styles["btn-tweet"]}`} />
-            {edit.editObj.id === "" && (
-              <>
-                <div title="미디어" className={styles["icon-box"]}>
-                  <label htmlFor="attach-file">
-                    <IoImageOutline className={styles.icon} />
-                  </label>
-                </div>
-                <input id="attach-file" type="file" accept="image/*" ref={fileInput} onChange={onFileChange} />
-              </>
-            )}
-            <div title="미디어" className={styles["icon-box"]}>
-              <VscSmiley className={styles.icon} />
-            </div>
-          </div>
         </div>
       </div>
     </form>

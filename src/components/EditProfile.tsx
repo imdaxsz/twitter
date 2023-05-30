@@ -13,6 +13,8 @@ import { v4 as uuidv4 } from "uuid";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { updateProfile } from "firebase/auth";
 import Loading from "./Loading";
+import { MdKeyboardBackspace } from "react-icons/md";
+import { useMediaQuery } from "react-responsive";
 
 interface EditProps {
   uid: string;
@@ -34,6 +36,7 @@ function EditProfile({ uid, setModal }: EditProps) {
   const compressImage = useImageCompress().compressImage;
 
   const [loading, setLoading] = useState(false);
+  const isMobile = useMediaQuery({ maxWidth: 499 });
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -154,7 +157,10 @@ function EditProfile({ uid, setModal }: EditProps) {
           <div className="modal modal-shadow" onClick={(e)=>e.stopPropagation()}>
             <div className="modal-top flex">
               <div className="modal-icon" onClick={onCloseClick}>
-                <VscClose className="modal-svg" />
+                {
+                  !isMobile ? <VscClose className="modal-svg" /> : <MdKeyboardBackspace className="modal-svg" />
+                }
+                
               </div>
               <span>프로필 수정</span>
               <button className="btn xs black">저장</button>

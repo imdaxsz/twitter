@@ -6,17 +6,18 @@ import { useEffect } from "react";
 
 interface TweetProps {
   uid: string;
+  isMobile?: boolean;
 }
 
-function TweetModal({ uid }: TweetProps) {
+function TweetModal({ uid, isMobile }: TweetProps) {
   const dispatch = useDispatch();
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = "auto";
-    }
-  }, [])
+    };
+  }, []);
 
   const onCloseClick = () => {
     dispatch(resetEdit());
@@ -24,13 +25,15 @@ function TweetModal({ uid }: TweetProps) {
 
   return (
     <div className="modal-wrapper" onClick={onCloseClick}>
-      <div className="modal modal-shadow twt-modal" onClick={(e)=>e.stopPropagation()}>
-        <div className="modal-top flex">
-          <div className="modal-icon" onClick={onCloseClick}>
-            <VscClose className="modal-svg" />
+      <div className="modal modal-shadow twt-modal" onClick={(e) => e.stopPropagation()}>
+        {!isMobile && (
+          <div className="modal-top flex">
+            <div className="modal-icon" onClick={onCloseClick}>
+              <VscClose className="modal-svg" />
+            </div>
           </div>
-        </div>
-        <TweetFactory uid={uid}/>
+        )}
+        <TweetFactory uid={uid} isMobile={isMobile} />
       </div>
     </div>
   );

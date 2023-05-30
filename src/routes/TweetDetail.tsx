@@ -6,11 +6,10 @@ import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { dbService } from "fBase";
 import TweetFactory from "components/TweetFactory";
 
-const TweetDetail = ({ uid }: { uid: string }) => {
+const TweetDetail = ({ uid, isMobile }: { uid: string; isMobile?: boolean }) => {
   const { tweetId } = useParams();
   const [tweet, setTweet] = useState<TweetType>();
   const [replies, setReplies] = useState<TweetType[]>([]);
-  // const [more, setMore] = useState(false);
 
   const getReplies = () => {
     if (tweet && tweet.replies.length > 0) {
@@ -31,7 +30,6 @@ const TweetDetail = ({ uid }: { uid: string }) => {
             mentionTo: replySnap.data().mentionTo,
           };
           setReplies((prev) => [...prev, replyObj]);
-          console.log(replies.length);
         }
       });
     }
@@ -91,6 +89,7 @@ const TweetDetail = ({ uid }: { uid: string }) => {
             )}
           </>
         )}
+        {isMobile && <div style={{ width: "100vw", height: "53px" }}></div>}
       </div>
     </div>
   );

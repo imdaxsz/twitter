@@ -13,6 +13,7 @@ import { PersonType } from "components/Person";
 
 interface ProfileProps {
   uid: string;
+  isMobile: boolean;
 }
 
 interface UserInfo {
@@ -26,7 +27,7 @@ interface UserInfo {
   joinDate: string;
 }
 
-const Profile = ({ uid }: ProfileProps) => {
+const Profile = ({ uid, isMobile }: ProfileProps) => {
   const location = useLocation();
 
   const { id: paramId } = useParams();
@@ -74,7 +75,7 @@ const Profile = ({ uid }: ProfileProps) => {
       {modal && <EditProfile uid={uid} setModal={setModal} />}
 
       <div className="wrapper">
-        <TopBar title={userInfo?.name ? userInfo.name : ""} uid={uid} />
+        <TopBar title={userInfo?.name ? userInfo.name : ""} uid={uid} isMobile={isMobile} />
         <div className="container">
           {!["following", "followers"].includes(location.pathname.split("/").slice(-1)[0]) && (
             <>
