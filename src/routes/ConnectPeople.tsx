@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "store/store";
 import Person, { PersonType } from "components/Person";
 
-const ConnectPeople = ({ uid }: { uid: string }) => {
+const ConnectPeople = ({ uid, explore }: { uid: string; explore?: boolean }) => {
   const user = useSelector((state: RootState) => state.user);
   const [users, setUsers] = useState<PersonType[]>([]);
 
@@ -15,10 +15,9 @@ const ConnectPeople = ({ uid }: { uid: string }) => {
 
   return (
     <div className="wrapper">
-      <TopBar title="연결하기" uid="jlk" />
+      {!explore && <TopBar title="연결하기" uid="jlk" />}
       <div className="container">
         <h3 className="title p1 flex">나를 위한 추천</h3>
-
         {users.map((u) => {
           return <Person key={u.id} user={u} uid={uid} />;
         })}

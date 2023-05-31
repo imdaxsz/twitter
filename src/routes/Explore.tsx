@@ -1,15 +1,16 @@
 import SearchBar from "components/SearchBar";
 import tb from "styles/topbar.module.css"
+import ConnectPeople from "./ConnectPeople";
 
-function Explore() {
+function Explore({uid}:{uid:string}) {
   return (
     <div className="wrapper">
       <div className={tb.container}>
         <SearchBar />
       </div>
-      <div className="container">
-        탐색하기
-      </div>
+      <ConnectPeople uid={uid} explore={true} />
+      {/* <div className="container">
+      </div> */}
     </div>
   );
 }
