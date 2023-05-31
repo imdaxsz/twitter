@@ -1,18 +1,18 @@
-import { v4 as uuidv4 } from "uuid";
-import { dbAddDoc, dbCollection, dbService, storageService } from "fBase";
 import React, { useEffect, useRef, useState } from "react";
-import { getDownloadURL, ref, uploadString } from "firebase/storage";
-import { IoImageOutline } from "react-icons/io5";
-import { VscChromeClose } from "react-icons/vsc";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
+import { resetEdit } from "store/EditSlice";
+import { useNavigate } from "react-router-dom";
+import { dbAddDoc, dbCollection, dbService, storageService } from "fBase";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import ProgressBar from "@ramonak/react-progress-bar";
+import { v4 as uuidv4 } from "uuid";
 import useImageCompress from "hooks/imageCompress";
 import styles from "styles/factory.module.css";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { resetEdit } from "store/EditSlice";
-import ProgressBar from "@ramonak/react-progress-bar";
+import { IoImageOutline } from "react-icons/io5";
+import { VscChromeClose } from "react-icons/vsc";
 import { MdKeyboardBackspace } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
 
 interface FactoryProps {
   uid: string;
@@ -124,7 +124,7 @@ const TweetFactory = ({ uid, mention, mentionTo, isMobile }: FactoryProps) => {
         creatorId: user.id,
         creatorUid: uid,
         attachmentUrl,
-        likes: 0,
+        likes: [],
         retweets: 0,
         replies: [],
         mention: mention ? mention : "",

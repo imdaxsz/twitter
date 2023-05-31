@@ -1,11 +1,17 @@
-import { deleteDoc, doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
-import { dbService, storageService } from "fBase";
-import { deleteObject, ref } from "firebase/storage";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setEditObj, setModal } from "store/EditSlice";
-import { RootState } from "store/store";
 import { useNavigate } from "react-router-dom";
+import { RootState } from "store/store";
+import { setEditObj, setModal } from "store/EditSlice";
+import { removeRetweets, removeMyTweets } from "store/userSlice";
+import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import { dbService, storageService } from "fBase";
+import { deleteObject, ref } from "firebase/storage";
+import { useToggleLike } from "hooks/useToggleLike";
+import { useToggleBookmark } from "hooks/useToggleBookmark";
+import { getTweetDate } from "utils/getTweetDate";
+import { getUserInfo } from "utils/getUsers";
+import { TweetType } from "types/types";
 import { RiHeart3Fill, RiHeart3Line, RiMoreFill } from "react-icons/ri";
 import { TbMessageCircle2 } from "react-icons/tb";
 import { FiBookmark } from "react-icons/fi";
@@ -13,30 +19,14 @@ import { AiOutlineRetweet, AiFillEdit } from "react-icons/ai";
 import { FaBookmark } from "react-icons/fa";
 import { CgTrash } from "react-icons/cg";
 import styles from "styles/tweet.module.css";
-import { removeLikes, removeRetweets, removeMyTweets } from "store/userSlice";
-
-export interface TweetType {
-  id: string;
-  text: string;
-  createdAt: number;
-  creatorId: string | undefined;
-  creatorUid: string;
-  attachmentUrl: string;
-  likes: number;
-  retweets: number;
-  replies: string[];
-  mention: string;
-  mentionTo: string;
-}
 
 interface TweetProps {
   tweetObj: TweetType;
   uid: string;
-  paramId?: string;
   detail?: boolean;
 }
 
-function Tweet({ tweetObj, uid, paramId, detail }: TweetProps) {
+function Tweet({ tweetObj, uid, detail }: TweetProps) {
   const tweetTextRef = doc(dbService, "tweets", `${tweetObj.id}`);
   const urlRef = ref(storageService, tweetObj.attachmentUrl);
   const userRef = doc(dbService, "users", uid);
@@ -48,34 +38,33 @@ function Tweet({ tweetObj, uid, paramId, detail }: TweetProps) {
   const [userImg, setUserImg] = useState<string | null>(null);
   const [name, setName] = useState("");
 
+  const { year, month, date, hours, ampm, minutes } = getTweetDate(tweetObj.createdAt);
   const [retweet, setRetweet] = useState(false);
-  const [like, setLike] = useState(false);
-  const [bookmark, setBookmark] = useState(false);
+  const { like, setLike, toggleLike } = useToggleLike(tweetObj, user.id);
+  const { bookmark, setBookmark, toggleBookmark } = useToggleBookmark(tweetObj, uid);
 
+
+  // 트윗 작성자 프로필 가져오기
   useEffect(() => {
-    getuserImg(tweetObj.creatorUid);
-  }, []);
+    getUserInfo(setName, setUserImg, tweetObj.creatorUid);
+  }, [tweetObj.creatorUid]);
 
+
+  // 사용자의 현재 트윗 북마크, 좋아요, 리트윗 여부
   useEffect(() => {
     if (user.bookmarks.findIndex((id) => id === tweetObj.id) >= 0) setBookmark(true);
   }, [user.bookmarks]);
 
   useEffect(() => {
-    if (user.likes.findIndex((id) => id === tweetObj.id) >= 0) setLike(true);
-  }, [user.likes]);
+    if (tweetObj.likes.includes(user.id)) {
+      setLike(true);
+    }
+  }, [tweetObj.likes, setLike, user.id]);
 
   useEffect(() => {
     if (user.retweets.findIndex((id) => id === tweetObj.id) >= 0) setRetweet(true);
   }, [user.retweets]);
 
-  const getuserImg = (uid: string) => {
-    onSnapshot(doc(dbService, "users", uid), (doc) => {
-      if (doc.exists()) {
-        setUserImg(doc.data().profileImg);
-        setName(doc.data().name);
-      }
-    });
-  };
 
   const ontweetClick = () => {
     navigate(`/${tweetObj.creatorId}/status/${tweetObj.id}`);
@@ -106,15 +95,8 @@ function Tweet({ tweetObj, uid, paramId, detail }: TweetProps) {
       if (tweetObj.attachmentUrl !== "") {
         await deleteObject(urlRef);
       }
-      if (user.bookmarks.findIndex((id) => id === tweetObj.id) >= 0) {
-        const result = user.bookmarks.filter((id) => id !== tweetObj.id);
-        await updateDoc(userRef, { bookmarks: [...result] });
-      }
-      if (user.likes.findIndex((id) => id === tweetObj.id) >= 0) {
-        const result = user.likes.filter((id) => id !== tweetObj.id);
-        await updateDoc(userRef, { likes: [...result] });
-      }
       if (tweetObj.mention !== "") {
+        // 트윗이 답글인 경우, 답글 달았던 트윗의 답글 개수 update
         const docRef = doc(dbService, "tweets", tweetObj.mention);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -127,7 +109,6 @@ function Tweet({ tweetObj, uid, paramId, detail }: TweetProps) {
 
   const onEditClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    console.log("clicked");
     dispatch(setEditObj(tweetObj));
     dispatch(setModal(true));
     setMore(false);
@@ -135,19 +116,12 @@ function Tweet({ tweetObj, uid, paramId, detail }: TweetProps) {
 
   const onBookmarkClick = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    if (user.bookmarks.findIndex((id) => id === tweetObj.id) < 0) {
-      // 북마크에 없는 경우 새로 추가
-      await updateDoc(userRef, { bookmarks: [...user.bookmarks, tweetObj.id] });
-      setBookmark(true);
-    } else {
-      // 북마크에 있는 경우 삭제
-      const ok = window.confirm("트윗을 북마크에서 삭제할까요?");
-      if (ok) {
-        const result = user.bookmarks.filter((id) => id !== tweetObj.id);
-        await updateDoc(userRef, { bookmarks: [...result] });
-        setBookmark(false);
-      }
-    }
+    toggleBookmark();
+  };
+
+  const onLikeClick = async (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    toggleLike();
   };
 
   const onRetweetClick = async (e: React.MouseEvent<HTMLDivElement>) => {
@@ -170,33 +144,6 @@ function Tweet({ tweetObj, uid, paramId, detail }: TweetProps) {
       setRetweet(false);
     }
   };
-
-  const onLikeClick = async (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-    if (user.likes.findIndex((id) => id === tweetObj.id) < 0) {
-      // 마음에 들어요
-      tweetObj.likes += 1;
-      await updateDoc(tweetTextRef, { likes: tweetObj.likes });
-      await updateDoc(userRef, { likes: [...user.likes, tweetObj.id] });
-      setLike(true);
-    } else {
-      // 마음에 들어요 취소
-      tweetObj.likes -= 1;
-      const result = user.likes.filter((id) => id !== tweetObj.id);
-      await updateDoc(tweetTextRef, { likes: tweetObj.likes });
-      await updateDoc(userRef, { likes: [...result] });
-      dispatch(removeLikes(tweetObj.id));
-      setLike(false);
-    }
-  };
-
-  const dt = new Date(tweetObj.createdAt);
-  const year = dt.getFullYear();
-  const month = dt.getMonth() + 1;
-  const date = dt.getDate();
-  const hours = dt.getHours() - 12;
-  const ampm = dt.getHours() > 12 ? "오후" : "오전";
-  const minutes = ("0" + dt.getMinutes()).slice(-2);
 
   return (
     <>
@@ -299,7 +246,7 @@ function Tweet({ tweetObj, uid, paramId, detail }: TweetProps) {
                   <div title="마음에 들어요" className={`twticon-box ${styles.twt} `}>
                     {like ? <RiHeart3Fill className="icon fill" /> : <RiHeart3Line className="icon" />}
                   </div>
-                  {tweetObj.likes > 0 && <p className={`${like && "fill"}`}>{tweetObj.likes}</p>}
+                  {tweetObj.likes.length > 0 && <p className={`${like && "fill"}`}>{tweetObj.likes.length}</p>}
                 </div>
                 <div className={`flex ${styles["icon-area"]}`} onClick={onBookmarkClick}>
                   <div title="북마크" className={`twticon-box blue ${styles.twt} ${styles["l-4"]}`}>
