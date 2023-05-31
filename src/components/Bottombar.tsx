@@ -1,6 +1,6 @@
-import { AiFillHome } from "react-icons/ai";
-import { FiSearch } from "react-icons/fi";
-import { RiNotification2Line } from "react-icons/ri";
+import { AiFillHome, AiOutlineHome } from "react-icons/ai";
+import { FaBell, FaRegBell, FaSearch } from "react-icons/fa";
+import { BiSearch } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { RootState } from "store/store";
@@ -8,7 +8,7 @@ import styles from "styles/bottombar.module.css";
 
 const Bottombar = () => {
   const user = useSelector((state: RootState) => state.user);
-  const location = useLocation();
+  const pathName = useLocation().pathname;
 
   return (
     <div className={styles.container}>
@@ -16,23 +16,17 @@ const Bottombar = () => {
         <ul>
           <li>
             <Link to="/">
-              <div className={`${styles["nav-item"]} ${location.pathname === "/" && styles.active}`}>
-                <AiFillHome className={styles["nav-icon"]} />
-              </div>
+              <div className={`${styles["nav-item"]} ${pathName === "/" && styles.active}`}>{pathName === "/" ? <AiFillHome className={styles["nav-icon"]} /> : <AiOutlineHome className={styles["nav-icon"]} />}</div>
             </Link>
           </li>
           <li>
             <Link to="/explore">
-              <div className={`${styles["nav-item"]} ${location.pathname === "/explore" && styles.active}`}>
-                <FiSearch className={styles["nav-icon"]} />
-              </div>
+              <div className={`${styles["nav-item"]} ${pathName === "/explore" && styles.active}`}>{pathName === "/explore" ? <FaSearch className={styles["nav-icon"]} /> : <BiSearch className={styles["nav-icon"]} />}</div>
             </Link>
           </li>
           <li>
             <Link to="/notifications">
-              <div className={`${styles["nav-item"]} ${location.pathname === "/notifications" && styles.active}`}>
-                <RiNotification2Line className={styles["nav-icon"]} />
-              </div>
+              <div className={`${styles["nav-item"]} ${pathName === "/notifications" && styles.active}`}>{pathName === "/notifications" ? <FaBell className={styles["nav-icon"]} /> : <FaRegBell className={styles["nav-icon"]} />}</div>
             </Link>
           </li>
           <li>

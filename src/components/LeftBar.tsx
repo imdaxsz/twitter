@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { RiMoreFill, RiNotification2Line } from "react-icons/ri";
-import { FaFeatherAlt, FaHashtag, FaTwitter } from "react-icons/fa";
-import { AiFillHome } from "react-icons/ai";
-import { HiOutlineBookmark } from "react-icons/hi";
-import { BiUser } from "react-icons/bi";
+import { RiHashtag, RiMoreFill } from "react-icons/ri";
+import { FaBell, FaBookmark, FaFeatherAlt, FaHashtag, FaRegBell, FaRegBookmark, FaRegUser, FaTwitter, FaUser } from "react-icons/fa";
+import { AiFillHome, AiOutlineHome } from "react-icons/ai";
+import { HiHashtag, HiOutlineHashtag } from "react-icons/hi";
 import { auth } from "fBase";
 import styles from "styles/leftbar.module.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,7 +13,7 @@ import { setIsNew, setModal } from "store/EditSlice";
 import { useMediaQuery } from "react-responsive";
 
 function LeftBar({ uid }: { uid: string }) {
-  const location = useLocation();
+  const pathName = useLocation().pathname;
   const navigate = useNavigate();
 
   const [profileModal, setProfileModal] = useState(false);
@@ -46,6 +45,7 @@ function LeftBar({ uid }: { uid: string }) {
     dispatch(setIsNew(true));
   };
 
+  console.log(pathName);
   return (
     <>
       {tweetModal && isNew && <TweetModal uid={uid} />}
@@ -66,16 +66,16 @@ function LeftBar({ uid }: { uid: string }) {
               <ul>
                 <li>
                   <Link to="/">
-                    <div className={`${styles["nav-item"]} ${location.pathname === "/" && styles.active}`}>
-                      <AiFillHome className={styles["nav-icon"]} />
+                    <div className={`${styles["nav-item"]} ${pathName === "/" && styles.active}`}>
+                      {pathName === "/" ? <AiFillHome className={styles["nav-icon"]} /> : <AiOutlineHome className={styles["nav-icon"]} />}
                       <span>홈</span>
                     </div>
                   </Link>
                 </li>
                 <li>
                   <Link to="/explore">
-                    <div className={`${styles["nav-item"]} ${location.pathname === "/explore" && styles.active}`}>
-                      <FaHashtag className={styles["nav-icon"]} />
+                    <div className={`${styles["nav-item"]} ${pathName === "/explore" && styles.active}`}>
+                      {pathName === "/explore" ? <FaHashtag className={styles["nav-icon"]} /> : <HiOutlineHashtag className={styles["nav-icon"]} />}
                       <span>
                         <b>탐색하기</b>
                       </span>
@@ -84,24 +84,25 @@ function LeftBar({ uid }: { uid: string }) {
                 </li>
                 <li>
                   <Link to="/notifications">
-                    <div className={`${styles["nav-item"]} ${location.pathname === "/notifications" && styles.active}`}>
-                      <RiNotification2Line className={styles["nav-icon"]} />
+                    <div className={`${styles["nav-item"]} ${pathName === "/notifications" && styles.active}`}>
+                      {pathName === "/notifications" ? <FaBell className={styles["nav-icon"]} /> : <FaRegBell className={styles["nav-icon"]} />}
                       <span>알림</span>
                     </div>
                   </Link>
                 </li>
                 <li>
                   <Link to="/bookmarks">
-                    <div className={`${styles["nav-item"]} ${location.pathname === "/bookmarks" && styles.active}`}>
-                      <HiOutlineBookmark className={styles["nav-icon"]} />
+                    <div className={`${styles["nav-item"]} ${pathName === "/bookmarks" && styles.active}`}>
+                      {pathName === "/bookmarks" ? <FaBookmark className={styles["nav-icon"]} /> : <FaRegBookmark className={styles["nav-icon"]} />}
+
                       <span>북마크</span>
                     </div>
                   </Link>
                 </li>
                 <li>
                   <Link to={`/${user.id}`}>
-                    <div className={`${styles["nav-item"]} ${location.pathname.split("/")[1] === `profile` && styles.active}`}>
-                      <BiUser className={styles["nav-icon"]} />
+                    <div className={`${styles["nav-item"]} ${pathName.split("/")[1] === user.id && styles.active}`}>
+                      {pathName.split("/")[1] === user.id ? <FaUser className={styles["nav-icon"]} /> : <FaRegUser className={styles["nav-icon"]} />}
                       <span>프로필</span>
                     </div>
                   </Link>

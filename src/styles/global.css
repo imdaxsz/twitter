@@ -750,7 +750,7 @@ input[disabled] {
   }
 
   .container {
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
     padding-bottom: 53px;
   }
 

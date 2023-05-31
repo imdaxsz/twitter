@@ -5,8 +5,8 @@ import { MoonLoader } from "react-spinners";
 const override: CSSProperties = {
   position: "absolute",
   top: "50vh",
-  left: "50%",
-  zIndex: 100,
+  left: "46vw",
+  zIndex: 9000,
 };
 
 const Loading = ({ loading }:{loading:boolean}) => {

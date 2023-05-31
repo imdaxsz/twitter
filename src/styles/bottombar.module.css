@@ -41,10 +41,6 @@
   padding: 8px;
 }
 
-.nav-item:hover {
-  background: #e8e7e8;
-}
-
 .nav-icon {
   width: 26.25px;
   height: 26.25px;
@@ -61,10 +57,15 @@
   border-radius: 100%;
 }
 
-@media screen and (max-width:499px) {
+@media screen and (max-width: 499px) {
   .container {
     width: 100%;
     max-width: 100vw;
   }
-  
+}
+
+@media (hover: hover) {
+  .nav-item:hover {
+    background: #e8e7e8;
+  }
 }

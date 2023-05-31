@@ -143,9 +143,8 @@ function EditProfile({ uid, setModal }: EditProps) {
   };
 
   const onOutsideClick = () => {
-    if (!profileModal && !headerModal)
-      setModal(false);
-  }
+    if (!profileModal && !headerModal) setModal(false);
+  };
 
   return (
     <>
@@ -154,13 +153,10 @@ function EditProfile({ uid, setModal }: EditProps) {
       {headerModal && <ImageCropper aspectRatio={3 / 1} onCrop={handleUploadImage2} modal={headerModal} setModal={setHeaderModal}></ImageCropper>}
       <div className="modal-wrapper" onClick={onOutsideClick}>
         <form onSubmit={onSubmit}>
-          <div className="modal modal-shadow" onClick={(e)=>e.stopPropagation()}>
+          <div className="modal modal-shadow" onClick={(e) => e.stopPropagation()}>
             <div className="modal-top flex">
               <div className="modal-icon" onClick={onCloseClick}>
-                {
-                  !isMobile ? <VscClose className="modal-svg" /> : <MdKeyboardBackspace className="modal-svg" />
-                }
-                
+                {!isMobile ? <VscClose className="modal-svg" /> : <MdKeyboardBackspace className="modal-svg" />}
               </div>
               <span>프로필 수정</span>
               <button className="btn xs black">저장</button>

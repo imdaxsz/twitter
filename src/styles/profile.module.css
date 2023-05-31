@@ -59,10 +59,6 @@
   transition: all 0.2s;
 }
 
-.edit-btn:hover {
-  background: #e7e7e8;
-}
-
 .info {
   width: 100%;
   margin: 4px 0px 14px;
@@ -140,13 +136,8 @@
   transition: all 0.2s;
 }
 
-.tab:hover {
-  background-color: #e7e7e8;
-}
-
 .tab p {
   font-size: 15px;
-
 }
 
 .box {
@@ -179,7 +170,7 @@
 
 @media screen and (max-width: 400px) {
   .w-1 {
-   width: 21%; 
+    width: 21%;
   }
   .w-2 {
     width: 23%;
@@ -188,5 +179,13 @@
   .w-3 {
     width: 35%;
   }
-  
+}
+
+@media (hover: hover) {
+  .tab:hover {
+    background-color: #e7e7e8;
+  }
+  .edit-btn:hover {
+    background: #e7e7e8;
+  }
 }
