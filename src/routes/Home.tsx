@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import Tweet, { TweetType } from "components/Tweet";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "store/store";
+import { setIsNew, setModal } from "store/EditSlice";
+import Tweet from "components/Tweet";
 import TweetFactory from "components/TweetFactory";
 import TopBar from "components/TopBar";
 import Loading from "components/Loading";
 import TweetModal from "components/TweetModal";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "store/store";
-import { getTweets } from "hooks/getTweet";
+import { getTweets } from "utils/getTweet";
+import { TweetType } from "types/types";
 import { FaFeatherAlt } from "react-icons/fa";
-import { setIsNew, setModal } from "store/EditSlice";
 
 const Home = ({ uid, isMobile }: { uid: string; isMobile?: boolean }) => {
   const [tweets, setTweets] = useState<TweetType[]>([]);

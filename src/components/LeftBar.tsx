@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { RiHashtag, RiMoreFill } from "react-icons/ri";
-import { FaBell, FaBookmark, FaFeatherAlt, FaHashtag, FaRegBell, FaRegBookmark, FaRegUser, FaTwitter, FaUser } from "react-icons/fa";
-import { AiFillHome, AiOutlineHome } from "react-icons/ai";
-import { HiHashtag, HiOutlineHashtag } from "react-icons/hi";
-import { auth } from "fBase";
-import styles from "styles/leftbar.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
-import TweetModal from "./TweetModal";
 import { setIsNew, setModal } from "store/EditSlice";
+import TweetModal from "./TweetModal";
+import { auth } from "fBase";
+import { RiMoreFill } from "react-icons/ri";
+import { FaBell, FaBookmark, FaFeatherAlt, FaHashtag, FaRegBell, FaRegBookmark, FaRegUser, FaTwitter, FaUser } from "react-icons/fa";
+import { AiFillHome, AiOutlineHome } from "react-icons/ai";
+import { HiOutlineHashtag } from "react-icons/hi";
 import { useMediaQuery } from "react-responsive";
+import styles from "styles/leftbar.module.css";
 
 function LeftBar({ uid }: { uid: string }) {
   const pathName = useLocation().pathname;
@@ -45,7 +45,6 @@ function LeftBar({ uid }: { uid: string }) {
     dispatch(setIsNew(true));
   };
 
-  console.log(pathName);
   return (
     <>
       {tweetModal && isNew && <TweetModal uid={uid} />}

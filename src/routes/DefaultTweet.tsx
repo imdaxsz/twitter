@@ -1,12 +1,13 @@
-import Tweet, { TweetType } from "components/Tweet";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getUserTweets } from "hooks/getTweet";
-import Loading from "components/Loading";
 import { useDispatch } from "react-redux";
 import { setCount } from "store/store";
+import { getUserTweets } from "utils/getTweet";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { dbService } from "fBase";
+import Tweet from "components/Tweet";
+import Loading from "components/Loading";
+import { TweetType } from "types/types";
 
 const DefaultTweets = ({ uid }: { uid: string }) => {
   const [loading, setLoading] = useState(true);

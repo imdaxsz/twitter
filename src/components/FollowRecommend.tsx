@@ -1,9 +1,9 @@
-import styles from "styles/rightbar.module.css";
 import { useNavigate } from "react-router-dom";
-import { PersonProps } from "./Person";
 import { useSelector } from "react-redux";
 import { RootState } from "store/store";
+import { PersonProps } from "./Person";
 import FollowBtn from "./FollowBtn";
+import styles from "styles/rightbar.module.css";
 
 function FollowRecommend({ user, uid }: PersonProps) {
   const navigate = useNavigate();

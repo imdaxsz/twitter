@@ -2,13 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "store/store";
 import FollowBtn from "./FollowBtn";
-
-export interface PersonType {
-  id: string;
-  name: string;
-  profileImg: string | null;
-  bio?: string;
-}
+import { PersonType } from "types/types";
 
 export interface PersonProps {
   user: PersonType;

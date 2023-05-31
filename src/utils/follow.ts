@@ -1,4 +1,4 @@
-import { PersonType } from "components/Person";
+import { PersonType } from "types/types";
 import { dbCollection, dbService } from "fBase";
 import { doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 

@@ -1,11 +1,11 @@
 import AppRouter from "./Router";
-import { useEffect, useState } from "react";
-import { auth, dbService } from "fBase";
-import { User, onAuthStateChanged } from "firebase/auth";
 import Initialization from "./Initialization";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
 import { UserState, initUser, reset } from "store/userSlice";
+import { auth, dbService } from "fBase";
+import { User, onAuthStateChanged } from "firebase/auth";
 import { doc, onSnapshot } from "firebase/firestore";
 
 function App() {

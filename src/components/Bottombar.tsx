@@ -1,10 +1,10 @@
-import { AiFillHome, AiOutlineHome } from "react-icons/ai";
-import { FaBell, FaRegBell, FaSearch } from "react-icons/fa";
-import { BiSearch } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { RootState } from "store/store";
 import styles from "styles/bottombar.module.css";
+import { AiFillHome, AiOutlineHome } from "react-icons/ai";
+import { FaBell, FaRegBell, FaSearch } from "react-icons/fa";
+import { BiSearch } from "react-icons/bi";
 
 const Bottombar = () => {
   const user = useSelector((state: RootState) => state.user);

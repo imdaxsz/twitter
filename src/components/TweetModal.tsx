@@ -1,8 +1,8 @@
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { resetEdit } from "store/EditSlice";
 import TweetFactory from "./TweetFactory";
 import { VscClose } from "react-icons/vsc";
-import { resetEdit } from "store/EditSlice";
-import { useEffect } from "react";
 
 interface TweetProps {
   uid: string;

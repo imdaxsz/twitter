@@ -1,9 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Auth from "routes/Auth";
-import Home from "routes/Home";
+import Root from "routes/Root";
 import Profile from "routes/Profile";
-import LeftBar from "./LeftBar";
-import RightBar from "./RightBar";
 import BookMarks from "routes/Bookmarks";
 import Explore from "routes/Explore";
 import Notifications from "routes/Notifications";
@@ -15,7 +13,6 @@ import TweetDetail from "routes/TweetDetail";
 import SearchResult from "routes/SearchResult";
 import Replies from "routes/Replies";
 import FollowList from "routes/FollowList";
-import Root from "routes/Root";
 import { useMediaQuery } from "react-responsive";
 
 interface Router {
@@ -26,35 +23,31 @@ interface Router {
 const AppRouter = ({ isLoggedIn, uid }: Router) => {
   const isMobile = useMediaQuery({ maxWidth: 499 });
   return (
-    <div>
-      <div>
-        <Routes>
-          {isLoggedIn ? (
-            <>
-              <Route path="/" element={<Root uid={uid} isMobile={isMobile} />}>
-                <Route path="explore" element={<Explore uid={uid} />} />
-                <Route path="notifications" element={<Notifications uid={uid} />} />
-                <Route path="bookmarks" element={<BookMarks uid={uid} />} />
-                <Route path="/:id" element={<Profile uid={uid} isMobile={isMobile} />}>
-                  <Route path="" element={<DefaultTweets uid={uid} />} />
-                  <Route path="with_replies" element={<Replies uid={uid} />} />
-                  <Route path="media" element={<Media uid={uid} />} />
-                  <Route path="likes" element={<Likes uid={uid} />} />
-                  <Route path="followers" element={<FollowList uid={uid} filter="followers" />} />
-                  <Route path="following" element={<FollowList uid={uid} filter="following" />} />
-                </Route>
-                <Route path="/:id/status/:tweetId" element={<TweetDetail uid={uid} isMobile={isMobile} />} />
-                <Route path="connect_people" element={<ConnectPeople uid={uid} />} />
-                <Route path="search" element={<SearchResult uid={uid} />} />
-              </Route>
-            </>
-          ) : (
-            <Route path="/" element={<Auth />} />
-          )}
-          <Route path="*" element={<Auth />} />
-        </Routes>
-      </div>
-    </div>
+    <Routes>
+      {isLoggedIn ? (
+        <>
+          <Route path="/" element={<Root uid={uid} isMobile={isMobile} />}>
+            <Route path="explore" element={<Explore uid={uid} />} />
+            <Route path="notifications" element={<Notifications uid={uid} />} />
+            <Route path="bookmarks" element={<BookMarks uid={uid} />} />
+            <Route path="/:id" element={<Profile uid={uid} isMobile={isMobile} />}>
+              <Route path="" element={<DefaultTweets uid={uid} />} />
+              <Route path="with_replies" element={<Replies uid={uid} />} />
+              <Route path="media" element={<Media uid={uid} />} />
+              <Route path="likes" element={<Likes uid={uid} />} />
+              <Route path="followers" element={<FollowList uid={uid} filter="followers" />} />
+              <Route path="following" element={<FollowList uid={uid} filter="following" />} />
+            </Route>
+            <Route path="/:id/status/:tweetId" element={<TweetDetail uid={uid} />} />
+            <Route path="connect_people" element={<ConnectPeople uid={uid} />} />
+            <Route path="search" element={<SearchResult uid={uid} />} />
+          </Route>
+        </>
+      ) : (
+        <Route path="/" element={<Auth />} />
+      )}
+      <Route path="*" element={<Auth />} />
+    </Routes>
   );
 };
 

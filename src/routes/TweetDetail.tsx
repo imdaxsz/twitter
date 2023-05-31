@@ -1,12 +1,13 @@
-import TopBar from "components/TopBar";
-import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import Tweet, { TweetType } from "components/Tweet";
+import { useParams } from "react-router-dom";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { dbService } from "fBase";
+import TopBar from "components/TopBar";
+import Tweet from "components/Tweet";
 import TweetFactory from "components/TweetFactory";
+import { TweetType } from "types/types";
 
-const TweetDetail = ({ uid, isMobile }: { uid: string; isMobile?: boolean }) => {
+const TweetDetail = ({ uid }: { uid: string }) => {
   const { tweetId } = useParams();
   const [tweet, setTweet] = useState<TweetType>();
   const [replies, setReplies] = useState<TweetType[]>([]);
@@ -59,7 +60,6 @@ const TweetDetail = ({ uid, isMobile }: { uid: string; isMobile?: boolean }) => 
   };
 
   useEffect(() => {
-    console.log(tweetId);
     if (tweetId) {
       getCurrentTweet(tweetId);
     }

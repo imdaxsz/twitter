@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { VscClose, VscChromeClose } from "react-icons/vsc";
-import { TbCameraPlus } from "react-icons/tb";
-import { doc, updateDoc } from "firebase/firestore";
-import { auth, dbService, storageService } from "fBase";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
 import { changeProfile } from "store/userSlice";
+import Loading from "./Loading";
 import ImageCropper from "./ImageCropper";
 import useImageCompress from "hooks/imageCompress";
 import { dataURItoFile } from "../utils/common";
 import { v4 as uuidv4 } from "uuid";
+import { doc, updateDoc } from "firebase/firestore";
+import { auth, dbService, storageService } from "fBase";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { updateProfile } from "firebase/auth";
-import Loading from "./Loading";
-import { MdKeyboardBackspace } from "react-icons/md";
 import { useMediaQuery } from "react-responsive";
+import { VscClose, VscChromeClose } from "react-icons/vsc";
+import { TbCameraPlus } from "react-icons/tb";
+import { MdKeyboardBackspace } from "react-icons/md";
 
 interface EditProps {
   uid: string;

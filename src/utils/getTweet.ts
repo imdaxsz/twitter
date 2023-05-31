@@ -1,6 +1,6 @@
-import { TweetType } from "components/Tweet";
+import { TweetType } from "types/types";
 import { dbCollection, dbService } from "fBase";
-import { getDocs, onSnapshot, orderBy, query, where } from "firebase/firestore";
+import { onSnapshot, orderBy, query, where } from "firebase/firestore";
 
 type getTweetFun = (setTweets: React.Dispatch<React.SetStateAction<TweetType[]>>, id?: string, filter?: string) => void;
 
@@ -10,14 +10,22 @@ export const getTweets: getTweetFun = (setTweets, id, filter) => {
   let q;
 
   if (filter === "all") {
+    // 전체 트윗 조회
     q = query(dbCollection(dbService, "tweets"), where("mention", "==", ""), orderBy("createdAt", "desc"));
   } else if (filter === "media") {
+    // 미디어
     q = query(dbCollection(dbService, "tweets"), where("creatorId", "==", id), where("attachmentUrl", "!=", ""), orderBy("attachmentUrl"), orderBy("createdAt", "desc"));
   } else if (filter === "replies") {
+    // 답글
     q = query(dbCollection(dbService, "tweets"), where("creatorId", "==", id), where("mention", "!=", ""), orderBy("mention"), orderBy("createdAt", "desc"));
   } else if (filter === "my") {
+    // 사용자 트윗
     q = query(dbCollection(dbService, "tweets"), where("creatorId", "==", id), where("mention", "==", ""), orderBy("createdAt", "desc"));
+  } else if (filter === "likes") {
+    // 마음에 들어요
+    q = query(dbCollection(dbService, "tweets"), where("likes", "array-contains", id), orderBy("createdAt", "desc"));
   } else {
+    // 검색
     q = query(dbCollection(dbService, "tweets"), where("text", ">=", filter), where("text", "<=", filter + "\uf8ff"), orderBy("text"), orderBy("createdAt", "desc"));
   }
   onSnapshot(q, (snapshot) => {
@@ -44,9 +52,7 @@ export const getUserTweets: getUserTweetFun = (setTweets, id, filter) => {
     const q = query(dbCollection(dbService, "users"), where("id", "==", id));
     onSnapshot(q, (snapshot) => {
       snapshot.docs.map((doc) => {
-        if (filter === "likes") setTweets(doc.data().likes);
-        else if (filter === "default") setTweets(doc.data().myTweets);
-        else if (filter === "bookmarks") setTweets(doc.data().bookmarks);
+        if (filter === "default") setTweets(doc.data().myTweets);
       });
     });
   }

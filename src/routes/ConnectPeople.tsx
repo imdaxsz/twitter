@@ -1,9 +1,10 @@
-import TopBar from "components/TopBar";
 import { useState, useEffect } from "react";
-import { getUsers } from "hooks/getUsers";
 import { useSelector } from "react-redux";
 import { RootState } from "store/store";
-import Person, { PersonType } from "components/Person";
+import TopBar from "components/TopBar";
+import Person from "components/Person";
+import { getUsers } from "utils/getUsers";
+import { PersonType } from "types/types";
 
 const ConnectPeople = ({ uid, explore }: { uid: string; explore?: boolean }) => {
   const user = useSelector((state: RootState) => state.user);

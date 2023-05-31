@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { TweetType } from "components/Tweet";
+import { TweetType } from "types/types";
 
 interface EditingState {
   isNew: boolean;
@@ -17,7 +17,7 @@ const initialState: EditingState = {
     creatorId: "",
     creatorUid: "",
     attachmentUrl: "",
-    likes: 0,
+    likes: [],
     retweets: 0,
     replies: [],
     mention: "",

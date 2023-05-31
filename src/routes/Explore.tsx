@@ -1,6 +1,6 @@
 import SearchBar from "components/SearchBar";
-import tb from "styles/topbar.module.css"
 import ConnectPeople from "./ConnectPeople";
+import tb from "styles/topbar.module.css"
 
 function Explore({uid}:{uid:string}) {
   return (

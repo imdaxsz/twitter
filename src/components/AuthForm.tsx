@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import styles from "styles/auth.module.css";
 import { auth, dbService } from "fBase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateCurrentUser } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { updateProfile } from "firebase/auth";
 import { UserState } from "store/userSlice";
+import styles from "styles/auth.module.css";
 
 const AuthForm = () => {
   const [email, setEmail] = useState("");
@@ -50,8 +50,6 @@ const AuthForm = () => {
             bookmarks: [],
             following: [],
             followers: [],
-            // tweets: [],
-            // replies: [],
           };
 
           try {

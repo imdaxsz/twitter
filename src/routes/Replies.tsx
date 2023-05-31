@@ -1,10 +1,11 @@
-import Tweet, { TweetType } from "components/Tweet";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getTweets } from "hooks/getTweet";
-import Loading from "components/Loading";
 import { useDispatch } from "react-redux";
 import { setCount } from "store/store";
+import { getTweets } from "utils/getTweet";
+import Tweet from "components/Tweet";
+import Loading from "components/Loading";
+import { TweetType } from "types/types";
 
 const Replies = ({ uid }: { uid: string }) => {
   const [tweets, setTweets] = useState<TweetType[]>([]);

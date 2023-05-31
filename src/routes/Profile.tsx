@@ -1,30 +1,18 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, Outlet, useLocation, useParams } from "react-router-dom";
-import TopBar from "components/TopBar";
-import { MdCalendarMonth } from "react-icons/md";
-import styles from "styles/profile.module.css";
-import EditProfile from "components/EditProfile";
 import { useSelector } from "react-redux";
 import { RootState } from "store/store";
-import { onSnapshot, query, where } from "firebase/firestore";
-import { dbCollection, dbService } from "fBase";
+import TopBar from "components/TopBar";
+import EditProfile from "components/EditProfile";
 import FollowBtn from "components/FollowBtn";
-import { PersonType } from "components/Person";
+import { PersonType, UserInfo } from "types/types";
+import { getUserData } from "utils/getUsers";
+import styles from "styles/profile.module.css";
+import { MdCalendarMonth } from "react-icons/md";
 
 interface ProfileProps {
   uid: string;
   isMobile: boolean;
-}
-
-interface UserInfo {
-  id: string;
-  name: string;
-  bio: string;
-  profileImg: string | null;
-  headerImg: string | null;
-  following: number;
-  followers: number;
-  joinDate: string;
 }
 
 const Profile = ({ uid, isMobile }: ProfileProps) => {
@@ -41,33 +29,8 @@ const Profile = ({ uid, isMobile }: ProfileProps) => {
     setModal(true);
   };
 
-  const getUserData = async () => {
-    const q = query(dbCollection(dbService, "users"), where("id", "==", paramId));
-
-    onSnapshot(q, (snapshot) => {
-      const userObj: UserInfo = {
-        id: snapshot.docs[0].data().id,
-        name: snapshot.docs[0].data().name,
-        bio: snapshot.docs[0].data().bio,
-        profileImg: snapshot.docs[0].data().profileImg,
-        headerImg: snapshot.docs[0].data().headerImg,
-        followers: snapshot.docs[0].data().followers.length,
-        following: snapshot.docs[0].data().following.length,
-        joinDate: snapshot.docs[0].data().joinDate,
-      };
-      const userProfile: PersonType = {
-        id: snapshot.docs[0].data().id,
-        name: snapshot.docs[0].data().name,
-        bio: snapshot.docs[0].data().bio,
-        profileImg: snapshot.docs[0].data().profileImg,
-      };
-      setUserInfo(userObj);
-      setUserBtnProps(userProfile);
-    });
-  };
-
   useEffect(() => {
-    getUserData();
+    if (paramId) getUserData(paramId, setUserInfo, setUserBtnProps);
   }, [paramId]);
 
   return (

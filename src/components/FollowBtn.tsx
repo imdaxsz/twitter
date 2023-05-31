@@ -1,8 +1,7 @@
-import { follow, unFollow } from "hooks/follow";
-import { PersonType } from "./Person";
+import { useState, useEffect } from "react";
 import { UserState } from "store/userSlice";
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { PersonType } from "types/types";
+import { follow, unFollow } from "utils/follow";
 
 interface FollowBtnProps {
   uid: string;
@@ -36,7 +35,6 @@ const FollowBtn = ({ uid, user, currentUser}: FollowBtnProps) => {
   };
 
   useEffect(() => {
-    // console.log(currentUser.following);
     if (currentUser.following.findIndex((following) => following.id === user.id) >= 0) setFollowing(true);
     else setFollowing(false);
   }, [currentUser.following]);

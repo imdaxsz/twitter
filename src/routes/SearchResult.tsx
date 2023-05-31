@@ -1,26 +1,24 @@
-import SearchBar from "components/SearchBar";
-import { MdKeyboardBackspace } from "react-icons/md";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import SearchBar from "components/SearchBar";
+import Person from "components/Person";
+import Tweet from "components/Tweet";
+import { getUsers } from "utils/getUsers";
+import { getTweets } from "utils/getTweet";
+import { PersonType, TweetType } from "types/types";
 import tb from "styles/topbar.module.css";
 import styles from "styles/profile.module.css";
-import { useState, useEffect } from "react";
-import Person, { PersonType } from "components/Person";
-import { useSelector } from "react-redux";
-import { RootState } from "store/store";
-import Tweet, { TweetType } from "components/Tweet";
-import { getUsers } from "hooks/getUsers";
-import { getTweets } from "hooks/getTweet";
+import { MdKeyboardBackspace } from "react-icons/md";
 
-const SearchResult = ({uid}:{uid:string}) => {
+const SearchResult = ({ uid }: { uid: string }) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const keyword = searchParams.get("q");
   const filter = searchParams.get("f");
 
-  const user = useSelector((state: RootState) => state.user);
   const [users, setUsers] = useState<PersonType[]>([]);
   const [tweets, setTweets] = useState<TweetType[]>([]);
-  
+
   const onClick = () => {
     navigate(-1);
   };
@@ -32,7 +30,7 @@ const SearchResult = ({uid}:{uid:string}) => {
     if (keyword && !filter) {
       getTweets(setTweets, uid, keyword);
     }
-  }, [keyword, filter]);
+  }, [keyword, filter, uid]);
 
   return (
     <div className="wrapper">

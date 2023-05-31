@@ -1,4 +1,5 @@
 import React from "react";
+import { UserState } from "store/userSlice";
 import { signInWithPopup, GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
 import { auth, dbService } from "fBase";
 import { doc, setDoc } from "firebase/firestore";
@@ -6,7 +7,6 @@ import AuthForm from "components/AuthForm";
 import styles from "styles/auth.module.css";
 import { FaTwitter, FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-import { UserState } from "store/userSlice";
 
 const Auth = () => {
   const onSocialClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -46,8 +46,6 @@ const Auth = () => {
           bookmarks: [],
           following: [],
           followers: [],
-          // tweets: [],
-          // replies: [],
         };
 
         try {

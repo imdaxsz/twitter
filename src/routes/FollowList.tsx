@@ -1,11 +1,9 @@
-import Person, { PersonType } from "components/Person";
-import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { RootState } from "store/store";
+import Person from "components/Person";
+import { getUserFollowList } from "utils/getUsers";
+import { PersonType } from "types/types";
 import styles from "styles/profile.module.css";
-import { useEffect } from "react";
-import { useState } from "react";
-import { getUserFollowList } from "hooks/getUsers";
 
 const FollowList = ({ uid, filter }: { uid: string; filter: string }) => {
   const location = useLocation();

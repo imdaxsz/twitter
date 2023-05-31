@@ -1,12 +1,12 @@
-import FollowRecommend from "./FollowRecommend";
-import SearchBar from "./SearchBar";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import styles from "styles/rightbar.module.css";
 import { useSelector } from "react-redux";
 import { RootState } from "store/store";
-import { useEffect, useState } from "react";
-import { getUsers } from "hooks/getUsers";
-import { PersonType } from "./Person";
+import FollowRecommend from "./FollowRecommend";
+import SearchBar from "./SearchBar";
+import { getUsers } from "utils/getUsers";
+import { PersonType } from "types/types";
+import styles from "styles/rightbar.module.css";
 
 function RightBar({ uid }: { uid: string }) {
   const location = useLocation();
