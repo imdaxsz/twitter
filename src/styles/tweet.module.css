@@ -112,6 +112,7 @@
 
 .tweet span {
   font-size: 15px;
+  line-height: 20px;
 }
 
 .mention {
@@ -185,6 +186,7 @@
 
 .detail .tweet span {
   font-size: 17px;
+  line-height: 24px;
 }
 
 .detail .date {

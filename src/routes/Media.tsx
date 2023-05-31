@@ -1,10 +1,11 @@
-import Tweet, { TweetType } from "components/Tweet";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getTweets } from "hooks/getTweet";
-import Loading from "components/Loading";
 import { useDispatch } from "react-redux";
 import { setCount } from "store/store";
+import Tweet from "components/Tweet";
+import Loading from "components/Loading";
+import { getTweets } from "utils/getTweet";
+import { TweetType } from "types/types";
 
 const Media = ({ uid }: { uid: string }) => {
   const [tweets, setTweets] = useState<TweetType[]>([]);
@@ -26,9 +27,18 @@ const Media = ({ uid }: { uid: string }) => {
   return (
     <div>
       <Loading loading={loading} />
-      {tweets.map((tweet) => (
-        <Tweet key={tweet.id} tweetObj={tweet} uid={uid} />
-      ))}
+      {tweets.length > 0 ? (
+        <>
+          {tweets.map((tweet) => (
+            <Tweet key={tweet.id} tweetObj={tweet} uid={uid} />
+          ))}
+        </>
+      ) : (
+        <div className="no-tweet">
+          <h2>조명, 카메라... 첨부!</h2>
+          <p>사진을 포함한 트윗을 보내면 여기에 표시됩니다.</p>
+        </div>
+      )}
     </div>
   );
 };

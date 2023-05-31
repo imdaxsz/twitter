@@ -350,6 +350,24 @@ input[disabled] {
   border-radius: 100%;
 }
 
+.no-tweet {
+  width: 400px;
+  height: 168px;
+  padding: 0 32px;
+  margin: 32px auto;
+}
+
+.no-tweet h2 {
+  font-size: 31px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.no-tweet p{
+  font-size: 15px;
+  line-height: 20px;
+}
+
 /* 더보기 아이콘 */
 .more-box {
   position: absolute;
@@ -705,6 +723,10 @@ input[disabled] {
   width: 100%;
   min-height: 24px;
   padding-top: 4px;
+}
+
+.people-bio span {
+  line-height: 20px;
 }
 
 .flex-item {
