@@ -176,3 +176,17 @@
 .w-0 {
   width: 50%;
 }
+
+@media screen and (max-width: 400px) {
+  .w-1 {
+   width: 21%; 
+  }
+  .w-2 {
+    width: 23%;
+  }
+
+  .w-3 {
+    width: 35%;
+  }
+  
+}

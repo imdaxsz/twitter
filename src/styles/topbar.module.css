@@ -47,10 +47,6 @@
   transition: all 0.2s;
 }
 
-.hover:hover {
-  background: #e8e7e8;
-}
-
 .icon {
   width: 20px;
   height: 20px;
@@ -85,5 +81,11 @@
 @media screen and (max-width: 499px) {
   .container {
     max-width: 100vw;
+  }
+}
+
+@media (hover: hover) {
+  .hover:hover {
+    background: #e8e7e8;
   }
 }

@@ -422,7 +422,7 @@ input[disabled] {
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.4);
   position: fixed;
-  z-index: 80;
+  z-index: 800;
 }
 
 .modal {
@@ -431,7 +431,7 @@ input[disabled] {
   min-height: 560px;
   max-height: 90vh;
   border-radius: 16px;
-  z-index: 90;
+  z-index: 900;
   background: white;
   position: absolute;
   top: 50%;
@@ -446,7 +446,7 @@ input[disabled] {
   transform: translate(-50%, -17%);
   display: flex;
   flex-direction: column;
-  z-index: 100;
+  z-index: 900;
   min-height: fit-content;
   overflow: auto;
 }
@@ -661,7 +661,7 @@ input[disabled] {
   border: none;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, 0);
+  transform: translate(-50%, -50%);
   height: 580px;
   z-index: 9999;
 }
@@ -673,6 +673,7 @@ input[disabled] {
 }
 
 .people-container {
+  width: 100%;
   position: relative;
   min-height: 72px;
   align-items: flex-start;
@@ -731,6 +732,9 @@ input[disabled] {
   .modal {
     min-width: 80vw;
   }
+  .people-content {
+    width: calc(100% - 60px);
+  }
 }
 
 @media screen and (max-width: 499px) {
@@ -747,6 +751,7 @@ input[disabled] {
 
   .container {
     overflow-y: scroll;
+    padding-bottom: 53px;
   }
 
   .modal {

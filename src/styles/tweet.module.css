@@ -17,10 +17,6 @@
   transition: all 0.2s;
 }
 
-.tweet:hover {
-  background: #f7f7f7;
-}
-
 .user-img {
   position: absolute;
   left: 16px;
@@ -47,6 +43,7 @@
   width: 506px;
   min-height: 20px;
   height: 100%;
+  flex-grow: 1;
   display: flex;
   align-items: center;
 }
@@ -183,7 +180,7 @@
   width: 100%;
   margin-top: 12px;
   min-height: 24px;
-  height: fit-content;
+  height: 100%;
 }
 
 .detail .tweet span {
@@ -224,11 +221,20 @@
 }
 
 @media screen and (max-width: 499px) {
+  .tweet span {
+    flex-grow: 1
+  };
   .twtimg {
     max-height: 370px;
   }
 
   .detail .twtimg {
     max-height: 450px;
+  }
+}
+
+@media (hover: hover) {
+  .tweet:hover {
+    background: #f7f7f7;
   }
 }

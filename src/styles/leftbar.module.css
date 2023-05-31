@@ -14,7 +14,7 @@
   position: fixed;
   display: flex;
   flex-direction: column;
-  z-index: 1000;
+  z-index: 200;
 }
 
 .pl {
@@ -45,10 +45,6 @@
   transition: all 0.2s;
 }
 
-.nav-item:hover {
-  background: #e8e7e8;
-}
-
 .nav-icon {
   width: 26.25px;
   height: 26.25px;
@@ -74,10 +70,6 @@
   overflow: hidden;
   transition: all 0.2s;
   cursor: pointer;
-}
-
-.profile:hover {
-  background: #e8e7e8;
 }
 
 .profile-img {
@@ -121,7 +113,7 @@
   top: 375px;
   background: white;
   border-radius: 12px;
-  z-index: 9999;
+  z-index: 220;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s;
@@ -176,14 +168,25 @@
   }
 }
 
-@media screen and (max-width: 1298px){
+@media screen and (max-width: 1298px) {
   .modal {
     left: 15%;
   }
 }
 
 @media screen and (max-width: 499px) {
-  .wrapper, .container {
+  .wrapper,
+  .container {
     display: none;
   }
+}
+
+@media (hover: hover) {
+  .nav-item:hover {
+    background: #e8e7e8;
+  }
+
+  .profile:hover {
+  background: #e8e7e8;
+}
 }

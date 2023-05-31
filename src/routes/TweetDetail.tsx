@@ -89,7 +89,6 @@ const TweetDetail = ({ uid, isMobile }: { uid: string; isMobile?: boolean }) => 
             )}
           </>
         )}
-        {isMobile && <div style={{ width: "100vw", height: "53px" }}></div>}
       </div>
     </div>
   );

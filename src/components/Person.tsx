@@ -24,7 +24,7 @@ const Person = ({ user, uid }: PersonProps) => {
   };
 
   return (
-    <div className="flex w1 p1 people-container" onClick={onClick}>
+    <div className="flex p1 people-container" onClick={onClick}>
       <div className="user-img">
         <img referrerPolicy="no-referrer" src={user.profileImg ? user.profileImg : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userImg"></img>
       </div>

@@ -86,7 +86,8 @@ function Tweet({ tweetObj, uid, paramId, detail }: TweetProps) {
     navigate(`/${tweetObj.creatorId}`);
   };
 
-  const onImgClick = () => {
+  const onImgClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
     window.open(tweetObj.attachmentUrl);
   };
 
@@ -259,7 +260,7 @@ function Tweet({ tweetObj, uid, paramId, detail }: TweetProps) {
             {tweetObj.mention !== "" && (
               <div className={styles.mention}>
                 <p>
-                  <span>{tweetObj.mentionTo}</span> 님에게 보내는 답글
+                  <span>@{tweetObj.mentionTo}</span> 님에게 보내는 답글
                 </p>
               </div>
             )}
@@ -269,8 +270,8 @@ function Tweet({ tweetObj, uid, paramId, detail }: TweetProps) {
               </div>
             )}
             {tweetObj.attachmentUrl !== "" && (
-              <div className={styles.twtimg} onClick={onImgClick}>
-                <img src={tweetObj.attachmentUrl} alt={tweetObj.attachmentUrl} />
+              <div className={styles.twtimg}>
+                <img src={tweetObj.attachmentUrl} alt={tweetObj.attachmentUrl} onClick={onImgClick} />
               </div>
             )}
             {detail && (
