@@ -13,7 +13,7 @@ input {
 }
 
 input[type="file"] {
-  width: 0px;
+  display: none;
 }
 
 .background {
@@ -764,7 +764,7 @@ input[disabled] {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
   }
   .wrapper,
   .container {

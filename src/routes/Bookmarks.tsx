@@ -7,7 +7,7 @@ import Loading from "components/Loading";
 import { getBookmarks } from "utils/getBookmarks";
 import { TweetType } from "types/types";
 
-function BookMarks({ uid }: { uid: string }) {
+function BookMarks({ uid, isMobile }: { uid: string, isMobile:boolean }) {
   const [loading, setLoading] = useState(true);
   const [tweets, setTweets] = useState<TweetType[]>([]);
   const { bookmarks } = useSelector((state: RootState) => state.user);
@@ -23,7 +23,7 @@ function BookMarks({ uid }: { uid: string }) {
   return (
     <div className="wrapper">
       <Loading loading={loading} />
-      <TopBar title={"북마크"} uid={uid} />
+      <TopBar title={"북마크"} uid={uid} isMobile={isMobile} />
       <div className="container">
         <div>
           {tweets.map((tweet) => {

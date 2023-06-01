@@ -1,14 +1,14 @@
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { RootState } from "store/store";
 import { useSelector } from "react-redux";
 import { auth } from "fBase";
 import styles from "styles/topbar.module.css";
 import { MdKeyboardBackspace } from "react-icons/md";
-import { FaTwitter } from "react-icons/fa";
+import { FaBookmark, FaRegBookmark, FaTwitter } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 
 function TopBar({ title, uid, isMobile }: { title: string; uid: string; isMobile?: boolean }) {
-  const location = useLocation();
+  const pathName = useLocation().pathname;
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.user);
   const count = useSelector((state: RootState) => state.tweetCount);
@@ -26,24 +26,36 @@ function TopBar({ title, uid, isMobile }: { title: string; uid: string; isMobile
     }
   };
 
+  const mobileHome = Boolean(title === "홈" && isMobile);
+  const backSpace = Boolean([paramId, "connect_people"].includes(pathName.split("/")[1]) || (isMobile && pathName.split("/")[1] === "bookmarks"));
+  console.log(backSpace);
+
   return (
-    <div className={`${styles.container} ${title === "홈" && isMobile && styles.center}`}>
-      {[paramId, "connect_people"].includes(location.pathname.split("/")[1]) ? (
+    <div className={`${styles.container} ${mobileHome && styles.center}`}>
+      {backSpace ? (
         <div className={styles["icon-box"]}>
           <div className={styles.hover} onClick={onClick}>
             <MdKeyboardBackspace className={styles.icon} />
           </div>
         </div>
       ) : null}
-      {isMobile && title === "홈" && <FaTwitter className="sm-logo" />}
+      {mobileHome && <FaTwitter className="sm-logo" />}
       <div className="flex-col">
-        {!(isMobile && title === "홈") && <h3>{title}</h3>}
+        {!mobileHome && <h3>{title}</h3>}
         {title === "북마크" ? <p>@{user.id}</p> : null}
         {paramId && !tweetId ? <p>{count.value} 트윗</p> : null}
       </div>
-      {isMobile && location.pathname.split("/")[1] === paramId && (
-        <div className={`${styles["icon-box"]} ${styles.right}`} onClick={onLogOutClick}>
-          <FiLogOut className={styles.icon} />
+      {isMobile && pathName.split("/")[1] === user.id && (
+        <div className={`${styles["mb-icons"]}`}>
+          <Link to="/bookmarks">
+            <div className={`${styles["mb-icon"]}`}>
+              {" "}
+              <FaRegBookmark className={styles.icon} />
+            </div>
+          </Link>
+          <div className={`${styles["mb-icon"]}`} onClick={onLogOutClick}>
+            <FiLogOut className={styles.icon} />
+          </div>
         </div>
       )}
     </div>

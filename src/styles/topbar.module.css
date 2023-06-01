@@ -61,9 +61,16 @@
   justify-content: center;
 }
 
-.right {
+.mb-icons {
+  display: flex;
   position: absolute;
   right: 10px;
+  justify-content: center;
+  width: 68.8px;
+  height: 34.4px;
+}
+
+.mb-icon {
   width: 34.4px;
   height: 34.4px;
   display: flex;
@@ -81,6 +88,12 @@
 @media screen and (max-width: 499px) {
   .container {
     max-width: 100vw;
+  }
+  .container h3 {
+  font-size: 17px;
+  }
+  .container p {
+    margin-top: 6px;
   }
 }
 
