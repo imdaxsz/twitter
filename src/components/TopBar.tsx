@@ -1,11 +1,13 @@
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { RootState } from "store/store";
 import { useSelector } from "react-redux";
-import { auth } from "fBase";
+import { auth, dbService } from "fBase";
 import styles from "styles/topbar.module.css";
 import { MdKeyboardBackspace } from "react-icons/md";
-import { FaBookmark, FaRegBookmark, FaTwitter } from "react-icons/fa";
+import { FaRegBookmark, FaTwitter } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
+import { RiDeleteBin5Line } from "react-icons/ri";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 function TopBar({ title, uid, isMobile }: { title: string; uid: string; isMobile?: boolean }) {
   const pathName = useLocation().pathname;
@@ -26,9 +28,20 @@ function TopBar({ title, uid, isMobile }: { title: string; uid: string; isMobile
     }
   };
 
+  const onClearNotiClick = async () => {
+    const ok = window.confirm("알림을 삭제할까요?");
+    if (ok) {
+      const notiRef = doc(dbService, "notification", user.id);
+      const docSnap = await getDoc(notiRef);
+      if (docSnap.exists()) {
+        if (pathName.split("/").slice(-1)[0] === "notifications") await updateDoc(notiRef, { tweetNoti: [] });
+        else await updateDoc(notiRef, { follow: [] });
+      }
+    }
+  };
+
   const mobileHome = Boolean(title === "홈" && isMobile);
   const backSpace = Boolean([paramId, "connect_people"].includes(pathName.split("/")[1]) || (isMobile && pathName.split("/")[1] === "bookmarks"));
-  console.log(backSpace);
 
   return (
     <div className={`${styles.container} ${mobileHome && styles.center}`}>
@@ -56,6 +69,11 @@ function TopBar({ title, uid, isMobile }: { title: string; uid: string; isMobile
           <div className={`${styles["mb-icon"]}`} onClick={onLogOutClick}>
             <FiLogOut className={styles.icon} />
           </div>
+        </div>
+      )}
+      {pathName.split("/")[1] === "notifications" && (
+        <div className={`${styles["mb-icon"]} ${styles.right}`} onClick={onClearNotiClick}>
+          <RiDeleteBin5Line className={styles.icon} />
         </div>
       )}
     </div>

@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
 import { setMyTweets } from "store/userSlice";
-import { TweetType } from "types/types";
+import { TweetType, tweetNoti } from "types/types";
 import { dbService } from "fBase";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 export const useToggleRetweet = (tweetObj: TweetType, id: string, uid: string) => {
   const [retweet, setRetweet] = useState(false);
@@ -18,6 +18,19 @@ export const useToggleRetweet = (tweetObj: TweetType, id: string, uid: string) =
       dispatch(setMyTweets([tweetObj.id, ...myTweets]));
       await updateDoc(doc(dbService, "tweets", tweetObj.id), { retweets: [id, ...tweetObj.retweets] });
       setRetweet(true);
+
+      // 리트윗 알림
+      const notiRef = doc(dbService, "notification", tweetObj.creatorId);
+      console.log(notiRef.id);
+      const docSnap = await getDoc(notiRef);
+      const noti: tweetNoti = {
+        uid,
+        type: "retweet",
+        tweet: tweetObj,
+      };
+      if (docSnap.exists()) {
+        await updateDoc(notiRef, { tweetNoti: [noti, ...docSnap.data().tweetNoti] });
+      }
     } else {
       // 리트윗 취소
       let result: string[] = [...myTweets];

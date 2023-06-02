@@ -26,7 +26,9 @@ const Bottombar = () => {
           </li>
           <li>
             <Link to="/notifications">
-              <div className={`${styles["nav-item"]} ${pathName === "/notifications" && styles.active}`}>{pathName === "/notifications" ? <FaBell className={styles["nav-icon"]} /> : <FaRegBell className={styles["nav-icon"]} />}</div>
+              <div className={`${styles["nav-item"]} ${pathName.split("/")[1] === "notifications" && styles.active}`}>
+                {pathName.split("/")[1] === "notifications" ? <FaBell className={styles["nav-icon"]} /> : <FaRegBell className={styles["nav-icon"]} />}
+              </div>
             </Link>
           </li>
           <li>

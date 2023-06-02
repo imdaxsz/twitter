@@ -82,9 +82,9 @@ function LeftBar({ uid }: { uid: string }) {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/notifications">
-                    <div className={`${styles["nav-item"]} ${pathName === "/notifications" && styles.active}`}>
-                      {pathName === "/notifications" ? <FaBell className={styles["nav-icon"]} /> : <FaRegBell className={styles["nav-icon"]} />}
+                  <Link to="notifications">
+                    <div className={`${styles["nav-item"]} ${pathName.split("/")[1] === "notifications" && styles.active}`}>
+                      {pathName.split("/")[1] === "notifications" ? <FaBell className={styles["nav-icon"]} /> : <FaRegBell className={styles["nav-icon"]} />}
                       <span>알림</span>
                     </div>
                   </Link>

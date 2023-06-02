@@ -1,6 +1,6 @@
 import { PersonType } from "types/types";
 import { dbCollection, dbService } from "fBase";
-import { doc, getDocs, query, updateDoc, where } from "firebase/firestore";
+import { doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
 
 type FollowParam = (
   uid: string,
@@ -26,6 +26,13 @@ export const follow:FollowParam = async (uid, user, currentUser, followingList) 
   if (followId !== "") {
     const followRef = doc(dbService, "users", followId);
     await updateDoc(followRef, { followers: [currentUser, ...followerList] });
+  }
+
+  // 팔로우 알림
+  const notiRef = doc(dbService, "notification", user.id);
+  const docSnap = await getDoc(notiRef);
+  if (docSnap.exists()) {
+    await updateDoc(notiRef, { follow: [uid, ...docSnap.data().follow] });
   }
 };
 

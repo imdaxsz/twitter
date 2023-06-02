@@ -9,7 +9,7 @@ export interface TweetType {
   id: string;
   text: string;
   createdAt: number;
-  creatorId: string | undefined;
+  creatorId: string;
   creatorUid: string;
   attachmentUrl: string;
   likes: string[];
@@ -28,4 +28,10 @@ export interface UserInfo {
   following: number;
   followers: number;
   joinDate: string;
+}
+
+export interface tweetNoti {
+  uid: string;
+  type: string;
+  tweet: TweetType;
 }

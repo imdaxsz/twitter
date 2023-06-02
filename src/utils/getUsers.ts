@@ -6,9 +6,10 @@ type getUserType = (setUser: React.Dispatch<React.SetStateAction<PersonType[]>>,
 
 type getUserFollowListType = (setList: React.Dispatch<React.SetStateAction<PersonType[]>>, id: string, filter?: string) => void;
 
-type getUserInfoType = (setName: React.Dispatch<React.SetStateAction<string>>, setUserImg: React.Dispatch<React.SetStateAction<string | null>>, uid: string) => void;
+type getUserInfoType = (setName: React.Dispatch<React.SetStateAction<string>>, setUserImg: React.Dispatch<React.SetStateAction<string | null>>, uid: string, setUserId?: React.Dispatch<React.SetStateAction<string>>) => void;
 
 type getUserDataType = (paramId: string, setUserInfo: React.Dispatch<React.SetStateAction<UserInfo | null>>, setUserBtnProps: React.Dispatch<React.SetStateAction<PersonType | null>>) => void;
+
 
 // 팔로우 추천에 사용됨
 export const getUsers: getUserType = async (setUsers, id, num, filter) => {
@@ -40,17 +41,18 @@ export const getUserFollowList: getUserFollowListType = async (setList, id, filt
 };
 
 // 트윗에서 사용자 이름 및 프로필 이미지 가져오기
-export const getUserInfo: getUserInfoType = (setName, setUserImg, uid) => {
+export const getUserInfo: getUserInfoType = (setName, setUserImg, uid, setUserId) => {
   onSnapshot(doc(dbService, "users", uid), (doc) => {
     if (doc.exists()) {
       setUserImg(doc.data().profileImg);
       setName(doc.data().name);
+      if (setUserId)
+        setUserId(doc.data().id);
     }
   });
 };
 
 // 프로필 페이지 사용자 정보 조회
-
 export const getUserData: getUserDataType = async (paramId, setUserInfo, setUserBtnProps) => {
   const q = query(dbCollection(dbService, "users"), where("id", "==", paramId));
 
