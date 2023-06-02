@@ -9,7 +9,7 @@ import { dataURItoFile } from "../utils/common";
 import { v4 as uuidv4 } from "uuid";
 import { doc, updateDoc } from "firebase/firestore";
 import { auth, dbService, storageService } from "fBase";
-import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import { deleteObject, getDownloadURL, ref, uploadString } from "firebase/storage";
 import { updateProfile } from "firebase/auth";
 import { useMediaQuery } from "react-responsive";
 import { VscClose, VscChromeClose } from "react-icons/vsc";
@@ -115,12 +115,20 @@ function EditProfile({ uid, setModal }: EditProps) {
     if (newHeader) headerUrl = user.headerImg;
 
     if (newProfile && newProfile !== user.profileImg) {
+      if (user.profileImg) { // 기존 이미지 저장소에서 삭제
+        const urlRef = ref(storageService, user.profileImg);
+        await deleteObject(urlRef);
+      }
       const attachmentRef = ref(storageService, `${uid}/${uuidv4()}`);
       const response = await uploadString(attachmentRef, newProfile, "data_url");
       profileUrl = await getDownloadURL(response.ref);
     }
 
     if (newHeader && newHeader !== user.headerImg) {
+      if (user.headerImg) {
+        const urlRef = ref(storageService, user.headerImg);
+        await deleteObject(urlRef);
+      }
       const attachmentRef = ref(storageService, `${uid}/${uuidv4()}`);
       const response = await uploadString(attachmentRef, newHeader, "data_url");
       headerUrl = await getDownloadURL(response.ref);
