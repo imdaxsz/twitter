@@ -18,7 +18,7 @@ const initialState: EditingState = {
     creatorUid: "",
     attachmentUrl: "",
     likes: [],
-    retweets: 0,
+    retweets: [],
     replies: [],
     mention: "",
     mentionTo: ""

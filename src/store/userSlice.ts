@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { PersonType } from "types/types";
-import { TweetType } from "types/types";
 
 export interface UserState {
   id: string;
@@ -10,8 +9,6 @@ export interface UserState {
   headerImg: string | null;
   bio: string;
   myTweets: string[];
-  retweets: string[];
-  likes: TweetType[];
   bookmarks: string[];
   following: PersonType[];
   followers: PersonType[];
@@ -25,8 +22,6 @@ const initialState: UserState = {
   headerImg: null,
   bio: "",
   myTweets: [],
-  retweets: [],
-  likes: [],
   bookmarks: [],
   following: [],
   followers: [],
@@ -55,42 +50,18 @@ export const userSlice = createSlice({
       state.profileImg = action.payload.profileImg;
       state.headerImg = action.payload.headerImg;
     },
-    changeProfileImg(state, action: PayloadAction<string>) {
-      state.profileImg = action.payload;
+    setBookmarks(state, action: PayloadAction<string[]>) {
+      Object.assign(state, action.payload);
     },
-    addBookmarks(state, action: PayloadAction<string>) {
-      state.bookmarks.push(action.payload);
+    setMyTweets(state, action: PayloadAction<string[]>) {
+      Object.assign(state, action.payload);
     },
-    removeBookmarks(state, action: PayloadAction<string>) {
-      state.bookmarks = state.bookmarks.filter((id) => id !== action.payload);
-    },
-    addLikes(state, action: PayloadAction<TweetType>) {
-      state.likes.push(action.payload);
-    },
-    removeLikes(state, action: PayloadAction<string>) {
-      state.likes = state.likes.filter((a) => a.id !== action.payload);
-    },
-    removeMyTweets(state, action: PayloadAction<string>) {
-      state.myTweets = state.myTweets.filter((id) => id !== action.payload);
-    },
-    removeRetweets(state, action: PayloadAction<string>) {
-      state.retweets = state.retweets.filter((id) => id !== action.payload);
-    },
-    addFollower(state, action: PayloadAction<PersonType>) {
-      state.followers.push(action.payload);
-    },
-    removeFollower(state, action: PayloadAction<string>) {
-      state.followers = state.followers.filter((follow) => follow.id !== action.payload);
-    },
-    addFollowing(state, action: PayloadAction<PersonType>) {
-      state.following.push(action.payload);
-    },
-    removeFollowing(state, action: PayloadAction<string>) {
-      state.following = state.following.filter((follow) => follow.id !== action.payload);
+    setRetweets(state, action: PayloadAction<string[]>) {
+      Object.assign(state, action.payload);
     },
   },
 });
 
-export const { reset, initUser, changeProfile, changeProfileImg, addBookmarks, removeBookmarks, addLikes, removeLikes, removeMyTweets, removeRetweets, addFollower, removeFollower, addFollowing, removeFollowing } = userSlice.actions;
+export const { reset, initUser, changeProfile, setBookmarks, setMyTweets, setRetweets } = userSlice.actions;
 
 export default userSlice.reducer;

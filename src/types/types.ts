@@ -13,7 +13,7 @@ export interface TweetType {
   creatorUid: string;
   attachmentUrl: string;
   likes: string[];
-  retweets: number;
+  retweets: string[];
   replies: string[];
   mention: string;
   mentionTo: string;

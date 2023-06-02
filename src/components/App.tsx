@@ -27,8 +27,6 @@ function App() {
           headerImg: doc.data().headerImg,
           bio: doc.data().bio,
           myTweets: doc.data().myTweets,
-          retweets: doc.data().retweets,
-          likes: doc.data().likes,
           bookmarks: doc.data().bookmarks,
           following: doc.data().following,
           followers: doc.data().followers,

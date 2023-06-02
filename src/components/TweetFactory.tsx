@@ -87,7 +87,7 @@ const TweetFactory = ({ uid, mention, mentionTo, isMobile }: FactoryProps) => {
       }
     } else {
       const userRef = doc(dbService, "users", uid);
-      await updateDoc(userRef, { myTweets: [...user.myTweets, docRef.id] });
+      await updateDoc(userRef, { myTweets: [docRef.id, ...user.myTweets] });
     }
     console.log("Document wirtten with ID: ", docRef.id);
     setLoading(false);
@@ -125,7 +125,7 @@ const TweetFactory = ({ uid, mention, mentionTo, isMobile }: FactoryProps) => {
         creatorUid: uid,
         attachmentUrl,
         likes: [],
-        retweets: 0,
+        retweets: [],
         replies: [],
         mention: mention ? mention : "",
         mentionTo: mentionTo ? mentionTo : "",

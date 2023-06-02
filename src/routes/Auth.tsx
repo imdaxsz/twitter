@@ -41,8 +41,6 @@ const Auth = () => {
           headerImg: null,
           bio: "",
           myTweets: [],
-          retweets: [],
-          likes: [],
           bookmarks: [],
           following: [],
           followers: [],

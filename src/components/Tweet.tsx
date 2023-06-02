@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { RootState } from "store/store";
 import { setEditObj, setModal } from "store/EditSlice";
-import { removeRetweets, removeMyTweets } from "store/userSlice";
-import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
-import { dbService, storageService } from "fBase";
-import { deleteObject, ref } from "firebase/storage";
 import { useToggleLike } from "hooks/useToggleLike";
 import { useToggleBookmark } from "hooks/useToggleBookmark";
 import { getTweetDate } from "utils/getTweetDate";
@@ -19,6 +15,8 @@ import { AiOutlineRetweet, AiFillEdit } from "react-icons/ai";
 import { FaBookmark } from "react-icons/fa";
 import { CgTrash } from "react-icons/cg";
 import styles from "styles/tweet.module.css";
+import { useToggleRetweet } from "hooks/useToggleRetweet";
+import { deleteTweet } from "utils/deleteTweet";
 
 interface TweetProps {
   tweetObj: TweetType;
@@ -27,9 +25,6 @@ interface TweetProps {
 }
 
 function Tweet({ tweetObj, uid, detail }: TweetProps) {
-  const tweetTextRef = doc(dbService, "tweets", `${tweetObj.id}`);
-  const urlRef = ref(storageService, tweetObj.attachmentUrl);
-  const userRef = doc(dbService, "users", uid);
   const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -39,16 +34,18 @@ function Tweet({ tweetObj, uid, detail }: TweetProps) {
   const [name, setName] = useState("");
 
   const { year, month, date, hours, ampm, minutes } = getTweetDate(tweetObj.createdAt);
-  const [retweet, setRetweet] = useState(false);
+  const { retweet, setRetweet, toggleRetweet } = useToggleRetweet(tweetObj, user.id, uid);
   const { like, setLike, toggleLike } = useToggleLike(tweetObj, user.id);
   const { bookmark, setBookmark, toggleBookmark } = useToggleBookmark(tweetObj, uid);
+  const { id: paramId } = useParams();
 
+  const isProfile = Boolean(useLocation().pathname.split("/")[1] === paramId);
+  const isRetweet = Boolean(isProfile && paramId !== tweetObj.creatorId);
 
   // 트윗 작성자 프로필 가져오기
   useEffect(() => {
     getUserInfo(setName, setUserImg, tweetObj.creatorUid);
   }, [tweetObj.creatorUid]);
-
 
   // 사용자의 현재 트윗 북마크, 좋아요, 리트윗 여부
   useEffect(() => {
@@ -62,9 +59,10 @@ function Tweet({ tweetObj, uid, detail }: TweetProps) {
   }, [tweetObj.likes, setLike, user.id]);
 
   useEffect(() => {
-    if (user.retweets.findIndex((id) => id === tweetObj.id) >= 0) setRetweet(true);
-  }, [user.retweets]);
-
+    if (tweetObj.retweets.includes(user.id)) {
+      setRetweet(true);
+    }
+  }, [tweetObj.retweets, setRetweet, user.id]);
 
   const ontweetClick = () => {
     navigate(`/${tweetObj.creatorId}/status/${tweetObj.id}`);
@@ -87,24 +85,7 @@ function Tweet({ tweetObj, uid, detail }: TweetProps) {
 
   const onDeleteClick = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    const ok = window.confirm("트윗을 삭제할까요?");
-    if (ok) {
-      await deleteDoc(tweetTextRef);
-      const result = user.myTweets.filter((id) => id !== tweetObj.id);
-      await updateDoc(userRef, { myTweets: [...result] });
-      if (tweetObj.attachmentUrl !== "") {
-        await deleteObject(urlRef);
-      }
-      if (tweetObj.mention !== "") {
-        // 트윗이 답글인 경우, 답글 달았던 트윗의 답글 개수 update
-        const docRef = doc(dbService, "tweets", tweetObj.mention);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const result: string[] = docSnap.data().replies.filter((id: string) => id !== tweetObj.id);
-          await updateDoc(docRef, { replies: result });
-        }
-      }
-    }
+    deleteTweet(tweetObj, uid, user.myTweets);
   };
 
   const onEditClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -126,30 +107,20 @@ function Tweet({ tweetObj, uid, detail }: TweetProps) {
 
   const onRetweetClick = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    if (user.retweets.findIndex((id) => id === tweetObj.id) < 0) {
-      // 리트윗
-      await updateDoc(tweetTextRef, { retweets: tweetObj.retweets + 1 });
-      await updateDoc(userRef, { retweets: [...user.retweets, tweetObj.id] });
-      await updateDoc(userRef, { myTweets: [...user.myTweets, tweetObj.id] });
-      setRetweet(true);
-    } else {
-      // 리트윗 취소
-      const result = user.myTweets.filter((id) => id !== tweetObj.id);
-      const result2 = user.retweets.filter((id) => id !== tweetObj.id);
-      await updateDoc(tweetTextRef, { retweets: tweetObj.retweets - 1 });
-      await updateDoc(userRef, { myTweets: [...result] });
-      await updateDoc(userRef, { retweets: [...result2] });
-      dispatch(removeRetweets(tweetObj.id));
-      dispatch(removeMyTweets(tweetObj.id));
-      setRetweet(false);
-    }
+    toggleRetweet();
   };
 
   return (
     <>
       {more && <div className="more-modal-wrapper" onClick={() => setMore(false)}></div>}
       <div className={` ${detail === true ? styles.detail : ""}`}>
-        <div className={styles.tweet} onClick={ontweetClick}>
+        {isRetweet && (
+          <div className={styles.retweeted}>
+            <AiOutlineRetweet className={styles["rt-icon"]} />
+            <p>@{paramId} 님이 리트윗했습니다.</p>
+          </div>
+        )}
+        <div className={`${styles.tweet} ${!isRetweet && `${styles.pt}`}`} onClick={ontweetClick}>
           {more && (
             <div className="more-modal modal-shadow">
               <div className="more-item-box p1" onClick={onEditClick}>
@@ -240,7 +211,7 @@ function Tweet({ tweetObj, uid, detail }: TweetProps) {
                   <div title="리트윗" className={`twticon-box ${styles.twt}}`}>
                     <AiOutlineRetweet className={`icon ${retweet && "fill"}`} />
                   </div>
-                  {<p className={`${retweet && "fill"}`}>{tweetObj.retweets > 0 && tweetObj.retweets}</p>}
+                  {<p className={`${retweet && "fill"}`}>{tweetObj.retweets.length > 0 && tweetObj.retweets.length}</p>}
                 </div>
                 <div className={`flex pink ${styles["icon-area"]}`} onClick={onLikeClick}>
                   <div title="마음에 들어요" className={`twticon-box ${styles.twt} `}>
