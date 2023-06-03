@@ -6,7 +6,7 @@ import TopBar from "components/TopBar";
 import EditProfile from "components/EditProfile";
 import FollowBtn from "components/FollowBtn";
 import { PersonType, UserInfo } from "types/types";
-import { getUserData } from "utils/getUsers";
+import { getUserProfile } from "utils/getUsers";
 import styles from "styles/profile.module.css";
 import { MdCalendarMonth } from "react-icons/md";
 
@@ -30,7 +30,7 @@ const Profile = ({ uid, isMobile }: ProfileProps) => {
   };
 
   useEffect(() => {
-    if (paramId) getUserData(paramId, setUserInfo, setUserBtnProps);
+    if (paramId) getUserProfile(paramId, setUserInfo, setUserBtnProps);
   }, [paramId]);
 
   return (
@@ -38,7 +38,7 @@ const Profile = ({ uid, isMobile }: ProfileProps) => {
       {modal && <EditProfile uid={uid} setModal={setModal} />}
 
       <div className="wrapper">
-        <TopBar title={userInfo?.name ? userInfo.name : ""} uid={uid} isMobile={isMobile} />
+        <TopBar title={userInfo?.name ? userInfo.name : ""} isMobile={isMobile} />
         <div className="container">
           {!["following", "followers"].includes(location.pathname.split("/").slice(-1)[0]) && (
             <>
@@ -53,7 +53,7 @@ const Profile = ({ uid, isMobile }: ProfileProps) => {
                       프로필 수정
                     </button>
                   ) : (
-                    userBtnProps && <FollowBtn uid={uid} user={userBtnProps} currentUser={user} />
+                    userBtnProps && <FollowBtn uid={uid} userId={userInfo?.id as string} currentUser={user} />
                   )}
                 </div>
                 <div className={`${styles.info} flex-row`}>

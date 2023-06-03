@@ -5,13 +5,12 @@ import { follow, unFollow } from "utils/follow";
 
 interface FollowBtnProps {
   uid: string;
-  user: PersonType;
+  userId: string;
   currentUser: UserState;
-} 
+}
 
-const FollowBtn = ({ uid, user, currentUser}: FollowBtnProps) => {
-  const initState = currentUser.following.findIndex((following) => following.id === user.id) >= 0;
-  const [following, setFollowing] = useState(initState);
+const FollowBtn = ({ uid, userId, currentUser}: FollowBtnProps) => {
+  const [following, setFollowing] = useState(false);
   const [btnText, setBtnText] = useState(0);
 
   const currentUserProps:PersonType = {
@@ -23,20 +22,19 @@ const FollowBtn = ({ uid, user, currentUser}: FollowBtnProps) => {
 
   const onFollowClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    follow(uid, user, currentUserProps, currentUser.following);
+    follow(uid, userId, currentUserProps, currentUser.following);
     setFollowing(true);
   };
 
   const onUnfollowClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    unFollow(uid, user, currentUserProps, currentUser.following);
+    unFollow(uid, userId, currentUserProps, currentUser.following);
     setFollowing(false);
     setBtnText(0);
   };
 
   useEffect(() => {
-    if (currentUser.following.findIndex((following) => following.id === user.id) >= 0) setFollowing(true);
-    else setFollowing(false);
+    setFollowing(currentUser.following.includes(userId));
   }, [currentUser.following]);
 
   return (

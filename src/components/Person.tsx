@@ -33,7 +33,7 @@ const Person = ({ user, uid }: PersonProps) => {
             </div>
           </div>
           {currentUser.id !== user.id && (
-            <FollowBtn uid={uid} user={user} currentUser={currentUser} />
+            <FollowBtn uid={uid} userId={user.id} currentUser={currentUser} />
           )}
         </div>
         {user.bio && (

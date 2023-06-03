@@ -10,8 +10,8 @@ export interface UserState {
   bio: string;
   myTweets: string[];
   bookmarks: string[];
-  following: PersonType[];
-  followers: PersonType[];
+  following: string[];
+  followers: string[];
 }
 
 const initialState: UserState = {

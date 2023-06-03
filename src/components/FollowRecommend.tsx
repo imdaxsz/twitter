@@ -27,7 +27,7 @@ function FollowRecommend({ user, uid }: PersonProps) {
             <p>@{user.id}</p>
           </div>
         </div>
-        <FollowBtn uid={uid} user={user} currentUser={currentUser} />
+        <FollowBtn uid={uid} userId={user.id} currentUser={currentUser} />
       </div>
     </div>
   );
