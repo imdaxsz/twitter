@@ -5,7 +5,7 @@ import { RootState } from "store/store";
 import { setEditObj, setModal } from "store/EditSlice";
 import { useToggleLike } from "hooks/useToggleLike";
 import { useToggleBookmark } from "hooks/useToggleBookmark";
-import { getTweetDate } from "utils/getTweetDate";
+import { getTweetDate } from "utils/common"
 import { getUserInfo } from "utils/getUsers";
 import { TweetType } from "types/types";
 import { RiHeart3Fill, RiHeart3Line, RiMoreFill } from "react-icons/ri";
@@ -35,11 +35,11 @@ function Tweet({ tweetObj, uid, detail }: TweetProps) {
 
   const { year, month, date, hours, ampm, minutes } = getTweetDate(tweetObj.createdAt);
   const { retweet, setRetweet, toggleRetweet } = useToggleRetweet(tweetObj, user.id, uid);
-  const { like, setLike, toggleLike } = useToggleLike(tweetObj, user.id);
+  const { like, setLike, toggleLike } = useToggleLike(tweetObj, user.id, uid);
   const { bookmark, setBookmark, toggleBookmark } = useToggleBookmark(tweetObj, uid);
   const { id: paramId } = useParams();
 
-  const isProfile = Boolean(useLocation().pathname.split("/")[1] === paramId);
+  const isProfile = Boolean(useLocation().pathname.split("/").slice(-1)[0] === paramId);
   const isRetweet = Boolean(isProfile && paramId !== tweetObj.creatorId);
 
   // 트윗 작성자 프로필 가져오기

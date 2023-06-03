@@ -36,7 +36,7 @@ const TweetDetail = ({ uid }: { uid: string }) => {
     }
   };
 
-  const getCurrentTweet = async (tweetId: string) => {
+  const getTweetInfo = async (tweetId: string) => {
     if (typeof tweetId === "string") {
       onSnapshot(doc(dbService, "tweets", tweetId), (doc) => {
         if (doc.exists()) {
@@ -61,7 +61,7 @@ const TweetDetail = ({ uid }: { uid: string }) => {
 
   useEffect(() => {
     if (tweetId) {
-      getCurrentTweet(tweetId);
+      getTweetInfo(tweetId);
     }
   }, [tweetId]);
 
@@ -70,7 +70,7 @@ const TweetDetail = ({ uid }: { uid: string }) => {
     return () => {
       setReplies([]);
     };
-  }, [tweet]);
+  }, [tweet?.replies.length]);
 
   return (
     <div className="wrapper">

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
 import { setMyTweets } from "store/userSlice";
-import { TweetType, tweetNoti } from "types/types";
+import { TweetType, TweetNoti } from "types/types";
 import { dbService } from "fBase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 
@@ -20,10 +20,9 @@ export const useToggleRetweet = (tweetObj: TweetType, id: string, uid: string) =
       setRetweet(true);
 
       // 리트윗 알림
-      const notiRef = doc(dbService, "notification", tweetObj.creatorId);
-      console.log(notiRef.id);
+      const notiRef = doc(dbService, "notifications", tweetObj.creatorId);
       const docSnap = await getDoc(notiRef);
-      const noti: tweetNoti = {
+      const noti: TweetNoti = {
         uid,
         type: "retweet",
         tweet: tweetObj,

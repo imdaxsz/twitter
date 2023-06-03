@@ -1,22 +1,24 @@
 import { useState } from "react";
 import { dbService } from "fBase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { TweetType, tweetNoti } from "types/types";
+import { TweetType, TweetNoti } from "types/types";
 
-export const useToggleLike = (tweetObj: TweetType, id:string, uid: string) => {
+export const useToggleLike = (tweetObj: TweetType, id: string, uid: string) => {
   const [like, setLike] = useState(false);
 
   const toggleLike = async () => {
     if (!tweetObj.likes.includes(id)) {
       // 마음에 들어요
-      await updateDoc(doc(dbService, "tweets", tweetObj.id), { likes: [...tweetObj.likes, uid] });
+      await updateDoc(doc(dbService, "tweets", tweetObj.id), { likes: [...tweetObj.likes, id] });
       setLike(true);
 
       // 마음 알림
-      const notiRef = doc(dbService, "notification", tweetObj.creatorId);
+      const notiRef = doc(dbService, "notifications", tweetObj.creatorId);
       const docSnap = await getDoc(notiRef);
-      const noti: tweetNoti = {
-        uid, type:"like", tweet:tweetObj
+      const noti: TweetNoti = {
+        uid,
+        type: "like",
+        tweet: tweetObj,
       };
       if (docSnap.exists()) {
         await updateDoc(notiRef, { tweetNoti: [noti, ...docSnap.data().tweetNoti] });

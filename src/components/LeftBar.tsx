@@ -28,10 +28,6 @@ function LeftBar({ uid }: { uid: string }) {
     setProfileModal(true);
   };
 
-  const onProfileBlur = () => {
-    setTimeout(() => setProfileModal(false), 100);
-  };
-
   const onLogOutClick = () => {
     const ok = window.confirm("로그아웃할까요?");
     if (ok) {
@@ -48,6 +44,7 @@ function LeftBar({ uid }: { uid: string }) {
   return (
     <>
       {tweetModal && isNew && <TweetModal uid={uid} />}
+      {profileModal && <div className="more-modal-wrapper" onClick={() => setProfileModal(false)}></div>}
       <div className={styles.wrapper}>
         <div className={styles.container}>
           {profileModal && (
@@ -112,7 +109,7 @@ function LeftBar({ uid }: { uid: string }) {
               {!isTablet ? "트윗하기" : <FaFeatherAlt />}
             </button>
           </div>
-          <div className={styles.profile} tabIndex={-1} onClick={onProfileClick} onBlur={onProfileBlur}>
+          <div className={styles.profile} tabIndex={-1} onClick={onProfileClick}>
             <div className={styles["profile-img"]}>
               <img referrerPolicy="no-referrer" src={user.profileImg ? user.profileImg : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userimg"></img>
             </div>

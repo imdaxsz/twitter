@@ -29,7 +29,7 @@ export const follow:FollowParam = async (uid, user, currentUser, followingList) 
   }
 
   // 팔로우 알림
-  const notiRef = doc(dbService, "notification", user.id);
+  const notiRef = doc(dbService, "notifications", user.id);
   const docSnap = await getDoc(notiRef);
   if (docSnap.exists()) {
     await updateDoc(notiRef, { follow: [uid, ...docSnap.data().follow] });
