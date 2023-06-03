@@ -35,6 +35,7 @@ function TopBar({ title, uid, isMobile }: { title: string; uid: string; isMobile
       const docSnap = await getDoc(notiRef);
       if (docSnap.exists()) {
         if (pathName.split("/").slice(-1)[0] === "notifications") await updateDoc(notiRef, { tweetNoti: [] });
+        else if (pathName.split("/").slice(-1)[0] === "mentions") await updateDoc(notiRef, { mentions: [] });
         else await updateDoc(notiRef, { follow: [] });
       }
     }

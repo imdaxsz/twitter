@@ -9,7 +9,7 @@ import { useState } from "react";
 import { getUserInfo } from "utils/getUsers";
 import { TbMessageCircle2Filled } from "react-icons/tb";
 
-const Noti = ({ opt, tweetObj, uid }: { opt: string; uid: string; tweetObj?: TweetType }) => {
+const Noti = ({ opt, uid, tweetObj, mention }: { opt: string; uid: string; tweetObj?: TweetType, mention?:any }) => {
   const navigate = useNavigate();
   const [name, setName] = useState<string>("");
   const [userImg, setUserImg] = useState<string | null>(null);
@@ -22,7 +22,10 @@ const Noti = ({ opt, tweetObj, uid }: { opt: string; uid: string; tweetObj?: Twe
   const onNotiClick = () => {
     if (opt === "follow") {
       navigate(`/${userId}`);
-    } else {
+    } else if (opt === "mention") {
+      navigate(`/${mention.creatorId}/status/${mention.tweetId}`);
+    }
+    else {
       if (tweetObj) navigate(`/${tweetObj.creatorId}/status/${tweetObj.id}`);
     }
   };
@@ -44,7 +47,7 @@ const Noti = ({ opt, tweetObj, uid }: { opt: string; uid: string; tweetObj?: Twe
           <RiHeart3Fill className={`${styles.icon} ${styles.pink}`} />
         </div>
       )}
-      {opt === "reply" && (
+      {opt === "mention" && (
         <div className={`${styles["icon-area"]}`}>
           <TbMessageCircle2Filled className={`${styles.icon} fill`} />
         </div>
@@ -67,11 +70,12 @@ const Noti = ({ opt, tweetObj, uid }: { opt: string; uid: string; tweetObj?: Twe
           </span>
           {opt === "like" && <span>&nbsp;님이 내 트윗을 마음에 들어 합니다.</span>}
           {opt === "retweet" && <span>&nbsp;님이 내 트윗을 리트윗했습니다.</span>}
-          {opt === "reply" && <span>&nbsp;님이 내 트윗에 답글을 달았습니다.</span>}
+          {opt === "mention" && <span>&nbsp;님이 내 트윗에 답글을 달았습니다.</span>}
           {opt === "follow" && <span>&nbsp;님이 나를 팔로우했습니다.</span>}
         </div>
         <div className={styles.tweet}>
           <p>{tweetObj && tweetObj.text}</p>
+          <p>{mention && mention.text}</p>
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import Noti from "components/Noti";
 import TopBar from "components/TopBar";
 import { Link, useLocation } from "react-router-dom";
-import { tweetNoti } from "types/types";
+import { MentionNoti, TweetNoti } from "types/types";
 import { useEffect, useState } from "react";
 import { doc, onSnapshot } from "firebase/firestore";
 import { dbService } from "fBase";
@@ -12,16 +12,18 @@ function Notifications({ uid }: { uid: string }) {
   const { id } = useSelector((state: RootState) => state.user);
   const { pathname } = useLocation();
   const [follow, setFollow] = useState<string[]>([]);
-  const [tweetNoti, setTweetNoti] = useState<tweetNoti[]>([]);
+  const [tweetNoti, setTweetNoti] = useState<TweetNoti[]>([]);
+  const [mentions, setMentions] = useState<MentionNoti[]>([]);
 
   useEffect(() => {
     onSnapshot(doc(dbService, "notification", id), (doc) => {
       if (doc.exists()) {
         setFollow(doc.data().follow);
         setTweetNoti(doc.data().tweetNoti);
+        setMentions(doc.data().mentions);
       }
     });
-  }, [follow.length, tweetNoti.length]);
+  }, [follow.length, tweetNoti.length, mentions.length]);
 
   return (
     <div className="wrapper">
@@ -29,7 +31,7 @@ function Notifications({ uid }: { uid: string }) {
       <div className="container">
         <nav className="nav nav-fix">
           <ul>
-            <li className="w-50">
+            <li className="w-3">
               <Link to={`/notifications`}>
                 <div className={`tab ${pathname.split("/").slice(-1)[0] === "notifications" && "active"}`}>
                   <div className="tab-box">
@@ -39,7 +41,17 @@ function Notifications({ uid }: { uid: string }) {
                 </div>
               </Link>
             </li>
-            <li className="w-50">
+            <li className="w-3">
+              <Link to={`/notifications/mentions`}>
+                <div className={`tab ${pathname.split("/").slice(-1)[0] === "mentions" && "active"}`}>
+                  <div className="tab-box">
+                    <p>멘션</p>
+                    {pathname.split("/").slice(-1)[0] === "mentions" && <div className="active-bar" />}
+                  </div>
+                </div>
+              </Link>
+            </li>
+            <li className="w-3">
               <Link to={`/notifications/follow`}>
                 <div className={`tab ${pathname.split("/").slice(-1)[0] === "follow" && "active"}`}>
                   <div className="tab-box">
@@ -56,6 +68,13 @@ function Notifications({ uid }: { uid: string }) {
             <>
               {follow.map((a, i) => {
                 return <Noti key={i} opt="follow" uid={a} />;
+              })}
+            </>
+          )}
+          {pathname.split("/").slice(-1)[0] === "mentions" && (
+            <>
+              {mentions.map((noti, i) => {
+                return <Noti key={i} opt="mention" uid={noti.uid} mention={noti.mention}/>;
               })}
             </>
           )}

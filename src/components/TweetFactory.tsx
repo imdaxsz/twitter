@@ -13,6 +13,7 @@ import styles from "styles/factory.module.css";
 import { IoImageOutline } from "react-icons/io5";
 import { VscChromeClose } from "react-icons/vsc";
 import { MdKeyboardBackspace } from "react-icons/md";
+import { MentionNoti } from "types/types";
 
 interface FactoryProps {
   uid: string;
@@ -80,10 +81,24 @@ const TweetFactory = ({ uid, mention, mentionTo, isMobile }: FactoryProps) => {
   const addTweet = async (tweetObj: any) => {
     const docRef = await dbAddDoc(dbCollection(dbService, "tweets"), tweetObj);
     if (typeof mention === "string") {
+      // 답글일 경우
       const twtRef = doc(dbService, "tweets", mention);
       const twtSnap = await getDoc(twtRef);
       if (twtSnap.exists()) {
         await updateDoc(twtRef, { replies: [...twtSnap.data().replies, docRef.id] });
+        const notiRef = doc(dbService, "notifications", twtSnap.data().creatorId);
+        const docSnap = await getDoc(notiRef);
+        const noti: MentionNoti = {
+          uid,
+          mention: {
+            tweetId: twtRef.id,
+            creatorId: twtSnap.data().creatorId,
+            text: tweetObj.text
+          }
+        };
+        if (docSnap.exists()) {
+          await updateDoc(notiRef, { mentions: [noti, ...docSnap.data().mentions] });
+        }
       }
     } else {
       const userRef = doc(dbService, "users", uid);

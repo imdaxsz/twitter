@@ -30,6 +30,7 @@ const AppRouter = ({ isLoggedIn, uid }: Router) => {
             <Route path="explore" element={<Explore uid={uid} />} />
             <Route path="notifications" element={<Notifications uid={uid} />}/>
             <Route path="notifications/follow" element={<Notifications uid={uid} />}/>
+            <Route path="notifications/mentions" element={<Notifications uid={uid} />}/>
             <Route path="bookmarks" element={<BookMarks uid={uid} isMobile={isMobile} />} />
             <Route path="/:id" element={<Profile uid={uid} isMobile={isMobile} />}>
               <Route path="" element={<DefaultTweets uid={uid} />} />

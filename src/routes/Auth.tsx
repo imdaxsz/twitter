@@ -46,9 +46,17 @@ const Auth = () => {
           followers: [],
         };
 
+        const userNoti = {
+          follow: [],
+          mentions: [],
+          tweetNoti: [],
+        };
+
         try {
           const userRef = await setDoc(doc(dbService, "users", result.user.uid), userData);
           console.log("Document wirtten with ID: ", userRef);
+          const notiRef = await setDoc(doc(dbService, "notifications", userData.id), userNoti);
+          console.log("Document wirtten with ID: ", notiRef);
         } catch (error) {
           console.error("Error adding document:", error);
         }

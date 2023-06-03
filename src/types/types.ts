@@ -30,8 +30,17 @@ export interface UserInfo {
   joinDate: string;
 }
 
-export interface tweetNoti {
+export interface TweetNoti {
   uid: string;
   type: string;
   tweet: TweetType;
+}
+
+export interface MentionNoti {
+  uid: string;
+  mention: {
+    tweetId: string;
+    creatorId: string;
+    text: string;
+  }
 }
