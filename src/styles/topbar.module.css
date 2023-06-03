@@ -78,6 +78,11 @@
   align-items: center;
 }
 
+.right {
+  position: absolute;
+  right: 10px;
+}
+
 @media screen and (max-width: 688px) {
   .wrapper,
   .container {
@@ -90,7 +95,7 @@
     max-width: 100vw;
   }
   .container h3 {
-  font-size: 17px;
+    font-size: 17px;
   }
   .container p {
     margin-top: 6px;
@@ -100,5 +105,8 @@
 @media (hover: hover) {
   .hover:hover {
     background: #e8e7e8;
+  }
+  .mb-icon:hover {
+    cursor: pointer;
   }
 }

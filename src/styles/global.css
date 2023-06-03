@@ -240,7 +240,7 @@ input[disabled] {
   top: 53px;
   left: 0px;
   width: 100%;
-  min-height: 100%;
+  min-height: 1000px;
   max-width: 600px;
   display: flex;
   flex-direction: column;
@@ -248,6 +248,15 @@ input[disabled] {
   border-color: rgb(239, 243, 244);
   border-top: none;
   font-size: 14px;
+}
+
+.loading {
+  background: white;
+  position: absolute;
+  top: 120;
+  width: 100%;
+  height: 100%;
+  z-index: 500;
 }
 
 .logo-box {
@@ -301,6 +310,67 @@ input[disabled] {
   bottom: 0%;
   left: 50%;
   transform: translate(-50%, 0%);
+}
+
+/* 가로 navbar */
+.nav {
+  /* border-right: solid 1px #eee; */
+  border-bottom: solid 1px #eee;
+  display: flex;
+  width: 100%;
+}
+
+.nav-fix {
+  position: fixed;
+  top: 53px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  z-index: 50;
+  width: 100%;
+  max-width: 598.4px;
+}
+
+.nav ul {
+  width: 100%;
+}
+
+.nav li {
+  float: left;
+}
+
+.tab {
+  height: 53px;
+  padding: 0 16px;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab p {
+  font-size: 15px;
+}
+
+.tab-box {
+  position: relative;
+  height: 100%;
+  padding: 16px 0px;
+  display: flex;
+  align-items: center;
+}
+
+.w-50 {
+  width: 50%;
+}
+
+.w-3 {
+  width: 33.33%;
+}
+
+.list-container {
+  margin-top: 53px;
 }
 
 /* 트윗 아이콘 */
@@ -680,7 +750,7 @@ input[disabled] {
 
 .crop-container {
   border: none;
-  top: 50%;
+  top: 50vh;
   left: 50%;
   transform: translate(-50%, -50%);
   height: 580px;
