@@ -20,7 +20,8 @@ const Home = ({ uid, isMobile }: { uid: string; isMobile?: boolean }) => {
 
   useEffect(() => {
     getTweets(setTweets, undefined, "all");
-    setLoading(false);
+    setTimeout(() => setLoading(false), 1000);
+    
     return () => {
       setLoading(true);
     };
@@ -42,10 +43,11 @@ const Home = ({ uid, isMobile }: { uid: string; isMobile?: boolean }) => {
       )}
       <div className="wrapper">
         <Loading loading={loading} />
-        <TopBar title={"홈"} uid={uid} isMobile={isMobile} />
+        <TopBar title={"홈"} isMobile={isMobile} />
         <div className="container">
           {!isMobile && <TweetFactory uid={uid} />}
           <div>
+            {loading && <div className="loading"></div>}
             {tweets.map((tweet) => (
               <Tweet key={tweet.id} tweetObj={tweet} uid={uid} />
             ))}

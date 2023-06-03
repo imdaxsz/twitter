@@ -58,7 +58,7 @@ function EditProfile({ uid, setModal }: EditProps) {
     const reader = new FileReader();
     reader.readAsDataURL(compressedImage); //data_url
     reader.onloadend = (finishedEvent) => {
-      console.log(finishedEvent);
+      // console.log(finishedEvent);
       if (finishedEvent.target && typeof finishedEvent.target.result == "string") {
         if (option === "profile") setNewProfile(finishedEvent.target.result);
         else if (option === "header") setNewHeader(finishedEvent.target.result);
@@ -117,7 +117,8 @@ function EditProfile({ uid, setModal }: EditProps) {
     if (newProfile && newProfile !== user.profileImg) {
       if (user.profileImg) { // 기존 이미지 저장소에서 삭제
         const urlRef = ref(storageService, user.profileImg);
-        await deleteObject(urlRef);
+        console.log(urlRef);
+        // await deleteObject(urlRef);
       }
       const attachmentRef = ref(storageService, `${uid}/${uuidv4()}`);
       const response = await uploadString(attachmentRef, newProfile, "data_url");
@@ -127,7 +128,8 @@ function EditProfile({ uid, setModal }: EditProps) {
     if (newHeader && newHeader !== user.headerImg) {
       if (user.headerImg) {
         const urlRef = ref(storageService, user.headerImg);
-        await deleteObject(urlRef);
+        console.log(urlRef);
+        // await deleteObject(urlRef);
       }
       const attachmentRef = ref(storageService, `${uid}/${uuidv4()}`);
       const response = await uploadString(attachmentRef, newHeader, "data_url");

@@ -23,7 +23,7 @@ function BookMarks({ uid, isMobile }: { uid: string, isMobile:boolean }) {
   return (
     <div className="wrapper">
       <Loading loading={loading} />
-      <TopBar title={"북마크"} uid={uid} isMobile={isMobile} />
+      <TopBar title={"북마크"} isMobile={isMobile} />
       <div className="container">
         <div>
           {tweets.map((tweet) => {

@@ -16,7 +16,7 @@ const ConnectPeople = ({ uid, explore }: { uid: string; explore?: boolean }) => 
 
   return (
     <div className="wrapper">
-      {!explore && <TopBar title="연결하기" uid="jlk" />}
+      {!explore && <TopBar title="연결하기" />}
       <div className="container">
         <h3 className="title p1 flex">나를 위한 추천</h3>
         {users.map((u) => {

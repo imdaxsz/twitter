@@ -9,7 +9,7 @@ import { FiLogOut } from "react-icons/fi";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 
-function TopBar({ title, uid, isMobile }: { title: string; uid: string; isMobile?: boolean }) {
+function TopBar({ title, isMobile }: { title: string; isMobile?: boolean }) {
   const pathName = useLocation().pathname;
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.user);
@@ -31,7 +31,7 @@ function TopBar({ title, uid, isMobile }: { title: string; uid: string; isMobile
   const onClearNotiClick = async () => {
     const ok = window.confirm("알림을 삭제할까요?");
     if (ok) {
-      const notiRef = doc(dbService, "notification", user.id);
+      const notiRef = doc(dbService, "notifications", user.id);
       const docSnap = await getDoc(notiRef);
       if (docSnap.exists()) {
         if (pathName.split("/").slice(-1)[0] === "notifications") await updateDoc(notiRef, { tweetNoti: [] });

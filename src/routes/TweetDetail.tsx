@@ -74,7 +74,7 @@ const TweetDetail = ({ uid }: { uid: string }) => {
 
   return (
     <div className="wrapper">
-      <TopBar title="트윗" uid={uid} />
+      <TopBar title="트윗" />
       <div className="container">
         {typeof tweet !== "undefined" && (
           <>

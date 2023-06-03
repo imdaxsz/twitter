@@ -16,7 +16,7 @@ function Notifications({ uid }: { uid: string }) {
   const [mentions, setMentions] = useState<MentionNoti[]>([]);
 
   useEffect(() => {
-    onSnapshot(doc(dbService, "notification", id), (doc) => {
+    onSnapshot(doc(dbService, "notifications", id), (doc) => {
       if (doc.exists()) {
         setFollow(doc.data().follow);
         setTweetNoti(doc.data().tweetNoti);
@@ -27,7 +27,7 @@ function Notifications({ uid }: { uid: string }) {
 
   return (
     <div className="wrapper">
-      <TopBar title={"알림"} uid={uid} />
+      <TopBar title={"알림"} />
       <div className="container">
         <nav className="nav nav-fix">
           <ul>

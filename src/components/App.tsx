@@ -15,7 +15,7 @@ function App() {
   const userObj = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
 
-  const getUserInfo = (user: User) => {
+  const getUser = (user: User) => {
     let userObj: UserState;
     onSnapshot(doc(dbService, "users", user.uid), (doc) => {
       if (doc.exists()) {
@@ -40,7 +40,7 @@ function App() {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         // User is signed in
-        getUserInfo(user);
+        getUser(user);
         setUid(user.uid);
       } else {
         // User is signed out
