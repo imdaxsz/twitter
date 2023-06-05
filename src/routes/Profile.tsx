@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link, Outlet, useLocation, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Link, Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
 import TopBar from "components/TopBar";
 import EditProfile from "components/EditProfile";
@@ -9,6 +9,9 @@ import { PersonType, UserInfo } from "types/types";
 import { getUserProfile } from "utils/getUsers";
 import styles from "styles/profile.module.css";
 import { MdCalendarMonth } from "react-icons/md";
+import TweetModal from "components/TweetModal";
+import { setIsNew, setModal as setTweetModal } from "store/EditSlice";
+import { FaFeatherAlt } from "react-icons/fa";
 
 interface ProfileProps {
   uid: string;
@@ -24,9 +27,25 @@ const Profile = ({ uid, isMobile }: ProfileProps) => {
 
   const user = useSelector((state: RootState) => state.user);
   const [modal, setModal] = useState(false);
+  const { isNew, editModal: tweetModal } = useSelector((state: RootState) => state.edit);
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   const onEditClick = () => {
     setModal(true);
+  };
+
+  const onTweetClick = () => {
+    dispatch(setTweetModal(true));
+    dispatch(setIsNew(true));
+  };
+
+  const onImgClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.currentTarget.id === "header" && userInfo?.headerImg)
+      navigate(userInfo.headerImg);
+    else if (e.currentTarget.id === "userImg" && userInfo?.profileImg)
+      navigate(userInfo.profileImg);
   };
 
   useEffect(() => {
@@ -36,16 +55,23 @@ const Profile = ({ uid, isMobile }: ProfileProps) => {
   return (
     <>
       {modal && <EditProfile uid={uid} setModal={setModal} />}
-
+      {isMobile && tweetModal && isNew && <TweetModal uid={uid} isMobile={isMobile} />}
+      {isMobile && (
+        <button className="btn medium mb-tweet" onClick={onTweetClick}>
+          <FaFeatherAlt />
+        </button>
+      )}
       <div className="wrapper">
         <TopBar title={userInfo?.name ? userInfo.name : ""} isMobile={isMobile} />
         <div className="container">
           {!["following", "followers"].includes(location.pathname.split("/").slice(-1)[0]) && (
             <>
-              <div className={styles.header}>{userInfo?.headerImg ? <img src={userInfo.headerImg} alt="header"></img> : <div className={styles["default-header"]}></div>}</div>
+              <div id="header" className={styles.header} onClick={onImgClick}>
+                {userInfo?.headerImg ? <img src={userInfo.headerImg} alt="header"></img> : <div className={styles["default-header"]}></div>}
+              </div>
               <div className={styles.profile}>
                 <div className={styles.top}>
-                  <div className={styles["user-img"]}>
+                  <div id="userImg" className={styles["user-img"]} onClick={onImgClick}>
                     <img referrerPolicy="no-referrer" src={userInfo?.profileImg ? userInfo?.profileImg : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userimg"></img>
                   </div>
                   {paramId === user.id ? (
