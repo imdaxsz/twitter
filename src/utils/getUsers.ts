@@ -23,7 +23,7 @@ export const getUsers: GetUserType = async (setUsers, id, num, filter) => {
   setUsers([]);
   let q;
   if (typeof filter === "string") {
-    q = query(collection(dbService, "users"), where("name", "==", filter));
+    q = query(collection(dbService, "users"), where("name", ">=", filter), where("name", "<=", filter + "\uf8ff"));
   } else q = query(collection(dbService, "users"), where("id", "!=", id), limit(num));
   const snapshot = await getDocs(q);
   snapshot.forEach((doc) => {
