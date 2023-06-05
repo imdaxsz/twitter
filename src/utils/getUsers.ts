@@ -14,7 +14,7 @@ type GetUserInfoType = (
   setUserBio?: React.Dispatch<React.SetStateAction<string>>
 ) => void;
 
-type GetUserDataType = (paramId: string, setUserInfo: React.Dispatch<React.SetStateAction<UserInfo | null>>, setUserBtnProps: React.Dispatch<React.SetStateAction<PersonType | null>>) => void;
+type GetUserDataType = (setResult: React.Dispatch<React.SetStateAction<boolean>>, paramId: string, setUserInfo: React.Dispatch<React.SetStateAction<UserInfo | null>>, setUserBtnProps: React.Dispatch<React.SetStateAction<PersonType | null>>) => void;
 
 type GetUserFollowListType = (list: string[], setFollowList: React.Dispatch<React.SetStateAction<PersonType[]>>) => void;
 
@@ -77,27 +77,33 @@ export const getUserInfo: GetUserInfoType = (setName, setUserImg, uid, setUserId
 };
 
 // 프로필 페이지 사용자 정보 조회
-export const getUserProfile: GetUserDataType = async (paramId, setUserInfo, setUserBtnProps) => {
+export const getUserProfile: GetUserDataType = async (setResult, paramId, setUserInfo, setUserBtnProps) => {
   const q = query(dbCollection(dbService, "users"), where("id", "==", paramId));
 
-  onSnapshot(q, (snapshot) => {
-    const userObj: UserInfo = {
-      id: snapshot.docs[0].data().id,
-      name: snapshot.docs[0].data().name,
-      bio: snapshot.docs[0].data().bio,
-      profileImg: snapshot.docs[0].data().profileImg,
-      headerImg: snapshot.docs[0].data().headerImg,
-      followers: snapshot.docs[0].data().followers.length,
-      following: snapshot.docs[0].data().following.length,
-      joinDate: snapshot.docs[0].data().joinDate,
-    };
-    const userProfile: PersonType = {
-      id: snapshot.docs[0].data().id,
-      name: snapshot.docs[0].data().name,
-      bio: snapshot.docs[0].data().bio,
-      profileImg: snapshot.docs[0].data().profileImg,
-    };
-    setUserInfo(userObj);
-    setUserBtnProps(userProfile);
-  });
+  onSnapshot(
+    q,
+    (snapshot) => {
+      if (snapshot.docs.length > 0) {
+        const userObj: UserInfo = {
+          id: snapshot.docs[0].data().id,
+          name: snapshot.docs[0].data().name,
+          bio: snapshot.docs[0].data().bio,
+          profileImg: snapshot.docs[0].data().profileImg,
+          headerImg: snapshot.docs[0].data().headerImg,
+          followers: snapshot.docs[0].data().followers.length,
+          following: snapshot.docs[0].data().following.length,
+          joinDate: snapshot.docs[0].data().joinDate,
+        };
+        const userProfile: PersonType = {
+          id: snapshot.docs[0].data().id,
+          name: snapshot.docs[0].data().name,
+          bio: snapshot.docs[0].data().bio,
+          profileImg: snapshot.docs[0].data().profileImg,
+        };
+        setUserInfo(userObj);
+        setUserBtnProps(userProfile);
+        setResult(true);
+      }
+    }
+  );
 };

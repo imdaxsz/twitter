@@ -6,11 +6,13 @@ import TopBar from "components/TopBar";
 import Tweet from "components/Tweet";
 import TweetFactory from "components/TweetFactory";
 import { TweetType } from "types/types";
+import ErrorPage from "./ErrorPage";
 
 const TweetDetail = ({ uid }: { uid: string }) => {
   const { tweetId } = useParams();
   const [tweet, setTweet] = useState<TweetType>();
   const [replies, setReplies] = useState<TweetType[]>([]);
+  const [result, setResult] = useState(false);
 
   const getReplies = () => {
     if (tweet && tweet.replies.length > 0) {
@@ -54,6 +56,7 @@ const TweetDetail = ({ uid }: { uid: string }) => {
             mentionTo: doc.data().mentionTo,
           };
           setTweet(tweetObj);
+          setResult(true);
         }
       });
     }
@@ -75,21 +78,25 @@ const TweetDetail = ({ uid }: { uid: string }) => {
   return (
     <div className="wrapper">
       <TopBar title="트윗" />
-      <div className="container">
-        {typeof tweet !== "undefined" && (
-          <>
-            <Tweet tweetObj={tweet} uid={uid} detail={true} />
-            <TweetFactory uid={uid} mention={tweet.id} mentionTo={tweet.creatorId} />
-            {tweet.replies.length > 0 && (
-              <>
-                {replies.map((tweet) => (
-                  <Tweet key={tweet.id} tweetObj={tweet} uid={uid} />
-                ))}
-              </>
-            )}
-          </>
-        )}
-      </div>
+      {result ? (
+        <div className="container">
+          {typeof tweet !== "undefined" && (
+            <>
+              <Tweet tweetObj={tweet} uid={uid} detail={true} />
+              <TweetFactory uid={uid} mention={tweet.id} mentionTo={tweet.creatorId} />
+              {tweet.replies.length > 0 && (
+                <>
+                  {replies.map((tweet) => (
+                    <Tweet key={tweet.id} tweetObj={tweet} uid={uid} />
+                  ))}
+                </>
+              )}
+            </>
+          )}
+        </div>
+      ) : (
+        <ErrorPage />
+      )}
     </div>
   );
 };

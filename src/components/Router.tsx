@@ -14,6 +14,7 @@ import SearchResult from "routes/SearchResult";
 import Replies from "routes/Replies";
 import FollowList from "routes/FollowList";
 import { useMediaQuery } from "react-responsive";
+import ErrorPage from "routes/ErrorPage";
 
 interface Router {
   isLoggedIn: boolean;
@@ -48,7 +49,7 @@ const AppRouter = ({ isLoggedIn, uid }: Router) => {
       ) : (
         <Route path="/" element={<Auth />} />
       )}
-      <Route path="*" element={<Auth />} />
+      <Route path="*" element={<ErrorPage />} />
     </Routes>
   );
 };

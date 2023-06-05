@@ -12,6 +12,7 @@ import { MdCalendarMonth } from "react-icons/md";
 import TweetModal from "components/TweetModal";
 import { setIsNew, setModal as setTweetModal } from "store/EditSlice";
 import { FaFeatherAlt } from "react-icons/fa";
+import ErrorPage from "./ErrorPage";
 
 interface ProfileProps {
   uid: string;
@@ -29,8 +30,7 @@ const Profile = ({ uid, isMobile }: ProfileProps) => {
   const [modal, setModal] = useState(false);
   const { isNew, editModal: tweetModal } = useSelector((state: RootState) => state.edit);
   const dispatch = useDispatch();
-
-  const navigate = useNavigate();
+  const [result, setResult] = useState(false);
 
   const onEditClick = () => {
     setModal(true);
@@ -43,13 +43,14 @@ const Profile = ({ uid, isMobile }: ProfileProps) => {
 
   const onImgClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.currentTarget.id === "header" && userInfo?.headerImg)
-      navigate(userInfo.headerImg);
+      window.open(userInfo.headerImg);
     else if (e.currentTarget.id === "userImg" && userInfo?.profileImg)
-      navigate(userInfo.profileImg);
+      window.open(userInfo.profileImg);
   };
 
   useEffect(() => {
-    if (paramId) getUserProfile(paramId, setUserInfo, setUserBtnProps);
+    if (paramId) getUserProfile(setResult, paramId, setUserInfo, setUserBtnProps);
+    return () => setResult(false);
   }, [paramId]);
 
   return (
@@ -63,6 +64,8 @@ const Profile = ({ uid, isMobile }: ProfileProps) => {
       )}
       <div className="wrapper">
         <TopBar title={userInfo?.name ? userInfo.name : ""} isMobile={isMobile} />
+        {
+          result ? 
         <div className="container">
           {!["following", "followers"].includes(location.pathname.split("/").slice(-1)[0]) && (
             <>
@@ -165,7 +168,8 @@ const Profile = ({ uid, isMobile }: ProfileProps) => {
             </>
           )}
           <Outlet />
-        </div>
+        </div> : <ErrorPage/>
+        }
       </div>
     </>
   );
