@@ -103,3 +103,9 @@ button {
   width: 50%;
   height: 50%;
 }
+
+@media screen and (max-width: 1298px) {
+  .container {
+    height: calc(var(--vh, 1vh) * 100);
+  }
+}

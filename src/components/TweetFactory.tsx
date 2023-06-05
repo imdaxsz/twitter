@@ -86,6 +86,7 @@ const TweetFactory = ({ uid, mention, mentionTo, isMobile }: FactoryProps) => {
       const twtSnap = await getDoc(twtRef);
       if (twtSnap.exists()) {
         await updateDoc(twtRef, { replies: [...twtSnap.data().replies, docRef.id] });
+        // 답글 알림
         const notiRef = doc(dbService, "notifications", twtSnap.data().creatorId);
         const docSnap = await getDoc(notiRef);
         const noti: MentionNoti = {

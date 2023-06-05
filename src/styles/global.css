@@ -22,12 +22,33 @@ body {
   height: 100%;
 }
 
+:root {
+  --vh: 100%;
+}
+
 .background {
   background: white;
   width: 100%;
   height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   color: #0f1419;
+}
+
+.loading-container {
+  width: 100%;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9990;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.none {
+  display: none;
 }
 
 button {
@@ -132,7 +153,6 @@ input[disabled] {
 }
 
 .xs {
-  /* width: 76px; */
   height: 32px;
   padding: 0 16px;
   font-size: 14px;
@@ -209,13 +229,11 @@ input[disabled] {
 }
 
 .app-container {
-  /* width: 100vw; */
   width: 100%;
   margin: 0 auto;
   display: flex;
   justify-content: center;
   position: relative;
-  /* min-height: 100%; */
   height: 100%;
 }
 
@@ -314,7 +332,6 @@ input[disabled] {
 
 /* 가로 navbar */
 .nav {
-  /* border-right: solid 1px #eee; */
   border-bottom: solid 1px #eee;
   display: flex;
   width: 100%;
@@ -424,7 +441,8 @@ input[disabled] {
 }
 
 .no-tweet {
-  width: 400px;
+  max-width: 400px;
+  width: 100%;
   height: 168px;
   padding: 0 32px;
   margin: 32px auto;
@@ -817,12 +835,16 @@ input[disabled] {
     height: 50.4px;
     padding: 0;
   }
+  .init,
+  .loading-container {
+    height: calc(var(--vh, 1vh) * 100);
+  }
 }
 
 @media screen and (max-width: 688px) {
   .wrapper,
   .container {
-    min-width: calc(100vw - 88px);
+    min-width: calc(100% - 88px);
   }
   .modal {
     min-width: 80vw;
@@ -861,7 +883,7 @@ input[disabled] {
   }
 
   .modal-wrapper {
-    z-index: 9990;
+    z-index: 9900;
   }
 
   .crop-container {
