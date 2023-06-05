@@ -38,8 +38,8 @@ const AppRouter = ({ isLoggedIn, uid }: Router) => {
               <Route path="with_replies" element={<Replies uid={uid} />} />
               <Route path="media" element={<Media uid={uid} />} />
               <Route path="likes" element={<Likes uid={uid} />} />
-              <Route path="followers" element={<FollowList uid={uid} filter="followers" />} />
-              <Route path="following" element={<FollowList uid={uid} filter="following" />} />
+              <Route path="followers" element={<FollowList uid={uid} />} />
+              <Route path="following" element={<FollowList uid={uid} />} />
             </Route>
             <Route path="/:id/status/:tweetId" element={<TweetDetail uid={uid} />} />
             <Route path="connect_people" element={<ConnectPeople uid={uid} />} />

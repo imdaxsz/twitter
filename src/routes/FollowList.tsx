@@ -4,8 +4,8 @@ import Person from "components/Person";
 import { getUserFollowList, getUserFollowIdList } from "utils/getUsers";
 import { PersonType } from "types/types";
 
-const FollowList = ({ uid, filter }: { uid: string; filter: string }) => {
-  const { pathname } = useLocation();
+const FollowList = ({ uid }: { uid: string }) => {
+  const pathname = useLocation().pathname.split("/").slice(-1)[0];
   const { id: paramId } = useParams();
   const [followingList, SetFollowingList] = useState<string[]>([]);
   const [followerList, SetFollowerList] = useState<string[]>([]);
@@ -13,22 +13,18 @@ const FollowList = ({ uid, filter }: { uid: string; filter: string }) => {
   const [followers, setFollowers] = useState<PersonType[]>([]);
 
   useEffect(() => {
-    if (filter === "following" && paramId) {
+    if (pathname === "following" && paramId) {
       getUserFollowIdList(SetFollowingList, paramId, "following");
       getUserFollowList(followingList, setFollowing);
-    } else if (filter === "followers" && paramId) {
+    } else if (pathname === "followers" && paramId) {
       getUserFollowIdList(SetFollowerList, paramId, "followers");
       getUserFollowList(followerList, setFollowers);
     }
-  }, []);
-
-  useEffect(() => {
-    if (filter === "following") {
-      getUserFollowList(followingList, setFollowing);
-    } else if (filter === "followers") {
-      getUserFollowList(followerList, setFollowers);
-    }
-  }, [followingList.length, followerList.length]);
+    return () => {
+      setFollowers([]);
+      setFollowing([]);
+    };
+  }, [pathname, followerList.length, followingList.length]);
 
   return (
     <div>
@@ -36,10 +32,10 @@ const FollowList = ({ uid, filter }: { uid: string; filter: string }) => {
         <ul>
           <li className="w-50">
             <Link to={`/${paramId}/followers`}>
-              <div className={`tab ${pathname.split("/").slice(-1)[0] === "followers" && "active"}`}>
+              <div className={`tab ${pathname === "followers" && "active"}`}>
                 <div className="tab-box">
                   <p>팔로워</p>
-                  {pathname.split("/").slice(-1)[0] === "followers" && <div className="active-bar" />}
+                  {pathname === "followers" && <div className="active-bar" />}
                 </div>
               </div>
             </Link>
@@ -49,7 +45,7 @@ const FollowList = ({ uid, filter }: { uid: string; filter: string }) => {
               <div className={`tab ${pathname.split("/").slice(-1)[0] === "following" && "active"}`}>
                 <div className="tab-box">
                   <p>팔로잉</p>
-                  {pathname.split("/").slice(-1)[0] === "following" && <div className="active-bar" />}
+                  {pathname === "following" && <div className="active-bar" />}
                 </div>
               </div>
             </Link>
@@ -57,7 +53,7 @@ const FollowList = ({ uid, filter }: { uid: string; filter: string }) => {
         </ul>
       </nav>
       <div className="list-container">
-        {filter === "following" && paramId ? (
+        {pathname === "following" && paramId ? (
           <>
             {following.map((follow) => {
               return <Person key={follow.id} user={follow} uid={uid} />;
