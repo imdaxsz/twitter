@@ -49,7 +49,6 @@ const AppRouter = ({ isLoggedIn, uid }: Router) => {
       ) : (
         <Route path="/" element={<Auth />} />
       )}
-      <Route path="*" element={<ErrorPage />} />
     </Routes>
   );
 };

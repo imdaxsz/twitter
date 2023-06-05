@@ -9,8 +9,6 @@ function Explore({uid}:{uid:string}) {
         <SearchBar />
       </div>
       <ConnectPeople uid={uid} explore={true} />
-      {/* <div className="container">
-      </div> */}
     </div>
   );
 }

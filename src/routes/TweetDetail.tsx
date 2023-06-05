@@ -78,25 +78,27 @@ const TweetDetail = ({ uid }: { uid: string }) => {
   return (
     <div className="wrapper">
       <TopBar title="트윗" />
-      {result ? (
-        <div className="container">
-          {typeof tweet !== "undefined" && (
-            <>
-              <Tweet tweetObj={tweet} uid={uid} detail={true} />
-              <TweetFactory uid={uid} mention={tweet.id} mentionTo={tweet.creatorId} />
-              {tweet.replies.length > 0 && (
-                <>
-                  {replies.map((tweet) => (
-                    <Tweet key={tweet.id} tweetObj={tweet} uid={uid} />
-                  ))}
-                </>
-              )}
-            </>
-          )}
-        </div>
-      ) : (
-        <ErrorPage />
-      )}
+      <div className="container">
+        {result ? (
+          <>
+            {typeof tweet !== "undefined" && (
+              <>
+                <Tweet tweetObj={tweet} uid={uid} detail={true} />
+                <TweetFactory uid={uid} mention={tweet.id} mentionTo={tweet.creatorId} />
+                {tweet.replies.length > 0 && (
+                  <>
+                    {replies.map((tweet) => (
+                      <Tweet key={tweet.id} tweetObj={tweet} uid={uid} />
+                    ))}
+                  </>
+                )}
+              </>
+            )}
+          </>
+        ) : (
+          <ErrorPage />
+        )}
+      </div>
     </div>
   );
 };
