@@ -43,6 +43,7 @@ function TopBar({ title, isMobile }: { title: string; isMobile?: boolean }) {
 
   const mobileHome = Boolean(title === "홈" && isMobile);
   const backSpace = Boolean([paramId, "connect_people"].includes(pathName.split("/")[1]) || (isMobile && pathName.split("/")[1] === "bookmarks"));
+  const followPage = Boolean(["followers", "following"].includes(pathName.split("/").slice(-1)[0]));
 
   return (
     <div className={`${styles.container} ${mobileHome && styles.center}`}>
@@ -56,14 +57,13 @@ function TopBar({ title, isMobile }: { title: string; isMobile?: boolean }) {
       {mobileHome && <FaTwitter className="sm-logo" />}
       <div className="flex-col">
         {!mobileHome && <h3>{title}</h3>}
-        {title === "북마크" ? <p>@{user.id}</p> : null}
-        {paramId && !tweetId ? <p>{count.value} 트윗</p> : null}
+        {title === "북마크" || followPage ? <p>@{paramId ? paramId : user.id}</p> : null}
+        {paramId && !tweetId && !followPage ? <p>{count.value} 트윗</p> : null}
       </div>
       {isMobile && pathName.split("/")[1] === user.id && (
         <div className={`${styles["mb-icons"]}`}>
           <Link to="/bookmarks">
             <div className={`${styles["mb-icon"]}`}>
-              {" "}
               <FaRegBookmark className={styles.icon} />
             </div>
           </Link>
