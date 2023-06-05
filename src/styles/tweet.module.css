@@ -44,10 +44,10 @@
 .user-img {
   position: absolute;
   left: 16px;
-  /* top: 12px; */
   width: 48px;
   height: 48px;
   margin-right: 12px;
+  cursor: pointer;
 }
 
 .user-img img {
@@ -98,10 +98,12 @@
 
 .user-name {
   font-weight: bold;
+  cursor: pointer;
 }
 
 .user-id {
   margin-left: 4px;
+  cursor: pointer;
 }
 
 .icons {
@@ -248,8 +250,8 @@
 
 @media screen and (max-width: 499px) {
   .tweet span {
-    flex-grow: 1
-  };
+    flex-grow: 1;
+  }
   .twtimg {
     max-height: 370px;
   }
