@@ -73,7 +73,7 @@ const TweetDetail = ({ uid }: { uid: string }) => {
     return () => {
       setReplies([]);
     };
-  }, [tweet?.replies.length]);
+  }, [tweet?.replies]);
 
   return (
     <div className="wrapper">
