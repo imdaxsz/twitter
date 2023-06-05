@@ -1,12 +1,12 @@
 {
   "files": {
-    "main.css": "/twitter/static/css/main.292bbcd1.css",
-    "main.js": "/twitter/static/js/main.79bc64b3.js",
+    "main.css": "/twitter/static/css/main.acd7e86f.css",
+    "main.js": "/twitter/static/js/main.afd4dc72.js",
     "static/js/27.7c54b791.chunk.js": "/twitter/static/js/27.7c54b791.chunk.js",
     "index.html": "/twitter/index.html"
   },
   "entrypoints": [
-    "static/css/main.292bbcd1.css",
-    "static/js/main.79bc64b3.js"
+    "static/css/main.acd7e86f.css",
+    "static/js/main.afd4dc72.js"
   ]
 }
