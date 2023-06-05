@@ -1,12 +1,12 @@
 {
   "files": {
-    "main.css": "/twitter/static/css/main.b47749fc.css",
-    "main.js": "/twitter/static/js/main.ab1b3bc3.js",
-    "static/js/27.7c54b791.chunk.js": "/twitter/static/js/27.7c54b791.chunk.js",
-    "index.html": "/twitter/index.html"
+    "main.css": "https://imdaxsz.github.io/twitter/static/css/main.b47749fc.css",
+    "main.js": "https://imdaxsz.github.io/twitter/static/js/main.f63407d1.js",
+    "static/js/27.7c54b791.chunk.js": "https://imdaxsz.github.io/twitter/static/js/27.7c54b791.chunk.js",
+    "index.html": "https://imdaxsz.github.io/twitter/index.html"
   },
   "entrypoints": [
     "static/css/main.b47749fc.css",
-    "static/js/main.ab1b3bc3.js"
+    "static/js/main.f63407d1.js"
   ]
 }
