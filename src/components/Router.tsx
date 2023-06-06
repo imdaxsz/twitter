@@ -14,7 +14,6 @@ import SearchResult from "routes/SearchResult";
 import Replies from "routes/Replies";
 import FollowList from "routes/FollowList";
 import { useMediaQuery } from "react-responsive";
-import ErrorPage from "routes/ErrorPage";
 
 interface Router {
   isLoggedIn: boolean;
@@ -29,9 +28,9 @@ const AppRouter = ({ isLoggedIn, uid }: Router) => {
         <>
           <Route path="/" element={<Root uid={uid} isMobile={isMobile} />}>
             <Route path="explore" element={<Explore uid={uid} />} />
-            <Route path="notifications" element={<Notifications uid={uid} />}/>
-            <Route path="notifications/follow" element={<Notifications uid={uid} />}/>
-            <Route path="notifications/mentions" element={<Notifications uid={uid} />}/>
+            <Route path="notifications" element={<Notifications />}/>
+            <Route path="notifications/follow" element={<Notifications />}/>
+            <Route path="notifications/mentions" element={<Notifications />}/>
             <Route path="bookmarks" element={<BookMarks uid={uid} isMobile={isMobile} />} />
             <Route path="/:id" element={<Profile uid={uid} isMobile={isMobile} />}>
               <Route path="" element={<DefaultTweets uid={uid} />} />
@@ -41,7 +40,7 @@ const AppRouter = ({ isLoggedIn, uid }: Router) => {
               <Route path="followers" element={<FollowList uid={uid} />} />
               <Route path="following" element={<FollowList uid={uid} />} />
             </Route>
-            <Route path="/:id/status/:tweetId" element={<TweetDetail uid={uid} />} />
+            <Route path="/:id/status/:tweetId" element={<TweetDetail uid={uid} isMobile={isMobile} />} />
             <Route path="connect_people" element={<ConnectPeople uid={uid} />} />
             <Route path="search" element={<SearchResult uid={uid} />} />
           </Route>

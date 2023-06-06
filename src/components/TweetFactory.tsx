@@ -6,14 +6,17 @@ import { useNavigate } from "react-router-dom";
 import { dbAddDoc, dbCollection, dbService, storageService } from "fBase";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import ProgressBar from "@ramonak/react-progress-bar";
 import { v4 as uuidv4 } from "uuid";
 import useImageCompress from "hooks/imageCompress";
-import styles from "styles/factory.module.css";
+import { MentionNoti } from "types/types";
+import ProgressBar from "@ramonak/react-progress-bar";
+import { updateProgressBar } from "utils/common";
 import { IoImageOutline } from "react-icons/io5";
 import { VscChromeClose } from "react-icons/vsc";
 import { MdKeyboardBackspace } from "react-icons/md";
-import { MentionNoti } from "types/types";
+import styles from "styles/factory.module.css";
+import md from "styles/modal.module.css";
+
 
 interface FactoryProps {
   uid: string;
@@ -33,6 +36,8 @@ const TweetFactory = ({ uid, mention, mentionTo, isMobile }: FactoryProps) => {
 
   const compressImage = useImageCompress().compressImage;
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
+  
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -61,18 +66,7 @@ const TweetFactory = ({ uid, mention, mentionTo, isMobile }: FactoryProps) => {
   useEffect(() => {
     // progressbar 조절
     if (loading) {
-      let interval = setInterval(() => {
-        setPercentage((prev) => {
-          if (percentage < 90) {
-            return prev + Math.floor(Math.random() * 20);
-          } else if (percentage >= 90 && percentage < 100) {
-            return prev + 1;
-          } else return 100;
-        });
-      }, 10);
-      if (percentage >= 100) {
-        clearInterval(interval);
-      }
+      const interval = updateProgressBar(percentage, setPercentage);
       return () => clearInterval(interval);
     }
   }, [percentage, loading]);
@@ -174,8 +168,6 @@ const TweetFactory = ({ uid, mention, mentionTo, isMobile }: FactoryProps) => {
     }
   };
 
-  const fileInput = useRef<HTMLInputElement>(null);
-
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const {
       currentTarget: { files },
@@ -209,9 +201,9 @@ const TweetFactory = ({ uid, mention, mentionTo, isMobile }: FactoryProps) => {
     <form onSubmit={onSubmit}>
       {loading && <ProgressBar completed={percentage} maxCompleted={100} height="0.2rem" borderRadius="2px" baseBgColor="rgba(0,0,0,0)" bgColor="rgb(29, 155, 240)" isLabelVisible={false} />}
       {isMobile && (
-        <div className="modal-top flex">
-          <div className="modal-icon" onClick={() => dispatch(resetEdit())}>
-            <MdKeyboardBackspace className="modal-svg" />
+        <div className={`${md.top} flex`}>
+          <div className={md.icon} onClick={() => dispatch(resetEdit())}>
+            <MdKeyboardBackspace className={md.svg} />
           </div>
           <input type="submit" value="트윗하기" disabled={tweet === "" && attachment === ""} className={`btn small ${styles["btn-tweet"]}`} />
         </div>

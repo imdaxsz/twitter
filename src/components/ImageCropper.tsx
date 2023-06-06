@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { Cropper, ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { VscClose } from "react-icons/vsc";
+import md from "styles/modal.module.css";
 
 interface PropsType {
   onCrop: (image: string) => void;
@@ -61,10 +62,10 @@ const ImageCropper = ({ aspectRatio, onCrop, modal, setModal }: PropsType) => {
           {image && (
             <div className="container crop-container">
               <div className="backdrop" />
-              <div className="modal">
-                <div className="modal-top flex">
-                  <div className="modal-icon" onClick={onCancelClick}>
-                    <VscClose className="modal-svg" />
+              <div className={md.modal}>
+                <div className={`${md.top} flex`}>
+                  <div className={md.icon} onClick={onCancelClick}>
+                    <VscClose className={md.svg} />
                   </div>
                   <span>미디어 수정</span>
                   <button className="btn xs black" onClick={getCropData}>

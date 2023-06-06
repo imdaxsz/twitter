@@ -1,0 +1,38 @@
+.container {
+  width: 100%;
+  position: relative;
+  min-height: 72px;
+  align-items: flex-start;
+  justify-content: flex-end;
+  cursor: pointer;
+}
+
+.container:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.content {
+  width: calc(100% - 60px);
+  max-width: 506px;
+  font-size: 15px;
+}
+
+.top {
+  position: relative;
+  justify-content: space-between;
+  height: 41.26px;
+}
+
+.top h4 {
+  font-weight: bold;
+}
+
+.bio {
+  width: 100%;
+  min-height: 24px;
+  padding-top: 4px;
+}
+
+.bio span {
+  line-height: 20px;
+}

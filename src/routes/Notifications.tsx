@@ -8,7 +8,7 @@ import { dbService } from "fBase";
 import { useSelector } from "react-redux";
 import { RootState } from "store/store";
 
-function Notifications({ uid }: { uid: string }) {
+function Notifications() {
   const { id } = useSelector((state: RootState) => state.user);
   const { pathname } = useLocation();
   const [follow, setFollow] = useState<string[]>([]);

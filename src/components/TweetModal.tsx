@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { resetEdit } from "store/EditSlice";
 import TweetFactory from "./TweetFactory";
 import { VscClose } from "react-icons/vsc";
+import md from "styles/modal.module.css";
 
 interface TweetProps {
   uid: string;
@@ -24,12 +25,12 @@ function TweetModal({ uid, isMobile }: TweetProps) {
   };
 
   return (
-    <div className="modal-wrapper" onClick={onCloseClick}>
-      <div className="modal modal-shadow twt-modal" onClick={(e) => e.stopPropagation()}>
+    <div className={md.wrapper} onClick={onCloseClick}>
+      <div className={`${md.modal} ${md.shadow} ${md.twt}`} onClick={(e) => e.stopPropagation()}>
         {!isMobile && (
-          <div className="modal-top flex">
-            <div className="modal-icon" onClick={onCloseClick}>
-              <VscClose className="modal-svg" />
+          <div className={`${md.top} flex`}>
+            <div className={md.icon} onClick={onCloseClick}>
+              <VscClose className={md.svg} />
             </div>
           </div>
         )}

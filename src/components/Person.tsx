@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "store/store";
 import FollowBtn from "./FollowBtn";
 import { PersonType } from "types/types";
+import styles from "styles/person.module.css";
 
 export interface PersonProps {
   user: PersonType;
@@ -18,12 +19,12 @@ const Person = ({ user, uid }: PersonProps) => {
   };
 
   return (
-    <div className="flex p1 people-container" onClick={onClick}>
+    <div className={`flex p1 ${styles.container}`} onClick={onClick}>
       <div className="user-img">
         <img referrerPolicy="no-referrer" src={user.profileImg ? user.profileImg : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userImg"></img>
       </div>
-      <div className="people-content">
-        <div className="people-top flex">
+      <div className={styles.content}>
+        <div className={`${styles.top} flex`}>
           <div className="h1">
             <div className="flex flex-item underline">
               <h4>{user.name}</h4>
@@ -32,12 +33,10 @@ const Person = ({ user, uid }: PersonProps) => {
               <p>@{user.id}</p>
             </div>
           </div>
-          {currentUser.id !== user.id && (
-            <FollowBtn uid={uid} userId={user.id} currentUser={currentUser} />
-          )}
+          {currentUser.id !== user.id && <FollowBtn uid={uid} userId={user.id} currentUser={currentUser} />}
         </div>
         {user.bio && (
-          <div className="people-bio flex">
+          <div className={`${styles.bio} flex`}>
             <span>{user.bio}</span>
           </div>
         )}

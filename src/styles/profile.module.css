@@ -113,47 +113,6 @@
   margin-bottom: 12px;
 }
 
-.nav {
-  border-bottom: solid 1px #eee;
-  display: flex;
-  width: 100%;
-}
-
-.nav ul {
-  width: 100%;
-}
-
-.nav li {
-  float: left;
-}
-
-.follow li {
-  width: 50%;
-}
-
-.tab {
-  height: 53px;
-  padding: 0 16px;
-  display: flex;
-  justify-content: center;
-  position: relative;
-  align-items: center;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.tab p {
-  font-size: 15px;
-}
-
-.box {
-  position: relative;
-  height: 100%;
-  padding: 16px 0px;
-  display: flex;
-  align-items: center;
-}
-
 .w-1 {
   width: 22%;
 }

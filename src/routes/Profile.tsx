@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, Outlet, useLocation, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "store/store";
 import TopBar from "components/TopBar";
@@ -20,13 +20,14 @@ interface ProfileProps {
 }
 
 const Profile = ({ uid, isMobile }: ProfileProps) => {
-  const location = useLocation();
+  const pathname = useLocation().pathname.split("/").slice(-1)[0];
 
   const { id: paramId } = useParams();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [userBtnProps, setUserBtnProps] = useState<PersonType | null>(null);
 
   const user = useSelector((state: RootState) => state.user);
+  const edit = useSelector((state: RootState) => state.edit);
   const [modal, setModal] = useState(false);
   const { isNew, editModal: tweetModal } = useSelector((state: RootState) => state.edit);
   const dispatch = useDispatch();
@@ -54,6 +55,7 @@ const Profile = ({ uid, isMobile }: ProfileProps) => {
   return (
     <>
       {modal && <EditProfile uid={uid} setModal={setModal} />}
+      {edit.editModal && edit.editObj.id !== "" && <TweetModal uid={uid} isMobile={isMobile} />}
       {isMobile && tweetModal && isNew && <TweetModal uid={uid} isMobile={isMobile} />}
       {isMobile && (
         <button className="btn medium mb-tweet" onClick={onTweetClick}>
@@ -65,7 +67,7 @@ const Profile = ({ uid, isMobile }: ProfileProps) => {
         <div className="container">
           {result ? (
             <>
-              {!["following", "followers"].includes(location.pathname.split("/").slice(-1)[0]) && (
+              {!["following", "followers"].includes(pathname) && (
                 <>
                   <div id="header" className={styles.header} onClick={onImgClick}>
                     {userInfo?.headerImg ? <img src={userInfo.headerImg} alt="header"></img> : <div className={styles["default-header"]}></div>}
@@ -119,44 +121,44 @@ const Profile = ({ uid, isMobile }: ProfileProps) => {
                       </Link>
                     </div>
                   </div>
-                  <nav className={styles.nav}>
+                  <nav className="nav">
                     <ul>
                       <li className={styles["w-1"]}>
                         <Link to={`/${paramId}`}>
-                          <div className={`${styles.tab} ${location.pathname.split("/").slice(-1)[0] === paramId && "active"}`}>
-                            <div className={styles.box}>
+                          <div className={`tab ${pathname === paramId && "active"}`}>
+                            <div className="tab-box">
                               <p>트윗</p>
-                              {location.pathname.split("/").slice(-1)[0] === paramId && <div className="active-bar" />}
+                              {pathname === paramId && <div className="active-bar" />}
                             </div>
                           </div>
                         </Link>
                       </li>
                       <li className={styles["w-1"]}>
                         <Link to={`/${paramId}/with_replies`}>
-                          <div className={`${styles.tab} ${location.pathname.split("/").slice(-1)[0] === "with_replies" && "active"}`}>
-                            <div className={styles.box}>
+                          <div className={`tab ${pathname === "with_replies" && "active"}`}>
+                            <div className="tab-box">
                               <p>답글</p>
-                              {location.pathname.split("/").slice(-1)[0] === "with_replies" && <div className="active-bar" />}
+                              {pathname === "with_replies" && <div className="active-bar" />}
                             </div>
                           </div>
                         </Link>
                       </li>
                       <li className={styles["w-2"]}>
                         <Link to={`/${paramId}/media`}>
-                          <div className={`${styles.tab} ${location.pathname.split("/").slice(-1)[0] === "media" && "active"}`}>
-                            <div className={styles.box}>
+                          <div className={`tab ${pathname === "media" && "active"}`}>
+                            <div className="tab-box">
                               <p>미디어</p>
-                              {location.pathname.split("/").slice(-1)[0] === "media" && <div className="active-bar" />}
+                              {pathname === "media" && <div className="active-bar" />}
                             </div>
                           </div>
                         </Link>
                       </li>
                       <li className={styles["w-3"]}>
                         <Link to={`/${paramId}/likes`}>
-                          <div className={`${styles.tab} ${location.pathname.split("/").slice(-1)[0] === "likes" && "active"}`}>
-                            <div className={styles.box}>
+                          <div className={`tab ${pathname === "likes" && "active"}`}>
+                            <div className="tab-box">
                               <p>마음에 들어요</p>
-                              {location.pathname.split("/").slice(-1)[0] === "likes" && <div className="active-bar" />}
+                              {pathname === "likes" && <div className="active-bar" />}
                             </div>
                           </div>
                         </Link>

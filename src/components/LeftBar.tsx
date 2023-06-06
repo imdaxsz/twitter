@@ -5,12 +5,13 @@ import { RootState } from "store/store";
 import { setIsNew, setModal } from "store/EditSlice";
 import TweetModal from "./TweetModal";
 import { auth } from "fBase";
+import { useMediaQuery } from "react-responsive";
 import { RiMoreFill } from "react-icons/ri";
 import { FaBell, FaBookmark, FaFeatherAlt, FaHashtag, FaRegBell, FaRegBookmark, FaRegUser, FaTwitter, FaUser } from "react-icons/fa";
 import { AiFillHome, AiOutlineHome } from "react-icons/ai";
 import { HiOutlineHashtag } from "react-icons/hi";
-import { useMediaQuery } from "react-responsive";
 import styles from "styles/leftbar.module.css";
+import md from "styles/modal.module.css";
 
 function LeftBar({ uid }: { uid: string }) {
   const pathName = useLocation().pathname;
@@ -44,11 +45,11 @@ function LeftBar({ uid }: { uid: string }) {
   return (
     <>
       {tweetModal && isNew && <TweetModal uid={uid} />}
-      {profileModal && <div className="more-modal-wrapper" onClick={() => setProfileModal(false)}></div>}
+      {profileModal && <div className={md["more-wrapper"]} onClick={() => setProfileModal(false)}></div>}
       <div className={styles.wrapper}>
         <div className={styles.container}>
           {profileModal && (
-            <div onClick={onLogOutClick} className={`${styles.modal} modal-shadow flex`}>
+            <div onClick={onLogOutClick} className={`${styles.modal} ${md.shadow} flex`}>
               <h4>로그아웃</h4>
             </div>
           )}
@@ -97,8 +98,8 @@ function LeftBar({ uid }: { uid: string }) {
                 </li>
                 <li>
                   <Link to={`/${user.id}`}>
-                    <div className={`${styles["nav-item"]} ${pathName.split("/")[1] === user.id && styles.active}`}>
-                      {pathName.split("/")[1] === user.id ? <FaUser className={styles["nav-icon"]} /> : <FaRegUser className={styles["nav-icon"]} />}
+                    <div className={`${styles["nav-item"]} ${pathName.split("/")[1] === user.id && !pathName.split("/").includes("status") && styles.active}`}>
+                      {pathName.split("/")[1] === user.id && !pathName.split("/").includes("status") ? <FaUser className={styles["nav-icon"]} /> : <FaRegUser className={styles["nav-icon"]} />}
                       <span>프로필</span>
                     </div>
                   </Link>

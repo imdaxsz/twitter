@@ -11,7 +11,7 @@ import { getTweets } from "utils/getTweet";
 import { TweetType } from "types/types";
 import { FaFeatherAlt } from "react-icons/fa";
 
-const Home = ({ uid, isMobile }: { uid: string; isMobile?: boolean }) => {
+const Home = ({ uid, isMobile }: { uid: string; isMobile: boolean }) => {
   const [tweets, setTweets] = useState<TweetType[]>([]);
   const [loading, setLoading] = useState(true);
   const edit = useSelector((state: RootState) => state.edit);

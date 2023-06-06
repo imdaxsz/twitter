@@ -105,7 +105,6 @@ textarea::placeholder {
 
 .bottom {
   width: 506px;
-  height: 100%;
   height: 48px;
   display: flex;
   position: relative;

@@ -3,8 +3,9 @@ import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import { TweetType } from "types/types";
 
+type DeleteTweetFun = (tweetObj: TweetType, uid: string, myTweets: string[], setMore: React.Dispatch<React.SetStateAction<boolean>>) => void;
 
-export const deleteTweet = async (tweetObj:TweetType, uid:string, myTweets: string[]) => {
+export const deleteTweet: DeleteTweetFun = async (tweetObj: TweetType, uid: string, myTweets: string[], setMore) => {
   const tweetTextRef = doc(dbService, "tweets", `${tweetObj.id}`);
   const urlRef = ref(storageService, tweetObj.attachmentUrl);
   const userRef = doc(dbService, "users", uid);
@@ -25,5 +26,6 @@ export const deleteTweet = async (tweetObj:TweetType, uid:string, myTweets: stri
         await updateDoc(docRef, { replies: result });
       }
     }
+    setMore(false);
   }
 };

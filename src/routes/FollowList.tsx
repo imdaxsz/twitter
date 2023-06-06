@@ -42,7 +42,7 @@ const FollowList = ({ uid }: { uid: string }) => {
           </li>
           <li className="w-50">
             <Link to={`/${paramId}/following`}>
-              <div className={`tab ${pathname.split("/").slice(-1)[0] === "following" && "active"}`}>
+              <div className={`tab ${pathname === "following" && "active"}`}>
                 <div className="tab-box">
                   <p>팔로잉</p>
                   {pathname === "following" && <div className="active-bar" />}

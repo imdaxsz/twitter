@@ -8,6 +8,8 @@ import { useToggleBookmark } from "hooks/useToggleBookmark";
 import { getTweetDate } from "utils/common"
 import { getUserInfo } from "utils/getUsers";
 import { TweetType } from "types/types";
+import { useToggleRetweet } from "hooks/useToggleRetweet";
+import { deleteTweet } from "utils/deleteTweet";
 import { RiHeart3Fill, RiHeart3Line, RiMoreFill } from "react-icons/ri";
 import { TbMessageCircle2 } from "react-icons/tb";
 import { FiBookmark } from "react-icons/fi";
@@ -15,8 +17,7 @@ import { AiOutlineRetweet, AiFillEdit } from "react-icons/ai";
 import { FaBookmark } from "react-icons/fa";
 import { CgTrash } from "react-icons/cg";
 import styles from "styles/tweet.module.css";
-import { useToggleRetweet } from "hooks/useToggleRetweet";
-import { deleteTweet } from "utils/deleteTweet";
+import md from "styles/modal.module.css";
 
 interface TweetProps {
   tweetObj: TweetType;
@@ -85,7 +86,7 @@ function Tweet({ tweetObj, uid, detail }: TweetProps) {
 
   const onDeleteClick = async (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    deleteTweet(tweetObj, uid, user.myTweets);
+    deleteTweet(tweetObj, uid, user.myTweets, setMore);
   };
 
   const onEditClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -112,7 +113,7 @@ function Tweet({ tweetObj, uid, detail }: TweetProps) {
 
   return (
     <>
-      {more && <div className="more-modal-wrapper" onClick={() => setMore(false)}></div>}
+      {more && <div className={md["more-wrapper"]} onClick={() => setMore(false)}></div>}
       <div className={` ${detail === true ? styles.detail : ""}`}>
         {isRetweet && (
           <div className={styles.retweeted}>
@@ -122,15 +123,15 @@ function Tweet({ tweetObj, uid, detail }: TweetProps) {
         )}
         <div className={`${styles.tweet} ${!isRetweet && `${styles.pt}`}`} onClick={ontweetClick}>
           {more && (
-            <div className="more-modal modal-shadow">
-              <div className="more-item-box p1" onClick={onEditClick}>
-                <div className="more-item">
+            <div className={`${md["more-modal"]} ${md.shadow}`}>
+              <div className={`${md["more-item-box"]} p1`} onClick={onEditClick}>
+                <div className={md["more-item"]}>
                   <AiFillEdit className="icon" />
                   <h4>수정하기</h4>
                 </div>
               </div>
-              <div className="more-item-box p1" onClick={onDeleteClick}>
-                <div className="more-item red">
+              <div className={`${md["more-item-box"]} p1`} onClick={onDeleteClick}>
+                <div className={`${md["more-item"]} red`}>
                   <CgTrash className="icon red" />
                   <h4>삭제하기</h4>
                 </div>

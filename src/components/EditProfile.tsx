@@ -5,7 +5,6 @@ import { changeProfile } from "store/userSlice";
 import Loading from "./Loading";
 import ImageCropper from "./ImageCropper";
 import useImageCompress from "hooks/imageCompress";
-import { dataURItoFile } from "../utils/common";
 import { v4 as uuidv4 } from "uuid";
 import { doc, updateDoc } from "firebase/firestore";
 import { auth, dbService, storageService } from "fBase";
@@ -15,6 +14,8 @@ import { useMediaQuery } from "react-responsive";
 import { VscClose, VscChromeClose } from "react-icons/vsc";
 import { TbCameraPlus } from "react-icons/tb";
 import { MdKeyboardBackspace } from "react-icons/md";
+import { handleCompressImage } from "utils/imageProcess";
+import md from "styles/modal.module.css";
 
 interface EditProps {
   uid: string;
@@ -46,28 +47,6 @@ function EditProfile({ uid, setModal }: EditProps) {
     };
   }, []);
 
-  const handleCompressImage = async (newFile: string | null, option: string) => {
-    let imageFile: File;
-    let compressedImage;
-    if (newFile) {
-      imageFile = dataURItoFile(newFile);
-      compressedImage = await compressImage(imageFile);
-    }
-
-    if (!compressedImage) return;
-    const reader = new FileReader();
-    reader.readAsDataURL(compressedImage); //data_url
-    reader.onloadend = (finishedEvent) => {
-      // console.log(finishedEvent);
-      if (finishedEvent.target && typeof finishedEvent.target.result == "string") {
-        if (option === "profile") setNewProfile(finishedEvent.target.result);
-        else if (option === "header") setNewHeader(finishedEvent.target.result);
-        console.log("p: ", newProfile);
-        // console.log("h: ", newHeader);
-      }
-    };
-  };
-
   const onProfileClick = () => {
     setProfileModal(true);
     setHeaderModal(false);
@@ -84,10 +63,10 @@ function EditProfile({ uid, setModal }: EditProps) {
 
   useEffect(() => {
     if (newProfile !== user.profileImg) {
-      handleCompressImage(newProfile, "profile");
+      handleCompressImage(compressImage, newProfile, setNewProfile);
     }
     if (newHeader !== user.headerImg) {
-      handleCompressImage(newHeader, "header");
+      handleCompressImage(compressImage, newHeader, setNewHeader);
     }
   }, [newProfile, newHeader]);
 
@@ -173,60 +152,60 @@ function EditProfile({ uid, setModal }: EditProps) {
       <Loading loading={loading} />
       {profileModal && <ImageCropper aspectRatio={1 / 1} onCrop={handleUploadImage} modal={profileModal} setModal={setProfileModal}></ImageCropper>}
       {headerModal && <ImageCropper aspectRatio={3 / 1} onCrop={handleUploadImage2} modal={headerModal} setModal={setHeaderModal}></ImageCropper>}
-      <div className="modal-wrapper" onClick={onOutsideClick}>
+      <div className={md.wrapper} onClick={onOutsideClick}>
         <form onSubmit={onSubmit}>
-          <div className="modal modal-shadow" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-top flex">
-              <div className="modal-icon" onClick={onCloseClick}>
-                {!isMobile ? <VscClose className="modal-svg" /> : <MdKeyboardBackspace className="modal-svg" />}
+          <div className={`${md.modal} ${md.shadow}`} onClick={(e) => e.stopPropagation()}>
+            <div className={`${md.top} flex`}>
+              <div className={md.icon} onClick={onCloseClick}>
+                {!isMobile ? <VscClose className={md.svg} /> : <MdKeyboardBackspace className={md.svg} />}
               </div>
               <span>프로필 수정</span>
               <button className="btn xs black">저장</button>
             </div>
-            <div className="modal-header">
-              <div className="darken" />
-              <div className="edit-img-box">
-                <div className="edit-img" onClick={onHeaderClick}>
-                  <TbCameraPlus className="edit-icon" />
+            <div className={md.header}>
+              <div className={md.darken} />
+              <div className={md["edit-img-box"]}>
+                <div className={md["edit-img"]} onClick={onHeaderClick}>
+                  <TbCameraPlus className={md["edit-icon"]} />
                 </div>
                 {newHeader && (
-                  <div className="edit-img del">
-                    <VscChromeClose className="edit-icon" onClick={onDeleteHeaderClick} />
+                  <div className={`${md["edit-img"]} ${md.del}`}>
+                    <VscChromeClose className={md["edit-icon"]} onClick={onDeleteHeaderClick} />
                   </div>
                 )}
               </div>
               {newHeader && <img src={newHeader} alt="headerImg"></img>}
             </div>
-            <div className="modal-img-box">
-              <div className="modal-profile-img">
-                <div className="darken radius-100"></div>
-                <div className="edit-img-box">
-                  <div className="edit-img" onClick={onProfileClick}>
-                    <TbCameraPlus className="edit-icon" />
+            <div className={md["modal-profile"]}>
+              <div className={md["profile-img-box"]}>
+                <div className={`${md.darken} ${md["rd-100"]}`}></div>
+                <div className={md["edit-img-box"]}>
+                  <div className={md["edit-img"]} onClick={onProfileClick}>
+                    <TbCameraPlus className={md["edit-icon"]} />
                   </div>
                 </div>
-                <img className="profile-img" referrerPolicy="no-referrer" src={newProfile ? newProfile : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userImg"></img>
+                <img className={md.profile} referrerPolicy="no-referrer" src={newProfile ? newProfile : `${process.env.PUBLIC_URL}/img/default_profile.png`} alt="userImg"></img>
               </div>
             </div>
-            <div className="p1 mt-50 modal-input">
+            <div className={`p1 ${md["mt-80"]} ${md.input}`}>
               <label htmlFor="name">
-                <div className="modal-input-box">
-                  <div className={"input-label " + (newName === "" ? "md-label" : "")}>
+                <div className={md["input-box"]}>
+                  <div className={`${md.label} ${newName === "" && md.default}`}>
                     <span>이름</span>
                   </div>
-                  <div className="input-container">
+                  <div className={md["input-container"]}>
                     <input id="name" type="text" value={newName} onChange={onNameChange}></input>
                   </div>
                 </div>
               </label>
             </div>
-            <div className="p1 modal-textarea">
+            <div className={`p1 ${md.textarea}`}>
               <label htmlFor="introduce">
-                <div className="modal-input-box">
-                  <div className={"input-label " + (newBio === "" ? "md-label" : "")}>
+                <div className={md["input-box"]}>
+                  <div className={`${md.label} ${newBio === "" && md.default}`}>
                     <span>자기소개</span>
                   </div>
-                  <div className="textarea-container">
+                  <div className={md["textarea-container"]}>
                     <textarea id="introduce" value={newBio} onChange={onBioChange}></textarea>
                   </div>
                 </div>
