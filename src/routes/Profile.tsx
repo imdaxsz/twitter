@@ -31,7 +31,7 @@ const Profile = ({ uid, isMobile }: ProfileProps) => {
   const [modal, setModal] = useState(false);
   const { isNew, editModal: tweetModal } = useSelector((state: RootState) => state.edit);
   const dispatch = useDispatch();
-  const [result, setResult] = useState(false);
+  const [result, setResult] = useState(true);
 
   const onEditClick = () => {
     setModal(true);
@@ -49,7 +49,6 @@ const Profile = ({ uid, isMobile }: ProfileProps) => {
 
   useEffect(() => {
     if (paramId) getUserProfile(setResult, paramId, setUserInfo, setUserBtnProps);
-    return () => setResult(false);
   }, [paramId]);
 
   return (

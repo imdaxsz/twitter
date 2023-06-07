@@ -102,8 +102,8 @@ export const getUserProfile: GetUserDataType = async (setResult, paramId, setUse
         };
         setUserInfo(userObj);
         setUserBtnProps(userProfile);
-        setResult(true);
       }
+      else setResult(false);
     }
   );
 };

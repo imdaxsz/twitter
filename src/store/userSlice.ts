@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { PersonType } from "types/types";
 
 export interface UserState {
   id: string;

@@ -6,7 +6,7 @@ import { useState } from "react";
 export const useGetTweetInfo = () => {
   const [tweet, setTweet] = useState<TweetType>();
   const [replies, setReplies] = useState<TweetType[]>([]);
-  const [result, setResult] = useState(false);
+  const [result, setResult] = useState(true);
 
   const getReplies = () => {
     if (tweet && tweet.replies.length > 0) {
@@ -50,8 +50,8 @@ export const useGetTweetInfo = () => {
             mentionTo: doc.data().mentionTo,
           };
           setTweet(tweetObj);
-          setResult(true);
         }
+        else setResult(false);
       });
     }
   };
