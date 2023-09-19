@@ -6,10 +6,14 @@ import { updateProfile } from "firebase/auth";
 import { UserState } from "store/userSlice";
 import styles from "styles/auth.module.css";
 
-const AuthForm = () => {
+interface Props {
+  newAccount: boolean;
+  setNewAccount: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const AuthForm = ({ newAccount, setNewAccount }: Props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [newAccount, setNewAccount] = useState(true);
   const [error, setError] = useState("");
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,8 +57,8 @@ const AuthForm = () => {
           const userNoti = {
             follow: [],
             mentions: [],
-            tweetNoti: []
-          }
+            tweetNoti: [],
+          };
 
           try {
             const userRef = await setDoc(doc(dbService, "users", result.user.uid), userData);
