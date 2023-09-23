@@ -9,9 +9,19 @@ PC / Mobile 모두 이용 가능합니다!
 
 <br/>
 
-### `Link`
+## Tech Stack
+
+<img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=black"> <img src="https://img.shields.io/badge/Typescript-3178C6?style=for-the-badge&logo=Typescript&logoColor=white">
+<img src="https://img.shields.io/badge/Redux-764ABC?style=for-the-badge&logo=Redux&logoColor=white"> <img src="https://img.shields.io/badge/firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=000">
+<img src="https://img.shields.io/badge/css modules-f5f5f5?style=for-the-badge&logo=cssmodules&logoColor=000000">
+
+<br/>
+
+## Link
 ▶️ [사이트 바로가기](https://imdaxsz.github.io/twitter)
 
-### `References`
+<br/>
+
+## References
 ▶️ [개발 후기 및 References](https://imdaxsz.tistory.com/28)
 
